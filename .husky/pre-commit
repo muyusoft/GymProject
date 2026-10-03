@@ -1,0 +1,27 @@
+. "$(dirname "$0")/branch-name.sh"
+
+branch=$(git branch --show-current)
+
+# En detached HEAD (rebase, bisect) no hay rama que validar.
+if [ -n "$branch" ]; then
+  if [ "$branch" = "main" ]; then
+    echo ""
+    echo "  ERROR: no se commitea directo a main."
+    echo ""
+    echo "    Crea una rama primero:"
+    echo "      git checkout -b feat/mi-cambio"
+    echo ""
+    exit 1
+  fi
+
+  if ! msg=$(validate_branch_name "$branch"); then
+    echo ""
+    echo "  ERROR: no se commitea en una rama que no cumple el estandar."
+    echo ""
+    echo "$msg"
+    echo ""
+    exit 1
+  fi
+fi
+
+lint-staged

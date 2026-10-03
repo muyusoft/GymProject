@@ -1,0 +1,30 @@
+# Ultima linea de defensa: impide que una rama mal nombrada llegue al remoto.
+# Recibe por stdin: <local ref> <local sha> <remote ref> <remote sha>
+
+. "$(dirname "$0")/branch-name.sh"
+
+status=0
+
+while read -r local_ref _ _ _; do
+  case "$local_ref" in
+    refs/heads/*) ;;
+    *) continue ;;
+  esac
+
+  branch="${local_ref#refs/heads/}"
+  [ "$branch" = "main" ] && continue
+
+  if ! msg=$(validate_branch_name "$branch"); then
+    echo ""
+    echo "  ERROR: no se hace push de una rama que no cumple el estandar."
+    echo ""
+    echo "$msg"
+    echo ""
+    echo "    Renombrala antes de publicarla:"
+    echo "      git branch -m <nombre-correcto>"
+    echo ""
+    status=1
+  fi
+done
+
+exit $status

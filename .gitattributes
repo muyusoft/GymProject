@@ -1,0 +1,3 @@
+# Los hooks de husky los ejecuta sh, que no soporta CRLF.
+# Sin esto, core.autocrlf=true los rompe en el proximo clon.
+.husky/** text eol=lf

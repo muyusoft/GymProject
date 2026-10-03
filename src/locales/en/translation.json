@@ -1,0 +1,15 @@
+{
+  "common": {
+    "welcome": "Welcome",
+    "logout": "Logout",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Retry"
+  },
+  "auth": {
+    "login": "Sign In",
+    "email": "Email",
+    "password": "Password",
+    "loginError": "Invalid credentials"
+  }
+}

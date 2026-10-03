@@ -1,0 +1,25 @@
+# git ignora el exit code de post-checkout: esto avisa, no bloquea.
+# El bloqueo real vive en pre-commit y pre-push.
+
+# $3 = 1 cuando el checkout es de rama; 0 cuando es de archivos.
+[ "$3" = "1" ] || exit 0
+
+. "$(dirname "$0")/branch-name.sh"
+
+branch=$(git branch --show-current)
+
+[ -z "$branch" ] && exit 0
+[ "$branch" = "main" ] && exit 0
+
+if ! msg=$(validate_branch_name "$branch"); then
+  echo ""
+  echo "  AVISO: esta rama no cumple el estandar del proyecto."
+  echo ""
+  echo "$msg"
+  echo ""
+  echo "    No podras commitear ni hacer push hasta renombrarla:"
+  echo "      git branch -m <nombre-correcto>"
+  echo ""
+fi
+
+exit 0
