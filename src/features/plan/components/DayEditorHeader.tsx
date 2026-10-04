@@ -15,7 +15,7 @@ interface DayEditorHeaderProps {
   draft: ReturnType<typeof useDayDraft>;
 }
 
-export function DayEditorHeader({ detail, draft }: DayEditorHeaderProps) {
+export function DayEditorHeader({ detail, draft }: Readonly<DayEditorHeaderProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
   const minutes = estimateDurationMinutes(detail.exercises.map((entry) => entry.planExercise));

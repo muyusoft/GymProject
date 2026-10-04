@@ -10,7 +10,7 @@ interface SessionHistoryListProps {
   sessions: readonly ExerciseSession[];
 }
 
-export function SessionHistoryList({ sessions }: SessionHistoryListProps) {
+export function SessionHistoryList({ sessions }: Readonly<SessionHistoryListProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
 
@@ -22,7 +22,7 @@ export function SessionHistoryList({ sessions }: SessionHistoryListProps) {
           <View key={session.sessionId} style={styles.row}>
             <View style={styles.texts}>
               <Text style={[styles.date, { color: c.text }]}>{formatShortDate(session.date, i18n.language)}</Text>
-              {session.dayName && <Text style={[styles.day, { color: c.textSecondary }]}>{session.dayName}</Text>}
+              {!!(session.dayName) && <Text style={[styles.day, { color: c.textSecondary }]}>{session.dayName}</Text>}
             </View>
             <Text style={[styles.summary, { color: c.text }]}>
               {formatSessionSummary({ session, locale: i18n.language })}

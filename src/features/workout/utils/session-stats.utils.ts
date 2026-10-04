@@ -37,9 +37,18 @@ interface IdentifiedSet extends WithCompletion {
 export function getSetStatuses(sets: readonly IdentifiedSet[]): Map<string, SetStatus> {
   const activeId = sets.find((set) => !set.completed)?.id;
   return new Map(
-    sets.map((set): [string, SetStatus] => [
-      set.id,
-      set.completed ? "done" : set.id === activeId ? "active" : "pending",
-    ]),
+    sets.map((set): [string, SetStatus] => {
+      let status: SetStatus;
+
+      if (set.completed) {
+        status = "done";
+      } else if (set.id === activeId) {
+        status = "active";
+      } else {
+        status = "pending";
+      }
+
+      return [set.id, status];
+    }),
   );
 }

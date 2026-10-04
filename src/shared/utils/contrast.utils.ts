@@ -25,7 +25,7 @@ function linearChannel(channel: number): number {
 export function relativeLuminance(hex: string): number {
   const digits = hex.replace("#", "");
   const [red, green, blue] = [0, 2, 4].map((start) =>
-    linearChannel(parseInt(digits.slice(start, start + HEX_PAIR_LENGTH), 16)),
+    linearChannel(Number.parseInt(digits.slice(start, start + HEX_PAIR_LENGTH), 16)),
   );
   return RED_WEIGHT * (red ?? 0) + GREEN_WEIGHT * (green ?? 0) + BLUE_WEIGHT * (blue ?? 0);
 }

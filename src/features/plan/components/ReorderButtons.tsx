@@ -15,7 +15,7 @@ interface ReorderButtonsProps {
   onMove: (direction: ReorderDirection) => void;
 }
 
-export function ReorderButtons({ canMoveUp, canMoveDown, onMove }: ReorderButtonsProps) {
+export function ReorderButtons({ canMoveUp, canMoveDown, onMove }: Readonly<ReorderButtonsProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
 

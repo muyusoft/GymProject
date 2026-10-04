@@ -54,17 +54,12 @@ export async function startSession(options: StartSessionOptions): Promise<string
 
   const sessionId = generateId();
   const rows = await buildSessionSets(sessionId, options);
-  await db.transaction(async (tx) => {
-    await tx.insert(sessions).values({
-      id: sessionId,
-      planDayId: options.dayId,
-      date,
-      startedAt: options.now.getTime(),
-      origin: "app",
-    });
-    for (const part of chunk(rows, INSERT_BATCH_SIZE)) {
-      await tx.insert(setLogs).values(part);
-    }
+  // Transacción síncrona (expo-sqlite): sin await adentro, cada sentencia con .run().
+  db.transaction((tx) => {
+    tx.insert(sessions)
+      .values({ id: sessionId, planDayId: options.dayId, date, startedAt: options.now.getTime(), origin: "app" })
+      .run();
+    for (const part of chunk(rows, INSERT_BATCH_SIZE)) tx.insert(setLogs).values(part).run();
   });
   return sessionId;
 }

@@ -25,9 +25,7 @@ export const DEFAULT_REMINDER_HOUR = 18;
 export const MAX_HOUR = 23;
 export const MAX_MINUTE = 59;
 
-export function serializeSetting(value: string | boolean | number): string {
-  return String(value);
-}
+export const serializeSetting: (value: string | boolean | number) => string = String;
 
 function parseBoolean(raw: string | undefined, fallback: boolean): boolean {
   return raw === undefined ? fallback : raw === TRUE_VALUE;

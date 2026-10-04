@@ -8,7 +8,7 @@ interface DemoGroupProps {
   children: ReactNode;
 }
 
-export function DemoGroup({ title, children }: DemoGroupProps) {
+export function DemoGroup({ title, children }: Readonly<DemoGroupProps>) {
   const { c } = useOverloadTheme();
 
   return (

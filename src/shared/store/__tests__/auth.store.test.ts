@@ -14,6 +14,7 @@ describe("Auth Store", () => {
   const mockTokens = {
     accessToken: "token-123",
     refreshToken: "refresh-token-456",
+    expiresIn: 3600,
   };
 
   beforeEach(() => {

@@ -12,12 +12,12 @@ interface ImportSummaryProps {
 }
 
 /** Dónde va a quedar lo importado: sesión con fecha y plantilla del día de la semana. */
-export function ImportSummary({ reviews }: ImportSummaryProps) {
+export function ImportSummary({ reviews }: Readonly<ImportSummaryProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
   const dated = reviews.filter(({ day }) => day.header && day.date);
   const [only] = dated;
-  if (!only || !only.day.header || !only.day.date) return null;
+  if (!only?.day.header || !only.day.date) return null;
 
   const message =
     dated.length === 1

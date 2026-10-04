@@ -12,7 +12,7 @@ interface PlanNameInputProps {
 }
 
 /** Título editable de pantalla (plan o día) con el lápiz como pista visual. */
-export function PlanNameInput({ value, accessibilityLabel, onChange }: PlanNameInputProps) {
+export function PlanNameInput({ value, accessibilityLabel, onChange }: Readonly<PlanNameInputProps>) {
   const { c } = useOverloadTheme();
 
   return (

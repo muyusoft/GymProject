@@ -15,14 +15,15 @@ interface DayCardProps {
   onPress: () => void;
 }
 
-export function DayCard({ day, dayNumber, onPress }: DayCardProps) {
+export function DayCard({ day, dayNumber, onPress }: Readonly<DayCardProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
+  const weekdayLabel = t("weekday.long." + day.weekday);
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`${t(`weekday.long.${day.weekday}`)} ${dayNumber}, ${day.name}`}
+      accessibilityLabel={`${weekdayLabel} ${dayNumber}, ${day.name}`}
       onPress={onPress}
       style={[
         styles.card,

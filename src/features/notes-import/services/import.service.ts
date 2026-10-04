@@ -5,6 +5,7 @@ import type { PlanDayRow, PlanRow } from "@/shared/db/types";
 import { syncReminders } from "@/shared/services/reminders.service";
 import type { WeightUnit } from "@/shared/types/training.types";
 import { estimateDurationMinutes } from "@/shared/utils/duration.utils";
+import { chunk } from "@/shared/utils/chunk.utils";
 import { generateId } from "@/shared/utils/id.utils";
 import { toIsoDate } from "@/shared/utils/week.utils";
 import type { ImportDay, ImportLine } from "../types/notes-import.types";
@@ -34,21 +35,26 @@ export interface ImportResult {
   sessions: number;
 }
 
-async function ensurePlan(tx: Tx, name: string): Promise<PlanRow> {
-  const [existing] = await tx.select().from(plans).limit(1);
+const INSERT_BATCH_SIZE = 50;
+
+// La transacción de Drizzle con expo-sqlite es síncrona: todo lo de adentro usa .run()/.get()/.all(), sin await.
+
+function ensurePlan(tx: Tx, name: string): PlanRow {
+  const existing = tx.select().from(plans).limit(1).get();
   if (existing) return existing;
-  const [created] = await tx.insert(plans).values({ id: generateId(), name, repeatsWeekly: true }).returning();
+  const created = tx.insert(plans).values({ id: generateId(), name, repeatsWeekly: true }).returning().get();
   if (!created) throw new Error("Plan was not created");
   return created;
 }
 
-async function ensureDay(tx: Tx, plan: PlanRow, weekday: number, name: string): Promise<PlanDayRow> {
-  const [existing] = await tx
+function ensureDay(tx: Tx, plan: PlanRow, weekday: number, name: string): PlanDayRow {
+  const existing = tx
     .select()
     .from(planDays)
-    .where(and(eq(planDays.planId, plan.id), eq(planDays.weekday, weekday)));
+    .where(and(eq(planDays.planId, plan.id), eq(planDays.weekday, weekday)))
+    .get();
   if (existing) return existing;
-  const [created] = await tx
+  const created = tx
     .insert(planDays)
     .values({
       id: generateId(),
@@ -60,19 +66,20 @@ async function ensureDay(tx: Tx, plan: PlanRow, weekday: number, name: string): 
       defaultReps: FALLBACK_DAY_DEFAULTS.reps,
       defaultRestSec: FALLBACK_DAY_DEFAULTS.restSec,
     })
-    .returning();
+    .returning()
+    .get();
   if (!created) throw new Error("Plan day was not created");
   return created;
 }
 
 /** Vincula al catálogo o crea el ejercicio nuevo una sola vez por nombre dentro de la importación. */
-async function resolveExerciseId(tx: Tx, line: ImportLine, created: Map<string, string>): Promise<string> {
+function resolveExerciseId(tx: Tx, line: ImportLine, created: Map<string, string>): string {
   if (line.exerciseId) return line.exerciseId;
   const key = normalizeName(line.parsed.name);
   const known = created.get(key);
   if (known) return known;
   const id = generateId();
-  await tx.insert(exercises).values(buildCustomExerciseRow(line.parsed, id));
+  tx.insert(exercises).values(buildCustomExerciseRow(line.parsed, id)).run();
   created.set(key, id);
   return id;
 }
@@ -85,13 +92,13 @@ interface DayContext {
 }
 
 /** Guarda las líneas como plantilla del día: actualiza el ejercicio si ya estaba y agrega al final si no. Nunca borra. */
-async function saveTemplate({ tx, day, defaultUnit, created }: DayContext, lines: readonly ImportLine[]): Promise<string[]> {
-  const existing = await tx.select().from(planExercises).where(eq(planExercises.planDayId, day.id));
+function saveTemplate({ tx, day, defaultUnit, created }: DayContext, lines: readonly ImportLine[]): string[] {
+  const existing = tx.select().from(planExercises).where(eq(planExercises.planDayId, day.id)).all();
   let nextOrder = existing.reduce((max, row) => Math.max(max, row.order + 1), 0);
   const exerciseIds: string[] = [];
 
   for (const line of lines) {
-    const exerciseId = await resolveExerciseId(tx, line, created);
+    const exerciseId = resolveExerciseId(tx, line, created);
     exerciseIds.push(exerciseId);
     const current = existing.find((row) => row.exerciseId === exerciseId);
     const row = buildPlanExerciseRow({
@@ -101,9 +108,10 @@ async function saveTemplate({ tx, day, defaultUnit, created }: DayContext, lines
       order: current?.order ?? nextOrder,
       unit: defaultUnit,
     });
-    if (current) await tx.update(planExercises).set(row).where(eq(planExercises.id, current.id));
-    else {
-      await tx.insert(planExercises).values({ id: generateId(), ...row });
+    if (current) {
+      tx.update(planExercises).set(row).where(eq(planExercises.id, current.id)).run();
+    } else {
+      tx.insert(planExercises).values({ id: generateId(), ...row }).run();
       nextOrder += 1;
     }
   }
@@ -116,12 +124,13 @@ interface SessionContext extends DayContext {
 }
 
 /** La sesión del día importado, con todas las series hechas; una importación repetida no la duplica. */
-async function saveSession({ tx, day, defaultUnit, importDay, exerciseIds }: SessionContext): Promise<boolean> {
+function saveSession({ tx, day, defaultUnit, importDay, exerciseIds }: SessionContext): boolean {
   const date = toIsoDate(importDay.date);
-  const [existing] = await tx
+  const existing = tx
     .select({ id: sessions.id })
     .from(sessions)
-    .where(and(eq(sessions.planDayId, day.id), eq(sessions.date, date), eq(sessions.origin, "import")));
+    .where(and(eq(sessions.planDayId, day.id), eq(sessions.date, date), eq(sessions.origin, "import")))
+    .get();
   if (existing) return false;
 
   const minutes = estimateDurationMinutes(
@@ -132,11 +141,13 @@ async function saveSession({ tx, day, defaultUnit, importDay, exerciseIds }: Ses
     })),
   );
   const sessionId = generateId();
-  await tx.insert(sessions).values({ id: sessionId, planDayId: day.id, date, origin: "import", ...buildSessionTimes(importDay.date, minutes) });
+  tx.insert(sessions)
+    .values({ id: sessionId, planDayId: day.id, date, origin: "import", ...buildSessionTimes(importDay.date, minutes) })
+    .run();
   const rows = importDay.lines.flatMap(({ parsed }, index) =>
     buildSetLogRows({ line: parsed, sessionId, exerciseId: exerciseIds[index] ?? "", unit: defaultUnit, createId: generateId }),
   );
-  await tx.insert(setLogs).values(rows);
+  for (const part of chunk(rows, INSERT_BATCH_SIZE)) tx.insert(setLogs).values(part).run();
   return true;
 }
 
@@ -145,21 +156,21 @@ async function saveSession({ tx, day, defaultUnit, importDay, exerciseIds }: Ses
  * Todo en una transacción: o entra todo o no entra nada.
  */
 export async function importDays({ days, defaultUnit, planName, dayName, now }: ImportOptions): Promise<ImportResult> {
-  const result = await db.transaction(async (tx) => {
-    const plan = await ensurePlan(tx, planName);
+  const result = db.transaction((tx) => {
+    const plan = ensurePlan(tx, planName);
     const created = new Map<string, string>();
-    const result: ImportResult = { exercises: 0, sessions: 0 };
+    const totals: ImportResult = { exercises: 0, sessions: 0 };
 
     for (const importDay of days) {
-      const day = await ensureDay(tx, plan, importDay.weekday, dayName(importDay.weekday));
+      const day = ensureDay(tx, plan, importDay.weekday, dayName(importDay.weekday));
       const context = { tx, day, defaultUnit, created };
-      const exerciseIds = await saveTemplate(context, importDay.lines);
-      result.exercises += exerciseIds.length;
-      if (importDay.date.getTime() <= now.getTime() && (await saveSession({ ...context, importDay, exerciseIds }))) {
-        result.sessions += 1;
+      const exerciseIds = saveTemplate(context, importDay.lines);
+      totals.exercises += exerciseIds.length;
+      if (importDay.date.getTime() <= now.getTime() && saveSession({ ...context, importDay, exerciseIds })) {
+        totals.sessions += 1;
       }
     }
-    return result;
+    return totals;
   });
   void syncReminders();
   return result;

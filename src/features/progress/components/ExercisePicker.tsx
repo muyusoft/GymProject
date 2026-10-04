@@ -17,7 +17,7 @@ interface ExercisePickerProps {
 }
 
 /** Chips con los más entrenados del periodo y "Más" para elegir cualquier otro; elegir cambia la gráfica de 1RM. */
-export function ExercisePicker({ items, all, selectedId, onSelect }: ExercisePickerProps) {
+export function ExercisePicker({ items, all, selectedId, onSelect }: Readonly<ExercisePickerProps>) {
   const { t, i18n } = useTranslation();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   if (all.length < 2) return null;

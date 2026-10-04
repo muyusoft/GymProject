@@ -9,7 +9,7 @@ interface LoadTypeChipsProps {
   onChange: (loadType: LoadType) => void;
 }
 
-export function LoadTypeChips({ value, onChange }: LoadTypeChipsProps) {
+export function LoadTypeChips({ value, onChange }: Readonly<LoadTypeChipsProps>) {
   const { t } = useTranslation();
 
   return (

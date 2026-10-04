@@ -36,7 +36,7 @@ describe("Persistence Middleware", () => {
     const persistedCreator = persistedStore("test", initializer);
 
     const mockSet = vi.fn();
-    const state = persistedCreator(mockSet, () => ({}), {} as any);
+    const state = persistedCreator(mockSet, () => initialState, {} as any);
 
     expect(state).toHaveProperty("name");
     expect(state).toHaveProperty("value");

@@ -14,15 +14,18 @@ interface WeekStripDayProps {
 }
 
 /** El estado se ve por la forma del punto (lleno, hueco, ninguno) y se anuncia con texto. */
-export function WeekStripDay({ day, onPress }: WeekStripDayProps) {
+export function WeekStripDay({ day, onPress }: Readonly<WeekStripDayProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
   const textColor = day.isToday ? c.onAccent : c.text;
+  const weekdayLabel = t("weekday.long." + day.weekday);
+  const statusLabel = t("today.status." + day.status);
+  const accessibilityLabel = `${weekdayLabel} ${day.date.getDate()}, ${statusLabel}`;
 
   return (
     <Pressable
       accessibilityRole={onPress ? "button" : undefined}
-      accessibilityLabel={`${t(`weekday.long.${day.weekday}`)} ${day.date.getDate()}, ${t(`today.status.${day.status}`)}`}
+      accessibilityLabel={accessibilityLabel}
       accessibilityHint={onPress ? t("daySummary.openHint") : undefined}
       disabled={!onPress}
       onPress={onPress}

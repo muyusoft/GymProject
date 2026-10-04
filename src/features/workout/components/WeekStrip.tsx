@@ -9,7 +9,7 @@ interface WeekStripProps {
 }
 
 /** Los días con sesión hecha se abren para ver qué se hizo. */
-export function WeekStrip({ days, onSelectDay }: WeekStripProps) {
+export function WeekStrip({ days, onSelectDay }: Readonly<WeekStripProps>) {
   return (
     <View style={styles.row}>
       {days.map((day) => (

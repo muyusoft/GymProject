@@ -13,7 +13,7 @@ interface AsyncStateViewProps {
 }
 
 /** Estados de carga y error compartidos; el vacío lo decide cada pantalla. */
-export function AsyncStateView({ status, onRetry, children }: AsyncStateViewProps) {
+export function AsyncStateView({ status, onRetry, children }: Readonly<AsyncStateViewProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
 

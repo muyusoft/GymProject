@@ -27,7 +27,7 @@ export function ExerciseCard({
   onEditSet,
   onChangeSet,
   onAddSet,
-}: ExerciseCardProps) {
+}: Readonly<ExerciseCardProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
   const statuses = getSetStatuses(exercise.sets);

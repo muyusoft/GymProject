@@ -15,7 +15,7 @@ interface DayEditorScreenProps {
 
 const keyOf = (entry: PlanExerciseDetail) => entry.planExercise.id;
 
-export function DayEditorScreen({ dayId }: DayEditorScreenProps) {
+export function DayEditorScreen({ dayId }: Readonly<DayEditorScreenProps>) {
   const { t } = useTranslation();
   const editor = useDayEditor(dayId);
   const { detail, move } = editor;

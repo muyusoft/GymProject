@@ -7,7 +7,7 @@ interface EmptyTodayProps {
 }
 
 /** Sin plan o día de descanso: dice por qué no hay entreno y, sin plan, lleva a crearlo. */
-export function EmptyToday({ reason }: EmptyTodayProps) {
+export function EmptyToday({ reason }: Readonly<EmptyTodayProps>) {
   const { t } = useTranslation();
 
   return (

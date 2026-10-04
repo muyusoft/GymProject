@@ -22,7 +22,7 @@ export function SizeSlider({
   min = DEFAULT_MIN,
   max = DEFAULT_MAX,
   step = DEFAULT_STEP,
-}: SizeSliderProps) {
+}: Readonly<SizeSliderProps>) {
   const handleDecrease = () => {
     onSizeChange(Math.max(min, size - step));
   };

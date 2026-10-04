@@ -35,7 +35,7 @@ export function stemToken(token: string): string {
 /** Palabras que cuentan al comparar nombres: sin acentos, erratas corregidas, sin conectores y en singular. */
 export function nameTokens(name: string): string[] {
   return normalizeText(fixTypos(name))
-    .replace(/\([^)]*\)/g, " ")
+    .replace(/\([^()]*\)/g, " ")
     .split(/[^a-z0-9]+/)
     .filter((token) => token !== "" && !STOPWORDS.has(token))
     .map(stemToken);

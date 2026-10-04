@@ -23,7 +23,7 @@ export function DayActionsSheet({
   onDuplicate,
   onRemove,
   onClose,
-}: DayActionsSheetProps) {
+}: Readonly<DayActionsSheetProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
 

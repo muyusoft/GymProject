@@ -17,7 +17,7 @@ interface LibraryScreenProps {
 
 const keyOf = (row: LibraryRow) => (row.kind === "section" ? row.key : row.exercise.id);
 
-export function LibraryScreen({ dayId }: LibraryScreenProps) {
+export function LibraryScreen({ dayId }: Readonly<LibraryScreenProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
   const library = useLibrary(dayId);

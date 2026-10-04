@@ -22,7 +22,7 @@ export function IconsSection({
   searchIcons,
   onIconSizeChange,
   onSearchChange,
-}: IconsSectionProps) {
+}: Readonly<IconsSectionProps>) {
   return (
     <Section
       title="🎯 Icons Available"

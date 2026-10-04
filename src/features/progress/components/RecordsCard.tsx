@@ -12,7 +12,7 @@ interface RecordsCardProps {
 }
 
 /** Récords recientes en ember; tocar uno abre el historial de ese ejercicio. */
-export function RecordsCard({ records }: RecordsCardProps) {
+export function RecordsCard({ records }: Readonly<RecordsCardProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
 

@@ -8,7 +8,7 @@ const plan = buildSeedPlan(catalogSeedData);
 describe("catalogSeedData", () => {
   it("construye el plan del seed con los datos reales sin errores", () => {
     expect(plan.exercises.length).toBeGreaterThan(800);
-    expect(plan.sources.length).toBe(Object.keys(catalogSeedData.sources).length);
+    expect(plan.sources).toHaveLength(Object.keys(catalogSeedData.sources).length);
   });
 
   it("incluye los 94 ejercicios comunes con su nombre en español", () => {

@@ -30,7 +30,17 @@ export function useAppBootstrap(seedInput: SeedInput): BootstrapState {
       .then(syncReminders)
       .catch((error: unknown) => {
       logger.error("Settings hydration failed", { error });
-      setSettingsError(error instanceof Error ? error : new Error(String(error)));
+
+      let normalizedError: Error;
+      if (error instanceof Error) {
+        normalizedError = error;
+      } else if (typeof error === "string") {
+        normalizedError = new Error(error);
+      } else {
+        normalizedError = new Error(JSON.stringify(error) ?? "Unknown error");
+      }
+
+      setSettingsError(normalizedError);
     });
   }, [database.isReady, hydrate]);
 

@@ -12,7 +12,7 @@ interface EmptyStateProps {
 }
 
 /** Estado vacío de marca: los discos, qué falta y, si hay, qué hacer. El texto crece con la letra del sistema. */
-export function EmptyState({ title, body, children }: EmptyStateProps) {
+export function EmptyState({ title, body, children }: Readonly<EmptyStateProps>) {
   const { c } = useOverloadTheme();
 
   return (
@@ -21,7 +21,7 @@ export function EmptyState({ title, body, children }: EmptyStateProps) {
       <Text accessibilityRole="header" style={[styles.title, { color: c.text }]}>
         {title}
       </Text>
-      {body && <Text style={[styles.body, { color: c.textSecondary }]}>{body}</Text>}
+      {!!(body) && <Text style={[styles.body, { color: c.textSecondary }]}>{body}</Text>}
       {children}
     </View>
   );

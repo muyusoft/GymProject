@@ -17,7 +17,7 @@ export function SegmentedControl<T extends string>({
   options,
   value,
   onChange,
-}: SegmentedControlProps<T>) {
+}: Readonly<SegmentedControlProps<T>>) {
   const { c } = useOverloadTheme();
 
   return (

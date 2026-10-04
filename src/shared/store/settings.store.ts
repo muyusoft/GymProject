@@ -12,7 +12,7 @@ import {
 import { useThemeStore } from "./theme.store";
 
 /** El texto de los avisos depende del idioma y su horario del recordatorio. */
-const REMINDER_KEYS: readonly AppSettingKey[] = ["language", "reminderEnabled", "reminderHour", "reminderMinute"];
+const REMINDER_KEYS: ReadonlySet<AppSettingKey> = new Set(["language", "reminderEnabled", "reminderHour", "reminderMinute"]);
 
 interface SettingsState extends AppSettings {
   isHydrated: boolean;
@@ -44,6 +44,6 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     await saveSetting(key, serializeSetting(value));
     set((state) => ({ ...state, [key]: value }));
     applySideEffects(get());
-    if (REMINDER_KEYS.includes(key)) void syncReminders();
+    if (REMINDER_KEYS.has(key)) void syncReminders();
   },
 }));

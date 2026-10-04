@@ -10,7 +10,7 @@ export function Section({
   expandedSection,
   setExpandedSection,
   colors,
-}: SectionProps) {
+}: Readonly<SectionProps>) {
   const isExpanded = expandedSection === id;
 
   return (

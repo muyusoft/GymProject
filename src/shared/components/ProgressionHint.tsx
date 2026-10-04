@@ -16,7 +16,7 @@ interface ProgressionHintProps {
 }
 
 /** Subir peso en volt, descarga en info; siempre se puede descartar y nunca cambia el plan. */
-export function ProgressionHint({ kind, message, onDismiss }: ProgressionHintProps) {
+export function ProgressionHint({ kind, message, onDismiss }: Readonly<ProgressionHintProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
   const isIncrease = kind === "increase";

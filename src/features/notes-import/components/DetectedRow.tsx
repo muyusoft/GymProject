@@ -19,7 +19,7 @@ interface DetectedRowProps {
 }
 
 /** Reconocida (check), dudosa (?, pide confirmar) o nueva (+): el estado va en icono y en texto, no solo en color. */
-export function DetectedRow({ line, match, decision, onDecide }: DetectedRowProps) {
+export function DetectedRow({ line, match, decision, onDecide }: Readonly<DetectedRowProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
   const isPending = match.status === "confirm" && decision === undefined;
@@ -47,7 +47,7 @@ export function DetectedRow({ line, match, decision, onDecide }: DetectedRowProp
           <Text style={[styles.meta, { color: c.textSecondary }]}>
             {formatDetectedMeta({ line, locale: i18n.language, t: (key) => t(key) })}
           </Text>
-          {line.note && <Text style={[styles.meta, { color: c.textSecondary }]}>{line.note}</Text>}
+          {!!(line.note) && <Text style={[styles.meta, { color: c.textSecondary }]}>{line.note}</Text>}
           {match.status === "unknown" && (
             <Text style={[styles.meta, { color: c.textSecondary }]}>{t("import.newExercise")}</Text>
           )}

@@ -19,7 +19,7 @@ interface BarChartProps {
 }
 
 /** Barras del 1RM por periodo; la última con dato va en volt y las demás en gris. */
-export function BarChart({ bars, labels, accessibilityLabel }: BarChartProps) {
+export function BarChart({ bars, labels, accessibilityLabel }: Readonly<BarChartProps>) {
   const { c } = useOverloadTheme();
   const max = Math.max(...bars.map((bar) => bar.value ?? 0), 0);
   const lastKey = bars.reduce<string | null>((last, bar) => (bar.value === null ? last : bar.key), null);

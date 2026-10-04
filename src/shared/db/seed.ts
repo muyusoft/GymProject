@@ -29,17 +29,12 @@ export async function runSeed(db: Database, input: SeedInput): Promise<void> {
   if (await isSeeded(db)) return;
   const plan = buildSeedPlan(input);
 
-  await db.transaction(async (tx) => {
-    await tx.insert(sources).values(plan.sources);
-    for (const rows of chunk(plan.exercises, INSERT_BATCH_SIZE)) {
-      await tx.insert(exercises).values(rows);
-    }
-    for (const rows of chunk(plan.muscles, INSERT_BATCH_SIZE)) {
-      await tx.insert(exerciseMuscles).values(rows);
-    }
-    await tx.insert(equipmentIncrements).values(plan.increments);
-    await tx
-      .insert(settings)
-      .values({ key: SETTING_KEYS.seeded, value: SEEDED_VALUE });
+  // La transacción de Drizzle con expo-sqlite es síncrona: nada de await adentro, cada sentencia con .run().
+  db.transaction((tx) => {
+    tx.insert(sources).values(plan.sources).run();
+    for (const rows of chunk(plan.exercises, INSERT_BATCH_SIZE)) tx.insert(exercises).values(rows).run();
+    for (const rows of chunk(plan.muscles, INSERT_BATCH_SIZE)) tx.insert(exerciseMuscles).values(rows).run();
+    tx.insert(equipmentIncrements).values(plan.increments).run();
+    tx.insert(settings).values({ key: SETTING_KEYS.seeded, value: SEEDED_VALUE }).run();
   });
 }

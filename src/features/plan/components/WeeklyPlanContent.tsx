@@ -14,7 +14,7 @@ interface WeeklyPlanContentProps {
   plan: WeeklyPlan;
 }
 
-export function WeeklyPlanContent({ plan }: WeeklyPlanContentProps) {
+export function WeeklyPlanContent({ plan }: Readonly<WeeklyPlanContentProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
 
@@ -25,7 +25,7 @@ export function WeeklyPlanContent({ plan }: WeeklyPlanContentProps) {
         {weekDates(plan.weekStart).map((date, weekday) => {
           const day = plan.days.find((candidate) => candidate.weekday === weekday);
           if (!day) {
-            return <RestDayRow key={weekday} weekday={weekday} dayNumber={date.getDate()} />;
+            return <RestDayRow key={date.toISOString()} weekday={weekday} dayNumber={date.getDate()} />;
           }
           return (
             <DayCard

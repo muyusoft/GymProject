@@ -18,7 +18,7 @@ interface SessionHintProps {
 }
 
 /** Sugerencia del ejercicio en pantalla; descartable, y no cambia el plan. */
-export function SessionHint({ exercise }: SessionHintProps) {
+export function SessionHint({ exercise }: Readonly<SessionHintProps>) {
   const { t, i18n } = useTranslation();
   const [dismissed, setDismissed] = useState<ReadonlySet<string>>(new Set());
   const picked = pickVariant(exercise);

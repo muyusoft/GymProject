@@ -9,7 +9,7 @@ interface ToggleProps {
   description?: string;
 }
 
-export function Toggle({ value, onChange, label, description }: ToggleProps) {
+export function Toggle({ value, onChange, label, description }: Readonly<ToggleProps>) {
   const { c } = useOverloadTheme();
 
   return (
@@ -22,7 +22,7 @@ export function Toggle({ value, onChange, label, description }: ToggleProps) {
     >
       <View style={styles.texts}>
         <Text style={[styles.label, { color: c.text }]}>{label}</Text>
-        {description && (
+        {!!(description) && (
           <Text style={[styles.description, { color: c.textSecondary }]}>
             {description}
           </Text>

@@ -19,7 +19,7 @@ export function UtilsSection({
   setExpandedSection,
   colors,
   fiveMinutesAgo,
-}: UtilsSectionProps) {
+}: Readonly<UtilsSectionProps>) {
   return (
     <>
       <Section

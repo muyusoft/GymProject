@@ -59,18 +59,20 @@ export async function syncReminders(): Promise<void> {
     const plan = await findActivePlan();
     const days = plan ? await listPlanDays(plan.id) : [];
     const slots = buildReminderSlots({ days, hour: settings.reminderHour, minute: settings.reminderMinute });
-    for (const slot of slots) {
-      await Notifications.scheduleNotificationAsync({
-        content: { title: i18n.t("reminder.title"), body: i18n.t("reminder.body", { day: slot.dayName }) },
-        trigger: {
-          type: Notifications.SchedulableTriggerInputTypes.WEEKLY,
-          weekday: slot.weekday,
-          hour: slot.hour,
-          minute: slot.minute,
-          channelId: CHANNEL_ID,
-        },
-      });
-    }
+    await Promise.all(
+      slots.map((slot) =>
+        Notifications.scheduleNotificationAsync({
+          content: { title: i18n.t("reminder.title"), body: i18n.t("reminder.body", { day: slot.dayName }) },
+          trigger: {
+            type: Notifications.SchedulableTriggerInputTypes.WEEKLY,
+            weekday: slot.weekday,
+            hour: slot.hour,
+            minute: slot.minute,
+            channelId: CHANNEL_ID,
+          },
+        }),
+      ),
+    );
   } catch (error) {
     logger.error("Failed to sync reminders", { error });
   }

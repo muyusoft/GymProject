@@ -80,9 +80,10 @@ export async function deletePlanExercise(id: string): Promise<void> {
 export async function setPlanExerciseOrders(
   orders: readonly { id: string; order: number }[],
 ): Promise<void> {
-  await db.transaction(async (tx) => {
+  // Transacción síncrona (expo-sqlite): sin await adentro, cada sentencia con .run().
+  db.transaction((tx) => {
     for (const { id, order } of orders) {
-      await tx.update(planExercises).set({ order }).where(eq(planExercises.id, id));
+      tx.update(planExercises).set({ order }).where(eq(planExercises.id, id)).run();
     }
   });
 }

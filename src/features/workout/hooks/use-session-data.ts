@@ -69,7 +69,7 @@ export function useSessionData(sessionId: string): SessionDataState {
         const created = await addSet({
           sessionId,
           exerciseId: exercise.exerciseId,
-          last: exercise.sets[exercise.sets.length - 1],
+          last: exercise.sets.at(-1),
           template: exercise.template,
         });
         setView((current) =>

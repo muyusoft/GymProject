@@ -18,7 +18,7 @@ interface ExerciseHistoryScreenProps {
   exerciseId: string;
 }
 
-export function ExerciseHistoryScreen({ exerciseId }: ExerciseHistoryScreenProps) {
+export function ExerciseHistoryScreen({ exerciseId }: Readonly<ExerciseHistoryScreenProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
   const { status, reload, data, stats, hint } = useExerciseHistory(exerciseId);

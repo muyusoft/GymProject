@@ -22,7 +22,7 @@ interface ExercisePickerSheetProps {
 const keyOf = (item: PickerItem) => item.exerciseId;
 
 /** Todos los ejercicios con sesiones en el periodo, con buscador, del más al menos entrenado. */
-export function ExercisePickerSheet({ visible, items, selectedId, onSelect, onClose }: ExercisePickerSheetProps) {
+export function ExercisePickerSheet({ visible, items, selectedId, onSelect, onClose }: Readonly<ExercisePickerSheetProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
   const [query, setQuery] = useState("");

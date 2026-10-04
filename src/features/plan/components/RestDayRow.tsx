@@ -10,7 +10,7 @@ interface RestDayRowProps {
   onPress?: () => void;
 }
 
-export function RestDayRow({ weekday, dayNumber, onPress }: RestDayRowProps) {
+export function RestDayRow({ weekday, dayNumber, onPress }: Readonly<RestDayRowProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
   const weekdayLabel = t(`weekday.short.${weekday}`);

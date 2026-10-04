@@ -1,16 +1,15 @@
 import "@/config/i18n";
 import { logger } from "@/config/logger";
 
-import { DarkTheme, DefaultTheme, ThemeProvider } from "expo-router";
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { Stack } from "expo-router";
 import { catalogSeedData } from "@/features/catalog";
 import { BootError, ErrorBoundary } from "@/shared/components";
 import { useAppBootstrap } from "@/shared/hooks/use-app-bootstrap";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 
-SplashScreen.preventAutoHideAsync();
+void SplashScreen.preventAutoHideAsync();
 
 // Inicializar logger global
 logger.info("App initialized");
@@ -20,7 +19,7 @@ export default function RootLayout() {
   const { isReady, error } = useAppBootstrap(catalogSeedData);
 
   useEffect(() => {
-    if (isReady || error) SplashScreen.hideAsync();
+    if (isReady || error) void SplashScreen.hideAsync();
   }, [isReady, error]);
 
   if (error) return <BootError />;

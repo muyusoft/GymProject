@@ -15,7 +15,7 @@ interface TodayCardProps {
 }
 
 /** Tarjeta volt: la acción primaria de Hoy. Terminado el entreno, muestra el estado en vez del botón. */
-export function TodayCard({ dayName, today, isStarting, onStart }: TodayCardProps) {
+export function TodayCard({ dayName, today, isStarting, onStart }: Readonly<TodayCardProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
   const { exercises, activeSessionId, isDoneToday } = today;

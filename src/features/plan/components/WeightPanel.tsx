@@ -15,7 +15,7 @@ interface WeightPanelProps {
   onUnitChange: (unit: WeightUnit) => void;
 }
 
-export function WeightPanel({ draft, step, onWeightChange, onUnitChange }: WeightPanelProps) {
+export function WeightPanel({ draft, step, onWeightChange, onUnitChange }: Readonly<WeightPanelProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
   const otherUnit: WeightUnit = draft.unit === "lb" ? "kg" : "lb";

@@ -16,7 +16,7 @@ function getInitialLanguage(): "en" | "es" {
   return code === "es" ? "es" : FALLBACK_LANGUAGE;
 }
 
-i18n.use(initReactI18next).init({
+void i18n.use(initReactI18next).init({
   resources,
   lng: getInitialLanguage(),
   fallbackLng: FALLBACK_LANGUAGE,

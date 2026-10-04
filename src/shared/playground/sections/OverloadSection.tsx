@@ -17,7 +17,7 @@ export function OverloadSection({
   expandedSection,
   setExpandedSection,
   colors,
-}: OverloadSectionProps) {
+}: Readonly<OverloadSectionProps>) {
   return (
     <Section
       title="Overload · Components"

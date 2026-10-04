@@ -47,7 +47,9 @@ export function resolveHeaderDate(header: DayHeader, today: Date): Date {
   const candidates = [year - 1, year, year + 1].map((y) => new Date(y, header.month, header.day));
   const matching = candidates.filter((date) => weekdayIndex(date) === header.weekday);
   const pool = matching.length > 0 ? matching : [new Date(year, header.month, header.day)];
-  return pool.reduce((best, date) =>
-    Math.abs(date.getTime() - today.getTime()) < Math.abs(best.getTime() - today.getTime()) ? date : best,
+  return pool.reduce(
+    (best, date) =>
+      Math.abs(date.getTime() - today.getTime()) < Math.abs(best.getTime() - today.getTime()) ? date : best,
+    pool[0]!
   );
 }

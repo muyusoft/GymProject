@@ -19,7 +19,7 @@ interface BodyMapProps {
  * Figura de frente y de espalda (react-native-body-highlighter, MIT). Es solo un apoyo visual:
  * cada pantalla debe mostrar debajo el estado en texto.
  */
-export function BodyMap({ mode, groups, gender = "male" }: BodyMapProps) {
+export function BodyMap({ mode, groups, gender = "male" }: Readonly<BodyMapProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
 

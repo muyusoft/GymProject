@@ -12,7 +12,7 @@ interface TodayExerciseListProps {
   exercises: readonly TodayExercise[];
 }
 
-export function TodayExerciseList({ exercises }: TodayExerciseListProps) {
+export function TodayExerciseList({ exercises }: Readonly<TodayExerciseListProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
   const hidden = exercises.length - PREVIEW_COUNT;
