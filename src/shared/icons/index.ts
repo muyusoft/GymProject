@@ -1,219 +1,224 @@
 /**
- * Icon components library (49 icons)
- * Los SVGs usan stroke="currentColor" para respetar colores dinámicos
+ * Iconos de Overload (51). Dibujados en una grilla de 24, trazo 2, extremos redondeados.
+ * Usan stroke="currentColor": el color llega por la prop `color` de IconRenderer.
+ * Para agregar uno: crea el .svg con el mismo encabezado y regístralo en los tres lugares de este archivo.
  */
 
 import type { FC } from "react";
 import type { SvgProps } from "react-native-svg";
 
-import ActivityIcon from "./activity.svg";
+import ArrowDownIcon from "./arrow-down.svg";
 import ArrowLeftIcon from "./arrow-left.svg";
-import CameraIcon from "./camera.svg";
+import ArrowRightLeftIcon from "./arrow-right-left.svg";
+import ArrowUpIcon from "./arrow-up.svg";
+import BarChartIcon from "./bar-chart.svg";
+import BellIcon from "./bell.svg";
+import BodyIcon from "./body.svg";
 import CalendarIcon from "./calendar.svg";
 import CheckIcon from "./check.svg";
 import ChevronDownIcon from "./chevron-down.svg";
 import ChevronLeftIcon from "./chevron-left.svg";
 import ChevronRightIcon from "./chevron-right.svg";
 import ChevronUpIcon from "./chevron-up.svg";
-import CircleXIcon from "./circle-x.svg";
+import CircleCheckIcon from "./circle-check.svg";
+import ClipboardIcon from "./clipboard.svg";
 import ClockIcon from "./clock.svg";
 import CopyIcon from "./copy.svg";
 import DownloadIcon from "./download.svg";
+import DumbbellIcon from "./dumbbell.svg";
 import EllipsisIcon from "./ellipsis.svg";
 import EllipsisVerticalIcon from "./ellipsis-vertical.svg";
-import EyeIcon from "./eye.svg";
-import FileIcon from "./file.svg";
-import FileTextIcon from "./file-text.svg";
+import ExternalLinkIcon from "./external-link.svg";
+import FilterIcon from "./filter.svg";
+import FlameIcon from "./flame.svg";
 import GlobeIcon from "./globe.svg";
-import HeartIcon from "./heart.svg";
+import GripVerticalIcon from "./grip-vertical.svg";
+import HistoryIcon from "./history.svg";
 import InfoIcon from "./info.svg";
-import LayoutGridIcon from "./layout-grid.svg";
+import KettlebellIcon from "./kettlebell.svg";
 import LightbulbIcon from "./lightbulb.svg";
-import LogOutIcon from "./log-out.svg";
-import MailIcon from "./mail.svg";
-import MapPinIcon from "./map-pin.svg";
-import MenuIcon from "./menu.svg";
+import MinusIcon from "./minus.svg";
+import MoonIcon from "./moon.svg";
+import PauseIcon from "./pause.svg";
 import PencilIcon from "./pencil.svg";
-import PhoneIcon from "./phone.svg";
 import PlayIcon from "./play.svg";
 import PlusIcon from "./plus.svg";
-import RefreshCcwIcon from "./refresh-ccw.svg";
-import SaveIcon from "./save.svg";
+import RepeatIcon from "./repeat.svg";
+import ScaleIcon from "./scale.svg";
 import SearchIcon from "./search.svg";
-import SendIcon from "./send.svg";
-import SettingsIcon from "./settings.svg";
-import ShieldIcon from "./shield.svg";
-import ShieldCheckIcon from "./shield-check.svg";
-import SlidersHorizontalIcon from "./sliders-horizontal.svg";
-import SparklesIcon from "./sparkles.svg";
-import SquareArrowOutUpRightIcon from "./square-arrow-out-up-right.svg";
-import SquarePenIcon from "./square-pen.svg";
-import StarIcon from "./star.svg";
+import SkipForwardIcon from "./skip-forward.svg";
+import SlidersIcon from "./sliders.svg";
+import SunIcon from "./sun.svg";
+import TimerIcon from "./timer.svg";
 import TrashIcon from "./trash.svg";
+import TrendingDownIcon from "./trending-down.svg";
+import TrendingUpIcon from "./trending-up.svg";
 import TriangleAlertIcon from "./triangle-alert.svg";
+import TrophyIcon from "./trophy.svg";
 import UploadIcon from "./upload.svg";
 import UserIcon from "./user.svg";
-import UsersIcon from "./users.svg";
-import UsersRoundIcon from "./users-round.svg";
 import XIcon from "./x.svg";
 
 export {
-  ActivityIcon,
+  ArrowDownIcon,
   ArrowLeftIcon,
-  CameraIcon,
+  ArrowRightLeftIcon,
+  ArrowUpIcon,
+  BarChartIcon,
+  BellIcon,
+  BodyIcon,
   CalendarIcon,
   CheckIcon,
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   ChevronUpIcon,
-  CircleXIcon,
+  CircleCheckIcon,
+  ClipboardIcon,
   ClockIcon,
   CopyIcon,
   DownloadIcon,
+  DumbbellIcon,
   EllipsisIcon,
   EllipsisVerticalIcon,
-  EyeIcon,
-  FileIcon,
-  FileTextIcon,
+  ExternalLinkIcon,
+  FilterIcon,
+  FlameIcon,
   GlobeIcon,
-  HeartIcon,
+  GripVerticalIcon,
+  HistoryIcon,
   InfoIcon,
-  LayoutGridIcon,
+  KettlebellIcon,
   LightbulbIcon,
-  LogOutIcon,
-  MailIcon,
-  MapPinIcon,
-  MenuIcon,
+  MinusIcon,
+  MoonIcon,
+  PauseIcon,
   PencilIcon,
-  PhoneIcon,
   PlayIcon,
   PlusIcon,
-  RefreshCcwIcon,
-  SaveIcon,
+  RepeatIcon,
+  ScaleIcon,
   SearchIcon,
-  SendIcon,
-  SettingsIcon,
-  ShieldIcon,
-  ShieldCheckIcon,
-  SlidersHorizontalIcon,
-  SparklesIcon,
-  SquareArrowOutUpRightIcon,
-  SquarePenIcon,
-  StarIcon,
+  SkipForwardIcon,
+  SlidersIcon,
+  SunIcon,
+  TimerIcon,
   TrashIcon,
+  TrendingDownIcon,
+  TrendingUpIcon,
   TriangleAlertIcon,
+  TrophyIcon,
   UploadIcon,
   UserIcon,
-  UsersIcon,
-  UsersRoundIcon,
   XIcon,
 };
 
-export const ICON_REGISTRY: Record<IconName, FC<SvgProps>> = {
-  activity: ActivityIcon,
-  "arrow-left": ArrowLeftIcon,
-  camera: CameraIcon,
-  calendar: CalendarIcon,
-  check: CheckIcon,
-  "chevron-down": ChevronDownIcon,
-  "chevron-left": ChevronLeftIcon,
-  "chevron-right": ChevronRightIcon,
-  "chevron-up": ChevronUpIcon,
-  "circle-x": CircleXIcon,
-  clock: ClockIcon,
-  copy: CopyIcon,
-  download: DownloadIcon,
-  ellipsis: EllipsisIcon,
-  "ellipsis-vertical": EllipsisVerticalIcon,
-  eye: EyeIcon,
-  file: FileIcon,
-  "file-text": FileTextIcon,
-  globe: GlobeIcon,
-  heart: HeartIcon,
-  info: InfoIcon,
-  "layout-grid": LayoutGridIcon,
-  lightbulb: LightbulbIcon,
-  "log-out": LogOutIcon,
-  mail: MailIcon,
-  "map-pin": MapPinIcon,
-  menu: MenuIcon,
-  pencil: PencilIcon,
-  phone: PhoneIcon,
-  play: PlayIcon,
-  plus: PlusIcon,
-  "refresh-ccw": RefreshCcwIcon,
-  save: SaveIcon,
-  search: SearchIcon,
-  send: SendIcon,
-  settings: SettingsIcon,
-  shield: ShieldIcon,
-  "shield-check": ShieldCheckIcon,
-  "sliders-horizontal": SlidersHorizontalIcon,
-  sparkles: SparklesIcon,
-  "square-arrow-out-up-right": SquareArrowOutUpRightIcon,
-  "square-pen": SquarePenIcon,
-  star: StarIcon,
-  trash: TrashIcon,
-  "triangle-alert": TriangleAlertIcon,
-  upload: UploadIcon,
-  user: UserIcon,
-  users: UsersIcon,
-  "users-round": UsersRoundIcon,
-  x: XIcon,
-};
-
 export const AVAILABLE_ICONS = [
-  "activity",
+  "arrow-down",
   "arrow-left",
-  "camera",
+  "arrow-right-left",
+  "arrow-up",
+  "bar-chart",
+  "bell",
+  "body",
   "calendar",
   "check",
   "chevron-down",
   "chevron-left",
   "chevron-right",
   "chevron-up",
-  "circle-x",
+  "circle-check",
+  "clipboard",
   "clock",
   "copy",
   "download",
+  "dumbbell",
   "ellipsis",
   "ellipsis-vertical",
-  "eye",
-  "file",
-  "file-text",
+  "external-link",
+  "filter",
+  "flame",
   "globe",
-  "heart",
+  "grip-vertical",
+  "history",
   "info",
-  "layout-grid",
+  "kettlebell",
   "lightbulb",
-  "log-out",
-  "mail",
-  "map-pin",
-  "menu",
+  "minus",
+  "moon",
+  "pause",
   "pencil",
-  "phone",
   "play",
   "plus",
-  "refresh-ccw",
-  "save",
+  "repeat",
+  "scale",
   "search",
-  "send",
-  "settings",
-  "shield",
-  "shield-check",
-  "sliders-horizontal",
-  "sparkles",
-  "square-arrow-out-up-right",
-  "square-pen",
-  "star",
+  "skip-forward",
+  "sliders",
+  "sun",
+  "timer",
   "trash",
+  "trending-down",
+  "trending-up",
   "triangle-alert",
+  "trophy",
   "upload",
   "user",
-  "users",
-  "users-round",
   "x",
 ] as const;
 
 export type IconName = (typeof AVAILABLE_ICONS)[number];
+
+export const ICON_REGISTRY: Record<IconName, FC<SvgProps>> = {
+  "arrow-down": ArrowDownIcon,
+  "arrow-left": ArrowLeftIcon,
+  "arrow-right-left": ArrowRightLeftIcon,
+  "arrow-up": ArrowUpIcon,
+  "bar-chart": BarChartIcon,
+  bell: BellIcon,
+  body: BodyIcon,
+  calendar: CalendarIcon,
+  check: CheckIcon,
+  "chevron-down": ChevronDownIcon,
+  "chevron-left": ChevronLeftIcon,
+  "chevron-right": ChevronRightIcon,
+  "chevron-up": ChevronUpIcon,
+  "circle-check": CircleCheckIcon,
+  clipboard: ClipboardIcon,
+  clock: ClockIcon,
+  copy: CopyIcon,
+  download: DownloadIcon,
+  dumbbell: DumbbellIcon,
+  ellipsis: EllipsisIcon,
+  "ellipsis-vertical": EllipsisVerticalIcon,
+  "external-link": ExternalLinkIcon,
+  filter: FilterIcon,
+  flame: FlameIcon,
+  globe: GlobeIcon,
+  "grip-vertical": GripVerticalIcon,
+  history: HistoryIcon,
+  info: InfoIcon,
+  kettlebell: KettlebellIcon,
+  lightbulb: LightbulbIcon,
+  minus: MinusIcon,
+  moon: MoonIcon,
+  pause: PauseIcon,
+  pencil: PencilIcon,
+  play: PlayIcon,
+  plus: PlusIcon,
+  repeat: RepeatIcon,
+  scale: ScaleIcon,
+  search: SearchIcon,
+  "skip-forward": SkipForwardIcon,
+  sliders: SlidersIcon,
+  sun: SunIcon,
+  timer: TimerIcon,
+  trash: TrashIcon,
+  "trending-down": TrendingDownIcon,
+  "trending-up": TrendingUpIcon,
+  "triangle-alert": TriangleAlertIcon,
+  trophy: TrophyIcon,
+  upload: UploadIcon,
+  user: UserIcon,
+  x: XIcon,
+};

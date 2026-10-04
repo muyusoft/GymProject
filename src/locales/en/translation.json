@@ -4,12 +4,534 @@
     "logout": "Logout",
     "loading": "Loading...",
     "error": "Something went wrong",
-    "retry": "Retry"
+    "retry": "Retry",
+    "kg": "kg",
+    "lb": "lb",
+    "reps_one": "{{count}} rep",
+    "reps_other": "{{count}} reps",
+    "sets_one": "{{count}} set",
+    "sets_other": "{{count}} sets",
+    "save": "Save",
+    "cancel": "Cancel",
+    "remove": "Remove",
+    "next": "Next",
+    "back": "Back",
+    "saveError": "Couldn't save. Try again.",
+    "bootError": "The app couldn't start. Close it and open it again."
   },
   "auth": {
     "login": "Sign In",
     "email": "Email",
     "password": "Password",
     "loginError": "Invalid credentials"
+  },
+  "tabs": {
+    "today": "Today",
+    "routines": "Routines",
+    "progress": "Progress",
+    "profile": "Profile"
+  },
+  "today": {
+    "startSession": "Start workout",
+    "todayWorkout": "Today's workout",
+    "streakDays": "{{count}} days",
+    "greeting": "Hello",
+    "eyebrow": "Today's workout · ~{{minutes}} min",
+    "stats": {
+      "exercises_one": "{{count}} exercise",
+      "exercises_other": "{{count}} exercises",
+      "sets_one": "{{count}} set",
+      "sets_other": "{{count}} sets",
+      "done": "{{done}}/{{total}} done"
+    },
+    "doneToday": "Workout completed",
+    "continueSession": "Continue session",
+    "exercisesTitle": "Exercises",
+    "moreExercises_one": "+ {{count}} more exercise",
+    "moreExercises_other": "+ {{count}} more exercises",
+    "empty": {
+      "noPlan": {
+        "title": "No plan yet",
+        "body": "Build your weekly plan and Today will set up your workout.",
+        "action": "Go to Routines"
+      },
+      "rest": {
+        "title": "Rest day",
+        "body": "Nothing planned for today. Recover well."
+      }
+    },
+    "status": {
+      "done": "done",
+      "planned": "planned",
+      "rest": "rest"
+    },
+    "recovery": "Muscle recovery"
+  },
+  "session": {
+    "finish": "Finish",
+    "rest": "Rest",
+    "addSet": "+ Set",
+    "substitute": "Swap",
+    "last": "Last: {{weight}} × {{reps}}",
+    "eyebrow": "{{day}} · Exercise {{index}} of {{total}}",
+    "template": "Template: {{summary}}",
+    "columns": {
+      "set": "Set",
+      "weight": "Weight",
+      "reps": "Reps"
+    },
+    "repsUnit": "reps",
+    "setLabel": "S{{index}}",
+    "editSet": "Edit set {{index}}",
+    "markSet": "Mark set {{index}} as done",
+    "unmarkSet": "Unmark set {{index}}",
+    "editorDone": "Done",
+    "next": "Next",
+    "restDone": "Rest over",
+    "restSubtract": "Subtract {{seconds}} seconds",
+    "restAdd": "Add {{seconds}} seconds",
+    "restSkip": "Skip rest",
+    "empty": "This session has no exercises.",
+    "finishConfirm": {
+      "title": "Finish session?",
+      "message_one": "{{count}} set is still unmarked.",
+      "message_other": "{{count}} sets are still unmarked.",
+      "confirm": "Finish"
+    },
+    "record": "PR",
+    "recordLabel": "Personal record"
+  },
+  "recovery": {
+    "worked": "Just trained",
+    "recovering": "Recovering",
+    "ready": "Ready",
+    "eyebrow": "{{date}} · before training",
+    "title": "Recovery",
+    "byExercise": "By exercise",
+    "readyAfter": "{{hours}} h or more",
+    "today": "today",
+    "yesterday": "yesterday",
+    "daysAgo_one": "{{count}} day ago",
+    "daysAgo_other": "{{count}} days ago",
+    "none": "None right now",
+    "insight": {
+      "withCause": "Today you train {{groups}}, which are at {{percent}}%: {{exercise}} on {{weekday}} worked them too.",
+      "plain": "Today you train {{groups}}, which are at {{percent}}%."
+    }
+  },
+  "muscles": {
+    "primary": "Primary",
+    "secondary": "Secondary",
+    "idle": "Not worked",
+    "source": "Source",
+    "group": {
+      "chest": "Chest",
+      "triceps": "Triceps",
+      "biceps": "Biceps",
+      "forearm": "Forearm",
+      "upper-back": "Upper back",
+      "trapezius": "Trapezius",
+      "lower-back": "Lower back",
+      "abs": "Abs",
+      "obliques": "Obliques",
+      "gluteal": "Glutes",
+      "quadriceps": "Quadriceps",
+      "hamstring": "Hamstrings",
+      "adductors": "Adductors",
+      "calves": "Calves",
+      "deltoids": "Shoulder"
+    },
+    "deltoids": {
+      "front": "Front shoulder",
+      "back": "Rear shoulder",
+      "both": "Side shoulder"
+    },
+    "described": "described",
+    "noData": "There is no muscle data for this exercise yet, so nothing is painted.",
+    "none": "none",
+    "secondaries": "Secondary",
+    "byExercise": {
+      "eyebrow": "{{weekday}} · {{day}}",
+      "title": "What each exercise works",
+      "empty": "There are no exercises to show. Build your plan first."
+    },
+    "volume": {
+      "eyebrow": "Progress · week of {{week}}",
+      "title": "Sets per muscle",
+      "empty": "No sets yet this week.",
+      "sets_one": "{{count}} set",
+      "sets_other": "{{count}} sets",
+      "balance": "{{top}} has {{ratio}} times more sets than {{low}}. Want to add a set to those?",
+      "and": "and"
+    },
+    "consistency": {
+      "title": "Consistency · 12 weeks",
+      "streak_one": "Streak: {{count}} day",
+      "streak_other": "Streak: {{count}} days",
+      "todayMissing": "Today: {{weekday}} is missing",
+      "missing": "{{weekday}} is missing",
+      "complete": "Week complete",
+      "a11y_one": "{{count}} session in the last 12 weeks",
+      "a11y_other": "{{count}} sessions in the last 12 weeks"
+    }
+  },
+  "stepper": {
+    "decrease": "Decrease",
+    "increase": "Increase"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "unit": "Weight unit",
+    "sections": {
+      "units": "Units and equipment",
+      "progression": "Progression",
+      "appearance": "Appearance",
+      "reminders": "Reminders",
+      "data": "Your data"
+    },
+    "weightUnit": {
+      "title": "Weight unit",
+      "lb": "lb",
+      "kg": "kg",
+      "per_exercise": "Per exercise"
+    },
+    "increment": {
+      "title": "Weight steps",
+      "dumbbell": "Dumbbells",
+      "machine": "Machines",
+      "plates": "Plates and bars"
+    },
+    "progression": {
+      "suggestions": "Suggest adding weight",
+      "rpe": "Log effort (RPE)",
+      "rpeHint": "Fine-tunes the suggestions",
+      "deload": "Automatic deload",
+      "deloadHint": "When you stall for 3 weeks"
+    },
+    "theme": "Theme",
+    "themeName": {
+      "auto": "Auto",
+      "dark": "Dark",
+      "light": "Light"
+    },
+    "languageName": {
+      "es": "Español",
+      "en": "English"
+    },
+    "reminder": {
+      "label": "Workout reminder",
+      "when": "On your training days ({{days}}) at {{time}}",
+      "noDays": "Add training days to your plan to get reminders",
+      "denied": "Notifications are blocked. Turn them on for Overload in your phone settings.",
+      "hour": "Hour",
+      "minute": "Minutes"
+    },
+    "data": {
+      "hint": "Save your plan and history in a JSON file, or restore them from one.",
+      "export": "Export data",
+      "import": "Import data",
+      "confirmTitle": "Replace your current data?",
+      "confirmBody": "This file has {{days}} days, {{sessions}} sessions and {{sets}} sets. Importing replaces your current plan and history.",
+      "replace": "Replace my data",
+      "exported": "Saved as {{file}}.",
+      "imported": "Data restored: {{days}} days and {{sessions}} sessions.",
+      "errors": {
+        "not_json": "That file isn't valid JSON.",
+        "wrong_app": "That file isn't an Overload backup.",
+        "unsupported_version": "That backup comes from a newer version of Overload. Update the app and try again.",
+        "invalid_data": "The backup is damaged or incomplete, so nothing was changed.",
+        "generic": "Something went wrong and nothing was changed. Try again."
+      }
+    }
+  },
+  "weekday": {
+    "short": {
+      "0": "Mon",
+      "1": "Tue",
+      "2": "Wed",
+      "3": "Thu",
+      "4": "Fri",
+      "5": "Sat",
+      "6": "Sun"
+    },
+    "long": {
+      "0": "Monday",
+      "1": "Tuesday",
+      "2": "Wednesday",
+      "3": "Thursday",
+      "4": "Friday",
+      "5": "Saturday",
+      "6": "Sunday"
+    }
+  },
+  "equipment": {
+    "barbell": "Barbell",
+    "dumbbell": "Dumbbells",
+    "machine": "Machine",
+    "cable": "Cable",
+    "bodyweight": "Bodyweight",
+    "kettlebell": "Kettlebell",
+    "band": "Bands",
+    "other": "Other"
+  },
+  "plan": {
+    "defaultName": "My plan",
+    "newDayName": "New day",
+    "copyName": "{{name}} (copy)",
+    "eyebrow": {
+      "repeats": "My plan · repeats every week",
+      "once": "My plan"
+    },
+    "chips": {
+      "days_one": "{{count}} day",
+      "days_other": "{{count}} days",
+      "exercises_one": "{{count}} exercise",
+      "exercises_other": "{{count}} exercises",
+      "base": "{{sets}} × {{reps}} base"
+    },
+    "weekOf": "Week of {{date}}",
+    "completed": "{{done}} of {{total}} completed",
+    "daySubtitle_one": "{{count}} exercise · ~{{minutes}} min",
+    "daySubtitle_other": "{{count}} exercises · ~{{minutes}} min",
+    "today": "Today",
+    "done": "Completed",
+    "rest": "Rest",
+    "addDay": "Add a workout on {{weekday}}",
+    "editPlan": "Edit plan",
+    "noDays": "No days yet. Tap Edit plan to add yours.",
+    "timeBadge": "Time",
+    "empty": {
+      "title": "No plan yet",
+      "body": "Build your weekly plan and Today will set up your workout on its own.",
+      "create": "Create plan"
+    },
+    "editor": {
+      "eyebrow": "Edit plan",
+      "nameLabel": "Plan name",
+      "summary": "{{days}} days · {{exercises}} exercises",
+      "repeat": "Repeat every week",
+      "repeatHint": "Today's workout sets itself up",
+      "hint": "Press and hold a day to move or duplicate it",
+      "save": "Save plan",
+      "longPressHint": "Press and hold to move, duplicate or delete"
+    },
+    "actions": {
+      "move": "Move to",
+      "duplicate": "Duplicate on",
+      "remove": "Delete day",
+      "noFreeDays": "Every day of the week already has a workout."
+    },
+    "day": {
+      "eyebrow": "{{weekday}} · {{plan}}",
+      "nameLabel": "Day name",
+      "defaults": "Default: {{sets}} × {{reps}} · rest {{rest}}",
+      "change": "Change",
+      "done": "Done",
+      "meta_one": "{{count}} exercise · ~{{minutes}} min",
+      "meta_other": "{{count}} exercises · ~{{minutes}} min",
+      "reorderHint": "Use the arrows to reorder",
+      "empty": "This day has no exercises yet.",
+      "addExercise": "+ Exercise",
+      "save": "Save day",
+      "moveUp": "Move up",
+      "moveDown": "Move down"
+    },
+    "load": {
+      "suffix": {
+        "per_arm": "per arm",
+        "total": "",
+        "plates": "on plates",
+        "bodyweight": "",
+        "time": ""
+      },
+      "timeSuffix": "of time",
+      "rest": "rest"
+    },
+    "loadType": {
+      "per_arm": "Per arm",
+      "total": "Total",
+      "plates": "Plates",
+      "bodyweight": "Bodyweight",
+      "time": "Time"
+    },
+    "config": {
+      "loadType": "Load type",
+      "close": "Close",
+      "weight": {
+        "per_arm": "Weight per arm",
+        "total": "Total weight",
+        "plates": "Weight on plates"
+      },
+      "conversion": "≈ {{converted}} {{unit}} · steps of {{step}} {{stepUnit}}",
+      "sets": "Sets",
+      "reps": "Reps",
+      "seconds": "Seconds",
+      "rest": "Rest",
+      "progression": "Suggest adding weight",
+      "progressionHint": "When you complete {{sets}} × {{reps}} in {{sessions}} sessions in a row, suggest +{{step}} {{unit}}",
+      "remove": "Remove",
+      "save": "Save exercise"
+    },
+    "importNotes": "Import notes"
+  },
+  "library": {
+    "title": "Exercises",
+    "eyebrow": "Library",
+    "eyebrowDay": "Add to {{weekday}}",
+    "searchLabel": "Search exercises",
+    "searchPlaceholder": "Search: pulldown, curl, cable...",
+    "equipment": "Equipment",
+    "empty": "No exercises match your search.",
+    "add": "Add {{name}}",
+    "section": {
+      "inPlan": "In your plan",
+      "more": "More exercises"
+    },
+    "category": {
+      "shoulder": "Shoulder",
+      "back": "Back",
+      "chest": "Chest",
+      "legs": "Legs",
+      "arms": "Arms",
+      "core": "Core"
+    }
+  },
+  "hint": {
+    "dismiss": "Dismiss tip",
+    "increase": "{{name}}: you completed {{sets}} × {{reps}} with {{current}} in your last 2 sessions. Try {{next}} today.",
+    "preview": "If you complete {{sets}} × {{reps}} today, next time we'll suggest {{next}}.",
+    "deload": "{{name}}: no progress in 3 weeks. Try a lighter week at {{next}}."
+  },
+  "import": {
+    "eyebrow": "Import from notes",
+    "title": "Paste your workout, we'll sort it out",
+    "textLabel": "Pasted text",
+    "placeholder": "Friday 02 October\n- Row: 25kg 4 sets of 10, rest 1m30s",
+    "hint": "One header per day (Monday 28 September) and one exercise per line: name: weight, sets of reps, rest.",
+    "detected_one": "{{count}} exercise detected",
+    "detected_other": "{{count}} exercises detected",
+    "moreRecognized_one": "+ {{count}} more recognized exercise",
+    "moreRecognized_other": "+ {{count}} more recognized exercises",
+    "question": "Is it {{name}}?",
+    "link": "Yes, link it",
+    "keep": "Keep as is",
+    "newExercise": "It will be created as a new exercise",
+    "issues": {
+      "title_one": "{{count}} line couldn't be used",
+      "title_other": "{{count}} lines couldn't be used",
+      "unrecognized_line": "Not recognized as an exercise (needs name, colon and sets).",
+      "line_without_day": "No day header above it (for example, Friday 02 October)."
+    },
+    "summary": {
+      "single": "It will be saved as the session of {{date}} and as the template for {{weekday}}.",
+      "multi_one": "It will be saved as a session for its date and as the template for that day.",
+      "multi_other": "It will be saved as a session for each date and as the template for each of the {{count}} days. Existing days are updated, never emptied."
+    },
+    "cta_one": "Import {{count}} exercise",
+    "cta_other": "Import {{count}} exercises",
+    "pending_one": "Confirm {{count}} doubtful exercise",
+    "pending_other": "Confirm {{count}} doubtful exercises",
+    "dayName": "{{weekday}} workout"
+  },
+  "progress": {
+    "title": "Progress",
+    "range": {
+      "month": "Month",
+      "quarter": "3 months",
+      "year": "Year"
+    },
+    "oneRepMax": "{{name}} · est. 1RM",
+    "record": "PR",
+    "today": "Today",
+    "delta": {
+      "up": "+{{value}} in {{span}}",
+      "down": "−{{value}} in {{span}}",
+      "same": "No change in {{span}}"
+    },
+    "span": {
+      "weeks_one": "{{count}} week",
+      "weeks_other": "{{count}} weeks",
+      "months_one": "{{count}} month",
+      "months_other": "{{count}} months"
+    },
+    "chartLabel": "Estimated 1RM of {{name}} per period, now {{value}} {{unit}}",
+    "volume": {
+      "label": "Weekly volume",
+      "unit": "t",
+      "vsPrevious": "{{percent}} vs previous"
+    },
+    "sessions": {
+      "label": "Sessions this month",
+      "planned": "{{percent}}% of planned"
+    },
+    "records": {
+      "title": "Recent records",
+      "empty": "No records yet. They show up when you beat your best mark."
+    },
+    "empty": {
+      "title": "No data yet",
+      "body": "Finish a workout or import your notes and your progress shows up here."
+    },
+    "picker": {
+      "more": "More",
+      "title": "Choose an exercise",
+      "search": "Search exercises",
+      "close": "Close",
+      "empty": "No exercises match your search.",
+      "sessions_one": "{{count}} session",
+      "sessions_other": "{{count}} sessions"
+    },
+    "muscleSets": "Sets per muscle"
+  },
+  "history": {
+    "inPlan": "In your plan on {{days}} · one single history",
+    "notInPlan": "Not in your plan · one single history",
+    "tiles": {
+      "oneRepMax": "Est. 1RM",
+      "bestSet": "Best set",
+      "volume": "Volume",
+      "perSession": "t/sess."
+    },
+    "chart": {
+      "title": "Weight per session",
+      "noTrend": "The trend shows up from session {{count}}."
+    },
+    "hint": "Two sessions in a row with {{sets}} × {{reps}} completed. Next time try {{next}}.",
+    "sessions": "Sessions",
+    "empty": "No weighted sessions recorded for this exercise yet.",
+    "notFound": "We couldn't find this exercise."
+  },
+  "bodyMap": {
+    "front": "Front",
+    "back": "Back",
+    "recovery": "Body figure showing the recovery state of each muscle",
+    "exercise": "Body figure showing the muscles the exercise works"
+  },
+  "errorBoundary": {
+    "title": "Oops, something went wrong",
+    "message": "The app ran into an unexpected error.",
+    "details": "Details (dev only):",
+    "retry": "Try again"
+  },
+  "reminder": {
+    "title": "Time to train",
+    "body": "Today is {{day}}. Your workout is ready.",
+    "channel": "Workout reminders"
+  },
+  "daySummary": {
+    "openHint": "Opens what you did that day",
+    "openDate": "Session on {{date}}",
+    "historyHint": "Opens this exercise's history",
+    "fallbackTitle": "Workout",
+    "stats_one": "{{count}} exercise · {{sets}} sets · {{minutes}} min",
+    "stats_other": "{{count}} exercises · {{sets}} sets · {{minutes}} min",
+    "muscles": "Sets per muscle",
+    "noMuscleData": "These exercises have no muscle data, so nothing is painted.",
+    "exercises": "Exercises",
+    "empty": {
+      "title": "No workout that day",
+      "body": "There is no finished session recorded on this date."
+    }
   }
 }

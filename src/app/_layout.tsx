@@ -4,9 +4,11 @@ import { logger } from "@/config/logger";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { useColorScheme } from "react-native";
 import { Stack } from "expo-router";
-import { ErrorBoundary } from "@/shared/components";
+import { catalogSeedData } from "@/features/catalog";
+import { BootError, ErrorBoundary } from "@/shared/components";
+import { useAppBootstrap } from "@/shared/hooks/use-app-bootstrap";
+import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -14,28 +16,24 @@ SplashScreen.preventAutoHideAsync();
 logger.info("App initialized");
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const { mode } = useOverloadTheme();
+  const { isReady, error } = useAppBootstrap(catalogSeedData);
 
   useEffect(() => {
-    SplashScreen.hideAsync();
-  }, []);
+    if (isReady || error) SplashScreen.hideAsync();
+  }, [isReady, error]);
+
+  if (error) return <BootError />;
+  if (!isReady) return null;
 
   return (
     <ErrorBoundary>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen
-            name="index"
-            options={{
-              title: "Home",
-            }}
-          />
+      <ThemeProvider value={mode === "dark" ? DarkTheme : DefaultTheme}>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="exercise/configure" options={{ presentation: "modal" }} />
           <Stack.Screen
             name="playground"
-            options={{
-              title: "🎮 Playground",
-              headerShown: true,
-            }}
+            options={{ title: "🎮 Playground", headerShown: true }}
           />
         </Stack>
       </ThemeProvider>

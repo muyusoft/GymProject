@@ -1,0 +1,792 @@
+{
+  "version": 1,
+  "figure": "react-native-body-highlighter",
+  "rule": {
+    "primary": "Músculo objetivo del patrón y entre los más activos en la fuente (o el que más creció en estudios de entrenamiento).",
+    "secondary": "Activación >= 21% MVIC (escala de Krause Neto et al. 2020, tomada de Macadam y Feser 2019) o descrito como participante cuando no hay porcentaje (basis = described).",
+    "unmeasured": "No se pinta.",
+    "volume": {
+      "primary": 1,
+      "secondary": 0.5,
+      "source": "pelland2024"
+    }
+  },
+  "groups": [
+    "chest",
+    "deltoids",
+    "triceps",
+    "biceps",
+    "forearm",
+    "upper-back",
+    "trapezius",
+    "lower-back",
+    "abs",
+    "obliques",
+    "gluteal",
+    "quadriceps",
+    "hamstring",
+    "adductors",
+    "calves"
+  ],
+  "patterns": {
+    "horizontal_push": {
+      "name": {
+        "es": "Empuje horizontal",
+        "en": "Horizontal push"
+      },
+      "muscles": [
+        {
+          "group": "chest",
+          "role": "primary",
+          "basis": "measured",
+          "view": "both"
+        },
+        {
+          "group": "triceps",
+          "role": "secondary",
+          "basis": "measured",
+          "view": "both"
+        },
+        {
+          "group": "deltoids",
+          "role": "secondary",
+          "basis": "measured",
+          "view": "front"
+        }
+      ],
+      "sources": [
+        "stastny2017",
+        "lopezvivancos2023"
+      ],
+      "note": "El tríceps tuvo actividad similar al pectoral en el press banca."
+    },
+    "fly": {
+      "name": {
+        "es": "Aperturas",
+        "en": "Fly"
+      },
+      "muscles": [
+        {
+          "group": "chest",
+          "role": "primary",
+          "basis": "measured",
+          "view": "both"
+        },
+        {
+          "group": "deltoids",
+          "role": "secondary",
+          "basis": "measured",
+          "view": "front"
+        }
+      ],
+      "sources": [
+        "welsch2005",
+        "schanke2012"
+      ]
+    },
+    "dip": {
+      "name": {
+        "es": "Fondos",
+        "en": "Dips"
+      },
+      "muscles": [
+        {
+          "group": "chest",
+          "role": "primary",
+          "basis": "measured",
+          "view": "both"
+        },
+        {
+          "group": "triceps",
+          "role": "primary",
+          "basis": "measured",
+          "view": "both"
+        },
+        {
+          "group": "deltoids",
+          "role": "secondary",
+          "basis": "measured",
+          "view": "front"
+        }
+      ],
+      "sources": [
+        "mckenzie2022"
+      ]
+    },
+    "vertical_push": {
+      "name": {
+        "es": "Empuje vertical",
+        "en": "Vertical push"
+      },
+      "muscles": [
+        {
+          "group": "deltoids",
+          "role": "primary",
+          "basis": "measured",
+          "view": "front"
+        },
+        {
+          "group": "triceps",
+          "role": "secondary",
+          "basis": "measured",
+          "view": "both"
+        },
+        {
+          "group": "trapezius",
+          "role": "secondary",
+          "basis": "described",
+          "view": "both"
+        }
+      ],
+      "sources": [
+        "campos2020",
+        "saeterbakken2013",
+        "blazkiewicz2022"
+      ],
+      "note": "Trapecio: estudio preliminar con mancuerna y kettlebell."
+    },
+    "lateral_raise": {
+      "name": {
+        "es": "Elevación lateral",
+        "en": "Lateral raise"
+      },
+      "muscles": [
+        {
+          "group": "deltoids",
+          "role": "primary",
+          "basis": "measured",
+          "view": "both"
+        },
+        {
+          "group": "trapezius",
+          "role": "secondary",
+          "basis": "described",
+          "view": "both"
+        }
+      ],
+      "sources": [
+        "campos2020",
+        "coratella2020"
+      ],
+      "note": "También activó el deltoides posterior (24% MVIC), que está en el mismo grupo."
+    },
+    "rear_delt": {
+      "name": {
+        "es": "Deltoide posterior",
+        "en": "Rear delt"
+      },
+      "muscles": [
+        {
+          "group": "deltoids",
+          "role": "primary",
+          "basis": "measured",
+          "view": "back"
+        },
+        {
+          "group": "upper-back",
+          "role": "secondary",
+          "basis": "measured",
+          "view": "back"
+        }
+      ],
+      "sources": [
+        "schoenfeld2013"
+      ],
+      "note": "Secundario = infraespinoso. Trapecio y romboides sin medir: no se pintan."
+    },
+    "vertical_pull": {
+      "name": {
+        "es": "Tirón vertical",
+        "en": "Vertical pull"
+      },
+      "muscles": [
+        {
+          "group": "upper-back",
+          "role": "primary",
+          "basis": "measured",
+          "view": "back"
+        },
+        {
+          "group": "biceps",
+          "role": "secondary",
+          "basis": "described",
+          "view": "both"
+        },
+        {
+          "group": "deltoids",
+          "role": "secondary",
+          "basis": "described",
+          "view": "back"
+        },
+        {
+          "group": "trapezius",
+          "role": "secondary",
+          "basis": "described",
+          "view": "both"
+        }
+      ],
+      "sources": [
+        "buonsenso2025"
+      ],
+      "note": "El agarre no cambió la activación del dorsal: un mapeo para todas las variantes."
+    },
+    "horizontal_pull": {
+      "name": {
+        "es": "Tirón horizontal",
+        "en": "Horizontal pull"
+      },
+      "muscles": [
+        {
+          "group": "upper-back",
+          "role": "primary",
+          "basis": "measured",
+          "view": "back"
+        },
+        {
+          "group": "trapezius",
+          "role": "primary",
+          "basis": "measured",
+          "view": "both"
+        },
+        {
+          "group": "biceps",
+          "role": "secondary",
+          "basis": "measured",
+          "view": "both"
+        },
+        {
+          "group": "deltoids",
+          "role": "secondary",
+          "basis": "measured",
+          "view": "back"
+        }
+      ],
+      "sources": [
+        "lehman2004",
+        "padovan2025",
+        "fenwick2009"
+      ],
+      "note": "Remos sin apoyo de pecho: agregar lower-back secundario (override por ejercicio)."
+    },
+    "shrug": {
+      "name": {
+        "es": "Encogimientos",
+        "en": "Shrug"
+      },
+      "muscles": [
+        {
+          "group": "trapezius",
+          "role": "primary",
+          "basis": "measured",
+          "view": "both"
+        }
+      ],
+      "sources": [
+        "pizzari2014"
+      ]
+    },
+    "squat": {
+      "name": {
+        "es": "Sentadilla",
+        "en": "Squat"
+      },
+      "muscles": [
+        {
+          "group": "quadriceps",
+          "role": "primary",
+          "basis": "measured",
+          "view": "both"
+        },
+        {
+          "group": "gluteal",
+          "role": "secondary",
+          "basis": "measured",
+          "view": "both"
+        }
+      ],
+      "sources": [
+        "contreras2015",
+        "krauseneto2020"
+      ],
+      "note": "Femoral en 15% MVIC, debajo del umbral: no se pinta."
+    },
+    "lunge": {
+      "name": {
+        "es": "Zancada y búlgara",
+        "en": "Lunge and split squat"
+      },
+      "muscles": [
+        {
+          "group": "quadriceps",
+          "role": "primary",
+          "basis": "measured",
+          "view": "both"
+        },
+        {
+          "group": "gluteal",
+          "role": "primary",
+          "basis": "measured",
+          "view": "both"
+        },
+        {
+          "group": "hamstring",
+          "role": "secondary",
+          "basis": "described",
+          "view": "both"
+        }
+      ],
+      "sources": [
+        "navarro2021",
+        "krauseneto2020"
+      ]
+    },
+    "hinge_conventional": {
+      "name": {
+        "es": "Peso muerto convencional",
+        "en": "Conventional deadlift"
+      },
+      "muscles": [
+        {
+          "group": "lower-back",
+          "role": "primary",
+          "basis": "measured",
+          "view": "both"
+        },
+        {
+          "group": "quadriceps",
+          "role": "primary",
+          "basis": "measured",
+          "view": "both"
+        },
+        {
+          "group": "gluteal",
+          "role": "secondary",
+          "basis": "measured",
+          "view": "both"
+        },
+        {
+          "group": "hamstring",
+          "role": "secondary",
+          "basis": "measured",
+          "view": "both"
+        }
+      ],
+      "sources": [
+        "martinfuentes2020"
+      ]
+    },
+    "hinge_rdl": {
+      "name": {
+        "es": "Peso muerto rumano y piernas rígidas",
+        "en": "Romanian / stiff-leg deadlift"
+      },
+      "muscles": [
+        {
+          "group": "hamstring",
+          "role": "primary",
+          "basis": "measured",
+          "view": "both"
+        },
+        {
+          "group": "gluteal",
+          "role": "secondary",
+          "basis": "measured",
+          "view": "both"
+        },
+        {
+          "group": "lower-back",
+          "role": "secondary",
+          "basis": "measured",
+          "view": "both"
+        }
+      ],
+      "sources": [
+        "martinfuentes2020"
+      ]
+    },
+    "hip_thrust": {
+      "name": {
+        "es": "Empuje de cadera",
+        "en": "Hip thrust"
+      },
+      "muscles": [
+        {
+          "group": "gluteal",
+          "role": "primary",
+          "basis": "measured",
+          "view": "both"
+        },
+        {
+          "group": "hamstring",
+          "role": "secondary",
+          "basis": "measured",
+          "view": "both"
+        },
+        {
+          "group": "quadriceps",
+          "role": "secondary",
+          "basis": "measured",
+          "view": "both"
+        }
+      ],
+      "sources": [
+        "contreras2015"
+      ],
+      "note": "Vasto lateral 99.5% MVIC; bíceps femoral 40.8% MVIC."
+    },
+    "knee_extension": {
+      "name": {
+        "es": "Extensión de rodilla",
+        "en": "Knee extension"
+      },
+      "muscles": [
+        {
+          "group": "quadriceps",
+          "role": "primary",
+          "basis": "measured",
+          "view": "both"
+        }
+      ],
+      "sources": [
+        "jakobsen2012"
+      ]
+    },
+    "knee_flexion": {
+      "name": {
+        "es": "Curl femoral",
+        "en": "Leg curl"
+      },
+      "muscles": [
+        {
+          "group": "hamstring",
+          "role": "primary",
+          "basis": "measured",
+          "view": "both"
+        },
+        {
+          "group": "calves",
+          "role": "secondary",
+          "basis": "described",
+          "view": "both"
+        }
+      ],
+      "sources": [
+        "maeo2021",
+        "vuk2024"
+      ]
+    },
+    "hip_abduction": {
+      "name": {
+        "es": "Abducción de cadera",
+        "en": "Hip abduction"
+      },
+      "muscles": [
+        {
+          "group": "gluteal",
+          "role": "primary",
+          "basis": "measured",
+          "view": "both"
+        }
+      ],
+      "sources": [
+        "macadam2015"
+      ],
+      "note": "Evidencia del movimiento; no hay estudio revisado por pares de la máquina."
+    },
+    "hip_adduction": {
+      "name": {
+        "es": "Aducción de cadera",
+        "en": "Hip adduction"
+      },
+      "muscles": [
+        {
+          "group": "adductors",
+          "role": "primary",
+          "basis": "measured",
+          "view": "both"
+        }
+      ],
+      "sources": [
+        "serner2014",
+        "alonsofernandez2022"
+      ],
+      "note": "Evidencia del movimiento; no hay estudio revisado por pares de la máquina."
+    },
+    "calf_standing": {
+      "name": {
+        "es": "Pantorrilla de pie",
+        "en": "Standing calf raise"
+      },
+      "muscles": [
+        {
+          "group": "calves",
+          "role": "primary",
+          "basis": "measured",
+          "view": "both"
+        }
+      ],
+      "sources": [
+        "kinoshita2023"
+      ],
+      "note": "Gemelo y sóleo."
+    },
+    "calf_seated": {
+      "name": {
+        "es": "Pantorrilla sentado",
+        "en": "Seated calf raise"
+      },
+      "muscles": [
+        {
+          "group": "calves",
+          "role": "primary",
+          "basis": "measured",
+          "view": "both"
+        }
+      ],
+      "sources": [
+        "kinoshita2023"
+      ],
+      "note": "Sobre todo sóleo."
+    },
+    "elbow_flexion": {
+      "name": {
+        "es": "Flexión de codo",
+        "en": "Elbow flexion"
+      },
+      "muscles": [
+        {
+          "group": "biceps",
+          "role": "primary",
+          "basis": "measured",
+          "view": "both"
+        },
+        {
+          "group": "forearm",
+          "role": "secondary",
+          "basis": "measured",
+          "view": "both"
+        }
+      ],
+      "sources": [
+        "marcolin2018",
+        "date2021"
+      ],
+      "note": "El braquial (en el grupo biceps) se activa igual en agarre supino, neutro y prono."
+    },
+    "elbow_extension": {
+      "name": {
+        "es": "Extensión de codo",
+        "en": "Elbow extension"
+      },
+      "muscles": [
+        {
+          "group": "triceps",
+          "role": "primary",
+          "basis": "measured",
+          "view": "both"
+        }
+      ],
+      "sources": [
+        "maeo2022",
+        "boehler2011"
+      ]
+    },
+    "core": {
+      "name": {
+        "es": "Core",
+        "en": "Core"
+      },
+      "muscles": [
+        {
+          "group": "abs",
+          "role": "primary",
+          "basis": "measured",
+          "view": "front"
+        },
+        {
+          "group": "obliques",
+          "role": "primary",
+          "basis": "measured",
+          "view": "front"
+        },
+        {
+          "group": "lower-back",
+          "role": "secondary",
+          "basis": "measured",
+          "view": "back"
+        }
+      ],
+      "sources": [
+        "olivalozano2020"
+      ],
+      "note": "Varía por ejercicio: russian twist = obliques; crunch = abs (overrides por ejercicio)."
+    }
+  },
+  "sources": {
+    "stastny2017": {
+      "citation": "Stastny et al. 2017, A systematic review of surface electromyography analyses of the bench press movement task, PLOS ONE",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5295722/",
+      "strength": "strong"
+    },
+    "lopezvivancos2023": {
+      "citation": "López-Vivancos et al. 2023, EMG of the pectoralis major during bench press and variants: systematic review and meta-analysis, Applied Sciences",
+      "url": "https://www.mdpi.com/2076-3417/13/8/5203",
+      "strength": "strong"
+    },
+    "welsch2005": {
+      "citation": "Welsch, Bird y Mayhew 2005, EMG of pectoralis major and anterior deltoid during three upper-body lifts, JSCR",
+      "url": "https://www.bisp-surf.de/Record/PU201204002593",
+      "strength": "medium"
+    },
+    "schanke2012": {
+      "citation": "Schanke 2012, EMG of the pectoralis major during various chest exercises (tesis)",
+      "url": "https://minds.wisc.edu/items/48f80f8d-09fb-4290-b552-3fc15d3a5f64/full",
+      "strength": "weak"
+    },
+    "mckenzie2022": {
+      "citation": "McKenzie et al. 2022, Fatigue increases muscle activations during the bar dip, IJERPH",
+      "url": "https://www.mdpi.com/1660-4601/19/21/14390",
+      "strength": "medium"
+    },
+    "campos2020": {
+      "citation": "Campos et al. 2020, Different shoulder exercises affect the activation of deltoid portions",
+      "url": "https://johk.pl/?p=5707",
+      "strength": "medium"
+    },
+    "saeterbakken2013": {
+      "citation": "Saeterbakken y Fimland 2013, Body position and loading modality in shoulder presses, JSCR",
+      "url": "https://www.bisp-surf.de/Record/PU201311007613",
+      "strength": "medium"
+    },
+    "blazkiewicz2022": {
+      "citation": "Błażkiewicz y Hadamus 2022, Overhead press EMG, preliminary report, Sensors",
+      "url": "https://www.mdpi.com/1424-8220/22/24/9762",
+      "strength": "weak"
+    },
+    "coratella2020": {
+      "citation": "Coratella et al. 2020, EMG of lateral raise variations and frontal raise in bodybuilders, IJERPH",
+      "url": "https://www.mdpi.com/1660-4601/17/17/6015",
+      "strength": "medium"
+    },
+    "schoenfeld2013": {
+      "citation": "Schoenfeld et al. 2013, Hand position and posterior shoulder EMG in horizontal abduction, JSCR",
+      "url": "https://scholars.nova.edu/en/publications/effect-of-hand-position-on-emg-activity-of-the-posterior-shoulder/",
+      "strength": "medium"
+    },
+    "buonsenso2025": {
+      "citation": "Buonsenso et al. 2025, Back muscle EMG during lat pulldown, J Funct Morphol Kinesiol",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12452428/",
+      "strength": "medium"
+    },
+    "lehman2004": {
+      "citation": "Lehman et al. 2004, Muscle activation during latissimus dorsi exercises, Dynamic Medicine",
+      "url": "https://link.springer.com/article/10.1186/1476-5918-3-4",
+      "strength": "medium"
+    },
+    "padovan2025": {
+      "citation": "Padovan et al. 2025, HD-sEMG in the seated row across scapular positions, J Funct Morphol Kinesiol",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12821611/",
+      "strength": "medium"
+    },
+    "fenwick2009": {
+      "citation": "Fenwick, Brown y McGill 2009, Comparison of different rowing exercises, JSCR",
+      "url": "https://www.backfitpro.com/medical-scientific-articles/2009/[80]Fenwick,C.M.J.(2009)Comparison-of-different-rowing-exercises[J.Strength-and-Cond.].pdf",
+      "strength": "weak"
+    },
+    "pizzari2014": {
+      "citation": "Pizzari et al. 2014, Modifying a shrug exercise, Clinical Biomechanics",
+      "url": "https://researchoutput.csu.edu.au/en/publications/modifying-a-shrug-exercise-can-facilitate-the-upward-rotator-musc/",
+      "strength": "medium"
+    },
+    "contreras2015": {
+      "citation": "Contreras et al. 2015, Gluteus maximus, biceps femoris and vastus lateralis EMG in back squat and hip thrust, J Appl Biomech",
+      "url": "https://ro.ecu.edu.au/ecuworkspost2013/1592",
+      "strength": "medium"
+    },
+    "krauseneto2020": {
+      "citation": "Krause Neto et al. 2020, Gluteus maximus activation during common exercises: systematic review, JSSM",
+      "url": "https://www.jssm.org/jssm-19-195.xml-Fulltext",
+      "strength": "strong"
+    },
+    "navarro2021": {
+      "citation": "Navarro et al. 2021, Quadriceps and hamstrings EMG in Bulgarian squat and lunge, JHSE",
+      "url": "https://abacus.universidadeuropea.com/entities/publication/d012186d-abfc-400f-81f1-30888b279f86/full",
+      "strength": "medium"
+    },
+    "martinfuentes2020": {
+      "citation": "Martín-Fuentes et al. 2020, EMG in deadlift and its variants: systematic review, PLOS ONE",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/32107499/",
+      "strength": "strong"
+    },
+    "jakobsen2012": {
+      "citation": "Jakobsen et al. 2012, Muscle activity during knee-extension exercise, IJSPT",
+      "url": "https://nfa.elsevierpure.com/en/publications/muscle-activity-during-knee-extension-strengthening-exercise-perf/",
+      "strength": "medium"
+    },
+    "maeo2021": {
+      "citation": "Maeo et al. 2021, Greater hamstrings hypertrophy after training at long muscle lengths, MSSE",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7969179/",
+      "strength": "strong"
+    },
+    "vuk2024": {
+      "citation": "Vuk et al. 2024, Ankle and hip positions on hamstring function, Ann Appl Sport Sci",
+      "url": "https://aassjournal.com/article-1-1232-en.html",
+      "strength": "weak"
+    },
+    "macadam2015": {
+      "citation": "Macadam, Cronin y Contreras 2015, Gluteal activity in hip abduction and external rotation exercises: systematic review, IJSPT",
+      "url": "https://ro.ecu.edu.au/ecuworkspost2013/1608",
+      "strength": "strong"
+    },
+    "serner2014": {
+      "citation": "Serner et al. 2014, EMG evaluation of hip adduction exercises, BJSM",
+      "url": "https://bjsm.bmj.com/content/48/14/1108",
+      "strength": "medium"
+    },
+    "alonsofernandez2022": {
+      "citation": "Alonso-Fernández et al. 2022, Copenhagen adduction and adductor architecture, IJERPH",
+      "url": "https://ideas.repec.org/a/gam/jijerp/v19y2022i11p6563-d826027.html",
+      "strength": "medium"
+    },
+    "kinoshita2023": {
+      "citation": "Kinoshita et al. 2023, Triceps surae hypertrophy standing vs seated calf raise, Frontiers in Physiology",
+      "url": "https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2023.1272106/pdf",
+      "strength": "strong"
+    },
+    "marcolin2018": {
+      "citation": "Marcolin et al. 2018, Biceps and brachioradialis EMG in three curl variants, PeerJ",
+      "url": "https://peerj.com/articles/5165",
+      "strength": "medium"
+    },
+    "date2021": {
+      "citation": "Date et al. 2021, Brachialis activity with surface EMG, Frontiers in Physiology",
+      "url": "https://www.frontiersin.org/articles/10.3389/fphys.2021.809422/full",
+      "strength": "weak"
+    },
+    "maeo2022": {
+      "citation": "Maeo et al. 2022, Triceps hypertrophy overhead vs neutral arm position, Eur J Sport Sci",
+      "url": "https://www.ritsumei.ac.jp/shs/news/article.html/?id=680",
+      "strength": "strong"
+    },
+    "boehler2011": {
+      "citation": "Boehler 2011, EMG of the triceps during triceps exercises (tesis)",
+      "url": "https://minds.wisc.edu/items/4876923b-3a14-47c3-9a69-decf731bd027/full",
+      "strength": "weak"
+    },
+    "olivalozano2020": {
+      "citation": "Oliva-Lozano y Muyor 2020, Core muscle activity during fitness exercises: systematic review, IJERPH",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7345922/",
+      "strength": "strong"
+    },
+    "pelland2024": {
+      "citation": "Pelland et al. 2024, Resistance training dose-response meta-regressions (preprint, SportRxiv)",
+      "url": "https://sportrxiv.org/index.php/server/preprint/view/460",
+      "strength": "strong"
+    },
+    "moran2017": {
+      "citation": "Morán-Navarro et al. 2017, Time course of recovery following training leading or not to failure, Eur J Appl Physiol",
+      "url": "https://paulogentil.com/pdf/Time%20course%20of%20recovery%20following%20resistance%20training%20leading%20or%20not%20to%20failure.pdf",
+      "strength": "medium"
+    }
+  }
+}

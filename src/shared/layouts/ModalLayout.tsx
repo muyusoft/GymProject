@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { View, SafeAreaView, StyleSheet, Pressable } from "react-native";
 import { tokens } from "@/design/tokens";
+import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 
 interface ModalLayoutProps {
   children: ReactNode;
@@ -21,12 +22,14 @@ export function ModalLayout({
   onDismiss,
   backgroundColor,
 }: ModalLayoutProps) {
+  const { c: colors } = useOverloadTheme();
+
   return (
     <SafeAreaView
       style={[
         styles.container,
         {
-          backgroundColor: backgroundColor || tokens.colors.neutral[50],
+          backgroundColor: backgroundColor || colors.surface,
         },
       ]}
     >

@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import { View, Text, Pressable, StyleSheet, ScrollView } from "react-native";
+import i18n from "@/config/i18n";
 import { tokens } from "@/design/tokens";
 
 interface ErrorBoundaryProps {
@@ -52,11 +53,11 @@ export class ErrorBoundary extends React.Component<
           </View>
 
           <Text style={[styles.title, { color: tokens.colors.error[500] }]}>
-            Oops, algo salió mal
+            {i18n.t("errorBoundary.title")}
           </Text>
 
           <Text style={[styles.message, { color: tokens.colors.neutral[400] }]}>
-            La aplicación encontró un error inesperado.
+            {i18n.t("errorBoundary.message")}
           </Text>
 
           {__DEV__ && this.state.error && (
@@ -69,7 +70,7 @@ export class ErrorBoundary extends React.Component<
               <Text
                 style={[styles.errorTitle, { color: tokens.colors.error[400] }]}
               >
-                Detalles (solo dev):
+                {i18n.t("errorBoundary.details")}
               </Text>
               <Text
                 style={[
@@ -91,13 +92,15 @@ export class ErrorBoundary extends React.Component<
           )}
 
           <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={i18n.t("errorBoundary.retry")}
             onPress={this.handleReset}
             style={[
               styles.button,
               { backgroundColor: tokens.colors.primary[500] },
             ]}
           >
-            <Text style={styles.buttonText}>Reintentar</Text>
+            <Text style={styles.buttonText}>{i18n.t("errorBoundary.retry")}</Text>
           </Pressable>
         </ScrollView>
       );

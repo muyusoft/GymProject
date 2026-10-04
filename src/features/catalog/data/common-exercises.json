@@ -1,0 +1,690 @@
+{
+  "version": 1,
+  "note": "94 ejercicios comunes elegidos para el MVP; nameEs es la traducción inicial. freeExerciseDbName = null significa que hay que crear el ejercicio.",
+  "exercises": [
+    {
+      "nameEs": "Press banca con barra",
+      "freeExerciseDbName": "Barbell Bench Press - Medium Grip",
+      "pattern": "horizontal_push",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Press banca con mancuernas",
+      "freeExerciseDbName": "Dumbbell Bench Press",
+      "pattern": "horizontal_push",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Press inclinado con barra",
+      "freeExerciseDbName": "Barbell Incline Bench Press - Medium Grip",
+      "pattern": "horizontal_push",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Press inclinado con mancuernas",
+      "freeExerciseDbName": "Incline Dumbbell Press",
+      "pattern": "horizontal_push",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Press declinado",
+      "freeExerciseDbName": "Decline Barbell Bench Press",
+      "pattern": "horizontal_push",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Press de pecho en máquina",
+      "freeExerciseDbName": "Leverage Chest Press",
+      "pattern": "horizontal_push",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Press en Smith",
+      "freeExerciseDbName": "Smith Machine Bench Press",
+      "pattern": "horizontal_push",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Flexiones de pecho",
+      "freeExerciseDbName": "Pushups",
+      "pattern": "horizontal_push",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Fondos para pecho",
+      "freeExerciseDbName": "Dips - Chest Version",
+      "pattern": "dip",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Fondos para tríceps",
+      "freeExerciseDbName": "Dips - Triceps Version",
+      "pattern": "dip",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Pec deck / mariposa",
+      "freeExerciseDbName": "Butterfly",
+      "pattern": "fly",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Aperturas con mancuernas",
+      "freeExerciseDbName": "Dumbbell Flyes",
+      "pattern": "fly",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Aperturas inclinadas",
+      "freeExerciseDbName": "Incline Dumbbell Flyes",
+      "pattern": "fly",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Cruce de poleas",
+      "freeExerciseDbName": "Cable Crossover",
+      "pattern": "fly",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Press de hombros con mancuernas",
+      "freeExerciseDbName": "Dumbbell Shoulder Press",
+      "pattern": "vertical_push",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Press militar con barra",
+      "freeExerciseDbName": "Standing Military Press",
+      "pattern": "vertical_push",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Press de hombros en máquina",
+      "freeExerciseDbName": "Machine Shoulder (Military) Press",
+      "pattern": "vertical_push",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Press Arnold",
+      "freeExerciseDbName": "Arnold Dumbbell Press",
+      "pattern": "vertical_push",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Elevaciones laterales con mancuernas",
+      "freeExerciseDbName": "Side Lateral Raise",
+      "pattern": "lateral_raise",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Elevación lateral en polea",
+      "freeExerciseDbName": "One-Arm Side Laterals",
+      "pattern": "lateral_raise",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Remo al mentón",
+      "freeExerciseDbName": "Upright Barbell Row",
+      "pattern": "lateral_raise",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Reverse pec deck",
+      "freeExerciseDbName": "Reverse Machine Flyes",
+      "pattern": "rear_delt",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Pájaros con mancuernas",
+      "freeExerciseDbName": "Reverse Flyes",
+      "pattern": "rear_delt",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Face pull",
+      "freeExerciseDbName": "Face Pull",
+      "pattern": "rear_delt",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Jalón al pecho agarre abierto",
+      "freeExerciseDbName": "Wide-Grip Lat Pulldown",
+      "pattern": "vertical_pull",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Jalón al pecho agarre cerrado",
+      "freeExerciseDbName": "Close-Grip Front Lat Pulldown",
+      "pattern": "vertical_pull",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Jalón agarre supino",
+      "freeExerciseDbName": "Underhand Cable Pulldowns",
+      "pattern": "vertical_pull",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Jalón unilateral en polea",
+      "freeExerciseDbName": "One Arm Lat Pulldown",
+      "pattern": "vertical_pull",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Dominadas",
+      "freeExerciseDbName": "Pullups",
+      "pattern": "vertical_pull",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Dominadas supinas (chin-up)",
+      "freeExerciseDbName": "Chin-Up",
+      "pattern": "vertical_pull",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Pullover en polea (brazos rectos)",
+      "freeExerciseDbName": "Straight-Arm Pulldown",
+      "pattern": "vertical_pull",
+      "inUserPlan": false,
+      "musclesOverride": {
+        "replace": [
+          {
+            "group": "upper-back",
+            "role": "primary",
+            "basis": "measured",
+            "view": "back"
+          }
+        ],
+        "note": "Sin estudio propio; se usa solo el principal del patrón."
+      }
+    },
+    {
+      "nameEs": "Remo con barra",
+      "freeExerciseDbName": "Bent Over Barbell Row",
+      "pattern": "horizontal_pull",
+      "inUserPlan": false,
+      "musclesOverride": {
+        "add": [
+          {
+            "group": "lower-back",
+            "role": "secondary",
+            "basis": "measured",
+            "view": "back"
+          }
+        ],
+        "source": "fenwick2009"
+      }
+    },
+    {
+      "nameEs": "Remo con mancuerna a una mano",
+      "freeExerciseDbName": "One-Arm Dumbbell Row",
+      "pattern": "horizontal_pull",
+      "inUserPlan": false,
+      "musclesOverride": {
+        "add": [
+          {
+            "group": "lower-back",
+            "role": "secondary",
+            "basis": "measured",
+            "view": "back"
+          }
+        ],
+        "source": "fenwick2009"
+      }
+    },
+    {
+      "nameEs": "Remo sentado en polea",
+      "freeExerciseDbName": "Seated Cable Rows",
+      "pattern": "horizontal_pull",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Remo en T",
+      "freeExerciseDbName": "T-Bar Row with Handle",
+      "pattern": "horizontal_pull",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Remo con pecho apoyado",
+      "freeExerciseDbName": "Lying T-Bar Row",
+      "pattern": "horizontal_pull",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Remo en máquina",
+      "freeExerciseDbName": "Leverage High Row",
+      "pattern": "horizontal_pull",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Encogimientos con mancuernas",
+      "freeExerciseDbName": "Dumbbell Shrug",
+      "pattern": "shrug",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Sentadilla con barra",
+      "freeExerciseDbName": "Barbell Squat",
+      "pattern": "squat",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Sentadilla frontal",
+      "freeExerciseDbName": "Front Squat (Clean Grip)",
+      "pattern": "squat",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Sentadilla goblet",
+      "freeExerciseDbName": "Goblet Squat",
+      "pattern": "squat",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Sentadilla en Smith",
+      "freeExerciseDbName": "Smith Machine Squat",
+      "pattern": "squat",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Hack squat",
+      "freeExerciseDbName": "Hack Squat",
+      "pattern": "squat",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Prensa de piernas",
+      "freeExerciseDbName": "Leg Press",
+      "pattern": "squat",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Sentadilla búlgara",
+      "freeExerciseDbName": "Split Squat with Dumbbells",
+      "pattern": "lunge",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Zancadas (tijeras)",
+      "freeExerciseDbName": "Dumbbell Lunges",
+      "pattern": "lunge",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Zancadas caminando",
+      "freeExerciseDbName": "Barbell Walking Lunge",
+      "pattern": "lunge",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Zancada inversa",
+      "freeExerciseDbName": "Dumbbell Rear Lunge",
+      "pattern": "lunge",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Step-up con mancuernas",
+      "freeExerciseDbName": "Dumbbell Step Ups",
+      "pattern": "lunge",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Peso muerto convencional",
+      "freeExerciseDbName": "Barbell Deadlift",
+      "pattern": "hinge_conventional",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Peso muerto rumano",
+      "freeExerciseDbName": "Romanian Deadlift",
+      "pattern": "hinge_rdl",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Peso muerto piernas rígidas (mancuernas)",
+      "freeExerciseDbName": "Stiff-Legged Dumbbell Deadlift",
+      "pattern": "hinge_rdl",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Peso muerto sumo",
+      "freeExerciseDbName": "Sumo Deadlift",
+      "pattern": "hinge_conventional",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Good morning",
+      "freeExerciseDbName": "Good Morning",
+      "pattern": "hinge_rdl",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Hiperextensiones",
+      "freeExerciseDbName": "Hyperextensions (Back Extensions)",
+      "pattern": "hinge_rdl",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Kettlebell swing",
+      "freeExerciseDbName": "One-Arm Kettlebell Swings",
+      "pattern": "hinge_rdl",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Hip thrust",
+      "freeExerciseDbName": "Barbell Hip Thrust",
+      "pattern": "hip_thrust",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Puente de glúteo",
+      "freeExerciseDbName": "Barbell Glute Bridge",
+      "pattern": "hip_thrust",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Patada de glúteo en polea",
+      "freeExerciseDbName": "One-Legged Cable Kickback",
+      "pattern": "hip_thrust",
+      "inUserPlan": false,
+      "musclesOverride": {
+        "replace": [
+          {
+            "group": "gluteal",
+            "role": "primary",
+            "basis": "measured",
+            "view": "back"
+          }
+        ],
+        "note": "Sin estudio propio; se usa solo el principal del patrón."
+      }
+    },
+    {
+      "nameEs": "Extensión de cuádriceps",
+      "freeExerciseDbName": "Leg Extensions",
+      "pattern": "knee_extension",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Curl femoral acostado",
+      "freeExerciseDbName": "Lying Leg Curls",
+      "pattern": "knee_flexion",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Curl femoral sentado",
+      "freeExerciseDbName": "Seated Leg Curl",
+      "pattern": "knee_flexion",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Nordic / glute ham raise",
+      "freeExerciseDbName": "Glute Ham Raise",
+      "pattern": "knee_flexion",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Aductores en máquina",
+      "freeExerciseDbName": "Thigh Adductor",
+      "pattern": "hip_adduction",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Abductores en máquina",
+      "freeExerciseDbName": "Thigh Abductor",
+      "pattern": "hip_abduction",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Pantorrillas de pie",
+      "freeExerciseDbName": "Standing Calf Raises",
+      "pattern": "calf_standing",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Pantorrillas sentado",
+      "freeExerciseDbName": "Seated Calf Raise",
+      "pattern": "calf_seated",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Curl con barra",
+      "freeExerciseDbName": "Barbell Curl",
+      "pattern": "elbow_flexion",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Curl con barra EZ",
+      "freeExerciseDbName": "EZ-Bar Curl",
+      "pattern": "elbow_flexion",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Curl con mancuernas alterno",
+      "freeExerciseDbName": "Dumbbell Alternate Bicep Curl",
+      "pattern": "elbow_flexion",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Curl martillo",
+      "freeExerciseDbName": "Hammer Curls",
+      "pattern": "elbow_flexion",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Curl inclinado con mancuernas",
+      "freeExerciseDbName": "Incline Dumbbell Curl",
+      "pattern": "elbow_flexion",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Curl predicador",
+      "freeExerciseDbName": "Preacher Curl",
+      "pattern": "elbow_flexion",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Curl concentrado",
+      "freeExerciseDbName": "Concentration Curls",
+      "pattern": "elbow_flexion",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Curl en polea",
+      "freeExerciseDbName": "Standing Biceps Cable Curl",
+      "pattern": "elbow_flexion",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Curl de bíceps en máquina",
+      "freeExerciseDbName": "Machine Bicep Curl",
+      "pattern": "elbow_flexion",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Extensión de tríceps en polea",
+      "freeExerciseDbName": "Triceps Pushdown",
+      "pattern": "elbow_extension",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Extensión de tríceps con cuerda",
+      "freeExerciseDbName": "Triceps Pushdown - Rope Attachment",
+      "pattern": "elbow_extension",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Extensión sobre la cabeza con cuerda",
+      "freeExerciseDbName": "Cable Rope Overhead Triceps Extension",
+      "pattern": "elbow_extension",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Copa con mancuerna",
+      "freeExerciseDbName": "Standing Dumbbell Triceps Extension",
+      "pattern": "elbow_extension",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Press francés (skull crusher)",
+      "freeExerciseDbName": "EZ-Bar Skullcrusher",
+      "pattern": "elbow_extension",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Press banca agarre cerrado",
+      "freeExerciseDbName": "Close-Grip Barbell Bench Press",
+      "pattern": "elbow_extension",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Patada de tríceps",
+      "freeExerciseDbName": "Tricep Dumbbell Kickback",
+      "pattern": "elbow_extension",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Plancha",
+      "freeExerciseDbName": "Plank",
+      "pattern": "core",
+      "inUserPlan": true
+    },
+    {
+      "nameEs": "Plancha lateral",
+      "freeExerciseDbName": "Side Bridge",
+      "pattern": "core",
+      "inUserPlan": false,
+      "musclesOverride": {
+        "replace": [
+          {
+            "group": "obliques",
+            "role": "primary",
+            "basis": "measured",
+            "view": "front"
+          },
+          {
+            "group": "abs",
+            "role": "secondary",
+            "basis": "measured",
+            "view": "front"
+          }
+        ]
+      }
+    },
+    {
+      "nameEs": "Crunch",
+      "freeExerciseDbName": "Crunches",
+      "pattern": "core",
+      "inUserPlan": true,
+      "musclesOverride": {
+        "replace": [
+          {
+            "group": "abs",
+            "role": "primary",
+            "basis": "measured",
+            "view": "front"
+          }
+        ]
+      }
+    },
+    {
+      "nameEs": "Crunch en polea",
+      "freeExerciseDbName": "Cable Crunch",
+      "pattern": "core",
+      "inUserPlan": false,
+      "musclesOverride": {
+        "replace": [
+          {
+            "group": "abs",
+            "role": "primary",
+            "basis": "measured",
+            "view": "front"
+          }
+        ]
+      }
+    },
+    {
+      "nameEs": "Elevación de piernas colgado",
+      "freeExerciseDbName": "Hanging Leg Raise",
+      "pattern": "core",
+      "inUserPlan": false,
+      "musclesOverride": {
+        "replace": [
+          {
+            "group": "abs",
+            "role": "primary",
+            "basis": "measured",
+            "view": "front"
+          }
+        ]
+      }
+    },
+    {
+      "nameEs": "Elevación de piernas en banco",
+      "freeExerciseDbName": "Flat Bench Lying Leg Raise",
+      "pattern": "core",
+      "inUserPlan": true,
+      "musclesOverride": {
+        "replace": [
+          {
+            "group": "abs",
+            "role": "primary",
+            "basis": "measured",
+            "view": "front"
+          }
+        ]
+      }
+    },
+    {
+      "nameEs": "Russian twist",
+      "freeExerciseDbName": "Russian Twist",
+      "pattern": "core",
+      "inUserPlan": true,
+      "musclesOverride": {
+        "replace": [
+          {
+            "group": "obliques",
+            "role": "primary",
+            "basis": "measured",
+            "view": "front"
+          },
+          {
+            "group": "abs",
+            "role": "secondary",
+            "basis": "measured",
+            "view": "front"
+          }
+        ]
+      }
+    },
+    {
+      "nameEs": "Rueda abdominal",
+      "freeExerciseDbName": "Ab Roller",
+      "pattern": "core",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Pallof press",
+      "freeExerciseDbName": "Pallof Press",
+      "pattern": "core",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Dead bug",
+      "freeExerciseDbName": null,
+      "pattern": "core",
+      "inUserPlan": false
+    },
+    {
+      "nameEs": "Paseo del granjero",
+      "freeExerciseDbName": "Farmer's Walk",
+      "pattern": "core",
+      "inUserPlan": false,
+      "musclesOverride": {
+        "replace": [],
+        "note": "Sin fuente leída: no se pinta hasta tener una."
+      }
+    }
+  ]
+}
