@@ -53,7 +53,7 @@ _Routes are thin._ src/app/** holds no markup beyond layout and no business logi
 
 ## 2. Non-negotiable code rules
 
-_Design tokens, always._ No literal hex color, pixel number, font size or radius anywhere.
+_Design tokens, always._ No literal hex color, pixel number, font size or radius anywhere. In Overload, product code takes its tokens from `src/design/tokens.*`, which hold the Overload design system (not `@muyusoft/minga-ui`). Use `getSemanticColors(mode)` for colors, `getTextStyle(name)` for text, and `tokens.spacing`, `tokens.borderRadius` and `tokens.dimensions` for layout. See `docs/overload/design-system.md`.
 
 tsx
 // ❌
@@ -184,12 +184,10 @@ Name it as a behavior sentence. Test behavior, not implementation.
 Do not rely on these; they are documented defects, not features.
 
 - _persistedStore does not save._ Hydration works, writes are discarded. Do not assume state survives a restart until it is fixed.
-- _SVG icons may not render on native._ The renderer uses <Image>, which does not rasterize SVG on iOS/Android. Use the registry regardless — the fix is in the renderer, not at the call site — but verify on a device before depending on an icon.
+- _SVG icons: verify on a device._ The renderer now renders the SVG component directly; confirm an icon on iOS and Android before depending on it.
 - _Tailwind classes do nothing._ No NativeWind runtime is installed. Use tokens + StyleSheet.
-- _Husky hooks are not installed_, so Prettier and commitlint never run locally.
 - _The HTTP client does not attach the auth token_, and a 401 does not log the user out. Both are `TODO`s.
 - _auth.service is not wired to auth.store._ A successful login does not populate the store.
-- _Jest packages are still installed_ and break a clean npm install.
 
 If a task depends on one of these, say so before writing code.
 

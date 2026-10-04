@@ -14,6 +14,7 @@ import {
   UtilsSection,
   AuthSection,
   LayoutsSection,
+  OverloadSection,
 } from "@/shared/playground/sections";
 import { styles } from "@/shared/playground/styles/playground.styles";
 
@@ -42,7 +43,7 @@ export default function PlaygroundScreen() {
         🎮 Playground
       </Text>
       <Text style={[styles.subtitle, { color: colors.textColor }]}>
-        Design Tokens + 49 Icons + Utils
+        Design Tokens + 51 Icons + Utils
       </Text>
 
       {/* Controls */}
@@ -58,6 +59,12 @@ export default function PlaygroundScreen() {
         searchIcons={playgroundState.searchIcons}
         onIconSizeChange={playgroundState.setIconSize}
         onSearchChange={playgroundState.setSearchIcons}
+      />
+
+      <OverloadSection
+        expandedSection={playgroundState.expandedSection}
+        setExpandedSection={playgroundState.setExpandedSection}
+        colors={colors}
       />
 
       <DesignTokensSection

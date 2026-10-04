@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { View, SafeAreaView, StyleSheet } from "react-native";
 import { tokens } from "@/design/tokens";
+import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -22,20 +23,28 @@ export function AppLayout({
   footer,
   backgroundColor,
 }: AppLayoutProps) {
+  const { c: colors } = useOverloadTheme();
+
   return (
     <SafeAreaView
       style={[
         styles.container,
-        {
-          backgroundColor: backgroundColor || tokens.colors.neutral[50],
-        },
+        { backgroundColor: backgroundColor || colors.background },
       ]}
     >
-      {header && <View style={styles.header}>{header}</View>}
+      {header && (
+        <View style={[styles.header, { borderBottomColor: colors.border }]}>
+          {header}
+        </View>
+      )}
 
       <View style={styles.content}>{children}</View>
 
-      {footer && <View style={styles.footer}>{footer}</View>}
+      {footer && (
+        <View style={[styles.footer, { borderTopColor: colors.border }]}>
+          {footer}
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -46,7 +55,6 @@ const styles = StyleSheet.create({
   },
   header: {
     borderBottomWidth: 1,
-    borderBottomColor: tokens.colors.neutral[200],
     paddingHorizontal: tokens.spacing[4],
     paddingVertical: tokens.spacing[3],
   },
@@ -55,7 +63,6 @@ const styles = StyleSheet.create({
   },
   footer: {
     borderTopWidth: 1,
-    borderTopColor: tokens.colors.neutral[200],
     paddingHorizontal: tokens.spacing[4],
     paddingVertical: tokens.spacing[3],
   },

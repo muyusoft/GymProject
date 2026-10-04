@@ -1,0 +1,15 @@
+{
+  "note": "Nombres que el usuario escribe distinto al catálogo. confirm = pedir confirmación; dayCategory = solo aplica en un día de ese tipo (shoulder, back, chest, legs, arms, core).",
+  "aliases": [
+    { "alias": "Extensión de tríceps sobre la cabeza", "exercise": "Extensión sobre la cabeza con cuerda", "confirm": true },
+    { "alias": "Plancha abdominal", "exercise": "Plancha" },
+    { "alias": "Press inclinado", "exercise": "Prensa de piernas", "confirm": true, "dayCategory": "legs" },
+    { "alias": "Prensa inclinado", "exercise": "Prensa de piernas" },
+    { "alias": "Prensa inclinada", "exercise": "Prensa de piernas" },
+    { "alias": "Pantorrillas en máquina", "exercise": "Pantorrillas de pie", "confirm": true },
+    { "alias": "Crunch de abdomen", "exercise": "Crunch" },
+    { "alias": "Press banca", "exercise": "Press banca con barra" },
+    { "alias": "Remo sentado", "exercise": "Remo sentado en polea" },
+    { "alias": "Jalón al pecho en máquina", "exercise": "Jalón al pecho agarre abierto" }
+  ]
+}

@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "rn-base-template",
-    "slug": "rn-base-template",
+    "name": "Overload",
+    "slug": "overload",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "rnbasetemplate",
-    "userInterfaceStyle": "automatic",
+    "scheme": "overload",
+    "userInterfaceStyle": "dark",
     "ios": {
       "icon": "./assets/expo.icon"
     },
@@ -34,7 +34,10 @@
         }
       ],
       "expo-image",
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-sqlite",
+      "expo-localization",
+      "expo-notifications"
     ],
     "experiments": {
       "typedRoutes": true,

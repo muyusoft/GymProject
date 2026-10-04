@@ -1,0 +1,74 @@
+import type { LoggedSet, ProgressionTarget, SessionResult } from "@/shared/types/history.types";
+
+export const REQUIRED_SESSIONS = 2;
+export const RPE_LIMIT = 9;
+
+interface IncreaseOptions {
+  /** Sesiones terminadas del ejercicio, de la más nueva a la más vieja. */
+  history: readonly SessionResult[];
+  target: ProgressionTarget;
+  /** Salto mínimo del equipo, en la unidad del ejercicio. */
+  step: number;
+  trackRpe: boolean;
+}
+
+function completedSets(result: SessionResult): LoggedSet[] {
+  return result.sets.filter((set) => set.completed);
+}
+
+/** Todas las series planeadas hechas, con peso y con al menos las reps objetivo. */
+export function isSessionComplete(result: SessionResult, target: ProgressionTarget): boolean {
+  const done = completedSets(result);
+  return (
+    done.length >= target.sets &&
+    done.every((set) => set.weight !== null && (set.reps ?? 0) >= target.reps)
+  );
+}
+
+export function topWeight(result: SessionResult): number | null {
+  const weights = completedSets(result).flatMap((set) => (set.weight === null ? [] : [set.weight]));
+  return weights.length > 0 ? Math.max(...weights) : null;
+}
+
+export function averageRpe(result: SessionResult): number | null {
+  const values = completedSets(result).flatMap((set) => (set.rpe === null ? [] : [set.rpe]));
+  if (values.length === 0) return null;
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+/** Peso común si todas las series de todas las sesiones se hicieron igual (misma carga y unidad). */
+function sharedWeight(sessions: readonly SessionResult[]): number | null {
+  const sets = sessions.flatMap(completedSets);
+  const first = sets[0];
+  if (!first || first.weight === null) return null;
+  const isSame = sets.every((set) => set.weight === first.weight && set.unit === first.unit);
+  return isSame ? first.weight : null;
+}
+
+function isTooHard(latest: SessionResult | undefined, trackRpe: boolean): boolean {
+  if (!trackRpe || !latest) return false;
+  return (averageRpe(latest) ?? 0) >= RPE_LIMIT;
+}
+
+/**
+ * Regla de producto: con las 2 últimas sesiones completas y al mismo peso, sugerir peso + salto del equipo.
+ * Con RPE activado, no sugerir si el esfuerzo medio de la última fue 9 o más.
+ */
+export function suggestIncrease({ history, target, step, trackRpe }: IncreaseOptions): number | null {
+  const recent = history.slice(0, REQUIRED_SESSIONS);
+  if (recent.length < REQUIRED_SESSIONS) return null;
+  if (!recent.every((session) => isSessionComplete(session, target))) return null;
+  if (isTooHard(recent[0], trackRpe)) return null;
+  const weight = sharedWeight(recent);
+  return weight === null ? null : weight + step;
+}
+
+/** Con solo la última sesión completa: el peso que se sugerirá la próxima vez si hoy también se completa. */
+export function previewIncrease(options: IncreaseOptions): number | null {
+  const { history, target, step, trackRpe } = options;
+  const latest = history[0];
+  if (!latest || suggestIncrease(options) !== null) return null;
+  if (!isSessionComplete(latest, target) || isTooHard(latest, trackRpe)) return null;
+  const weight = sharedWeight([latest]);
+  return weight === null ? null : weight + step;
+}
