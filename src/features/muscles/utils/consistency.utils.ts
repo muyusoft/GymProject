@@ -30,13 +30,17 @@ export function buildConsistency({ sessionDates, plannedWeekdays, today }: Consi
   return Array.from({ length: CONSISTENCY_WEEKS }, (_, index) => {
     const weekStart = subWeeks(currentStart, CONSISTENCY_WEEKS - 1 - index);
     const nextStart = toIsoDate(addWeeks(weekStart, 1));
-    const dates = [...days].filter((date) => date >= toIsoDate(weekStart) && date < nextStart).sort();
+    const dates = [...days]
+      .filter((date) => date >= toIsoDate(weekStart) && date < nextStart)
+      .sort((a, b) => a.localeCompare(b));
     const done = Math.min(rows, dates.length);
     const isCurrent = index === CONSISTENCY_WEEKS - 1;
     const planned = isCurrent ? Math.min(rows, plannedWeekdays.length) : 0;
-    const cells = Array.from({ length: rows }, (_, row) =>
-      row < done ? ("done" as const) : isCurrent && row < planned ? ("pending" as const) : ("empty" as const),
-    );
+    const cells = Array.from({ length: rows }, (_, row) => {
+      if (row < done) return "done" as const;
+      if (isCurrent && row < planned) return "pending" as const;
+      return "empty" as const;
+    });
     return { weekStart, cells, dates };
   });
 }
