@@ -1,9 +1,10 @@
-import { Tabs } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
 import type { ColorValue } from "react-native";
 import { useTranslation } from "react-i18next";
 import { TabBar, type TabBarProps } from "@/shared/components";
 import type { IconName } from "@/shared/icons";
 import IconRenderer from "@/shared/icons/icon-renderer";
+import { useSettingsStore } from "@/shared/store";
 
 const TAB_ROUTES = [
   { name: "index", labelKey: "tabs.today", icon: "dumbbell" },
@@ -30,6 +31,9 @@ const renderTabBar = (props: TabBarProps) => <TabBar {...props} />;
 
 export default function TabsLayout() {
   const { t } = useTranslation();
+  const isOnboardingDone = useSettingsStore((state) => state.onboardingDone);
+
+  if (!isOnboardingDone) return <Redirect href="/intro" />;
 
   return (
     <Tabs screenOptions={{ headerShown: false }} tabBar={renderTabBar}>

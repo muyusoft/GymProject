@@ -1,3 +1,5 @@
+import type { WeighInFrequency } from "@/shared/types/settings.types";
+
 const DAYS_IN_WEEK = 7;
 const CLOCK_PAD = 2;
 
@@ -35,6 +37,26 @@ export function buildReminderSlots({ days, hour, minute }: SlotOptions): Reminde
   return [...byWeekday.values()]
     .sort((a, b) => a.weekday - b.weekday)
     .map((day) => ({ weekday: toNotificationWeekday(day.weekday), hour, minute, dayName: day.name }));
+}
+
+export interface WeighInSlot {
+  /** null = todos los días; si no, 1 = domingo … 7 = sábado (lo que pide expo-notifications). */
+  weekday: number | null;
+  hour: number;
+  minute: number;
+}
+
+interface WeighInSlotOptions {
+  frequency: WeighInFrequency;
+  /** Día del pesaje semanal: 0 = lunes … 6 = domingo. */
+  weekday: number;
+  hour: number;
+  minute: number;
+}
+
+/** A diario: un aviso cada día. Cada semana: uno solo, el día elegido. */
+export function buildWeighInSlot({ frequency, weekday, hour, minute }: WeighInSlotOptions): WeighInSlot {
+  return { weekday: frequency === "daily" ? null : toNotificationWeekday(weekday), hour, minute };
 }
 
 /** 18, 5 → "18:05". */

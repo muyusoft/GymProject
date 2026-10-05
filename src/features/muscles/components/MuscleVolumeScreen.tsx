@@ -7,7 +7,7 @@ import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 import { useMuscleMap } from "../hooks/use-muscle-map";
 import { volumeTier } from "../utils/muscle-volume.utils";
 import { BalanceCard } from "./BalanceCard";
-import { ConsistencyGrid } from "./ConsistencyGrid";
+import { ConsistencyCalendar } from "./ConsistencyCalendar";
 import { VolumeTile } from "./VolumeTile";
 
 export function MuscleVolumeScreen() {
@@ -25,7 +25,10 @@ export function MuscleVolumeScreen() {
       {view && (
         <ScrollView contentContainerStyle={styles.content}>
           <ScreenHeader eyebrow={t("muscles.volume.eyebrow", { week })} onBack={() => router.back()} />
-          <Text style={[styles.title, { color: c.text }]}>{t("muscles.volume.title")}</Text>
+          <View style={styles.heading}>
+            <Text style={[styles.title, { color: c.text }]}>{t("muscles.volume.title")}</Text>
+            <Text style={[styles.description, { color: c.textSecondary }]}>{t("muscles.volume.description")}</Text>
+          </View>
           {worked.length === 0 ? (
             <EmptyState title={t("muscles.volume.empty")} />
           ) : (
@@ -36,8 +39,10 @@ export function MuscleVolumeScreen() {
             </View>
           )}
           {view.balance && <BalanceCard balance={view.balance} />}
-          <ConsistencyGrid
-            columns={view.columns}
+          <ConsistencyCalendar
+            sessionDates={view.sessionDates}
+            plannedWeekdays={view.plannedWeekdays}
+            today={view.today}
             streak={view.streak}
             pending={view.pending}
             onSelectDate={(date) => router.push({ pathname: "/day/[date]", params: { date } })}
@@ -54,6 +59,8 @@ const styles = StyleSheet.create({
     padding: tokens.dimensions.screenGutter,
     paddingBottom: tokens.spacing[12],
   },
+  heading: { gap: tokens.spacing[1] },
   title: getTextStyle("displayLg"),
+  description: getTextStyle("bodySm"),
   grid: { flexDirection: "row", flexWrap: "wrap", gap: tokens.spacing[3] },
 });

@@ -63,9 +63,23 @@
     "status": {
       "done": "hecho",
       "planned": "planificado",
-      "rest": "descanso"
+      "rest": "descanso",
+      "none": "sin entreno"
     },
-    "recovery": "Recuperación muscular"
+    "recovery": "Recuperación muscular",
+    "fewerExercises": "Ver menos",
+    "week": {
+      "range": "{{from}} – {{to}}",
+      "backToToday": "Hoy",
+      "openCalendar": "Abrir calendario"
+    },
+    "calendar": {
+      "previous": "Mes anterior",
+      "next": "Mes siguiente",
+      "close": "Cerrar calendario",
+      "day": "{{date}}, {{status}}",
+      "legend": "El punto marca los días con entreno. Toca un día para ir a su semana."
+    }
   },
   "session": {
     "finish": "Terminar",
@@ -162,17 +176,26 @@
       "sets_one": "{{count}} serie",
       "sets_other": "{{count}} series",
       "balance": "{{top}} tiene {{ratio}} veces más series que {{low}}. ¿Quieres sumar una serie a esos?",
-      "and": "y"
+      "and": "y",
+      "description": "Series de esta semana por grupo muscular. Cada serie suma 1 a sus músculos principales y 0.5 a los secundarios."
     },
     "consistency": {
-      "title": "Constancia · 12 semanas",
+      "title": "Constancia",
       "streak_one": "Racha: {{count}} día",
       "streak_other": "Racha: {{count}} días",
       "todayMissing": "Hoy: falta el {{weekday}}",
       "missing": "Falta el {{weekday}}",
       "complete": "Semana completa",
-      "a11y_one": "{{count}} sesión en las últimas 12 semanas",
-      "a11y_other": "{{count}} sesiones en las últimas 12 semanas"
+      "previous": "Mes anterior",
+      "next": "Mes siguiente",
+      "monthCount_one": "{{count}} entreno",
+      "monthCount_other": "{{count}} entrenos",
+      "day": "{{date}}, {{state}}",
+      "state": {
+        "done": "entreno hecho",
+        "pending": "entreno pendiente",
+        "none": "sin entreno"
+      }
     }
   },
   "stepper": {
@@ -223,7 +246,7 @@
       "label": "Recordatorio de entreno",
       "when": "En tus días de entreno ({{days}}) a las {{time}}",
       "noDays": "Agrega días de entreno a tu plan para recibir recordatorios",
-      "denied": "Las notificaciones están bloqueadas. Actívalas para Overload en los ajustes del teléfono.",
+      "denied": "Las notificaciones están bloqueadas. Actívalas para Overset en los ajustes del teléfono.",
       "hour": "Hora",
       "minute": "Minutos"
     },
@@ -238,8 +261,8 @@
       "imported": "Datos restaurados: {{days}} días y {{sessions}} sesiones.",
       "errors": {
         "not_json": "Ese archivo no es un JSON válido.",
-        "wrong_app": "Ese archivo no es una copia de Overload.",
-        "unsupported_version": "Esa copia viene de una versión más nueva de Overload. Actualiza la app e inténtalo de nuevo.",
+        "wrong_app": "Ese archivo no es una copia de Overset.",
+        "unsupported_version": "Esa copia viene de una versión más nueva de Overset. Actualiza la app e inténtalo de nuevo.",
         "invalid_data": "La copia está dañada o incompleta, así que no se cambió nada.",
         "generic": "Algo salió mal y no se cambió nada. Inténtalo de nuevo."
       }
@@ -335,7 +358,23 @@
       "addExercise": "+ Ejercicio",
       "save": "Guardar día",
       "moveUp": "Subir",
-      "moveDown": "Bajar"
+      "moveDown": "Bajar",
+      "suggest": {
+        "use": "Sugerencia: {{name}}",
+        "fullBody": "Cuerpo completo",
+        "two": "{{first}} y {{second}}",
+        "three": "{{first}}, {{second}} y {{third}}",
+        "focus": {
+          "chest": "Pecho",
+          "back": "Espalda",
+          "shoulder": "Hombro",
+          "legs": "Pierna",
+          "biceps": "Bíceps",
+          "triceps": "Tríceps",
+          "arms": "Brazos",
+          "core": "Core"
+        }
+      }
     },
     "load": {
       "suffix": {
@@ -459,7 +498,8 @@
     "volume": {
       "label": "Volumen semana",
       "unit": "t",
-      "vsPrevious": "{{percent}} vs anterior"
+      "vsPrevious": "{{percent}} vs anterior",
+      "note": "Toneladas: peso × reps de la semana"
     },
     "sessions": {
       "label": "Sesiones mes",
@@ -482,7 +522,8 @@
       "sessions_one": "{{count}} sesión",
       "sessions_other": "{{count}} sesiones"
     },
-    "muscleSets": "Series por músculo"
+    "muscleSets": "Series por músculo",
+    "bodyWeight": "Peso corporal"
   },
   "history": {
     "inPlan": "En tu plan el {{days}} · un solo historial",
@@ -517,7 +558,11 @@
   "reminder": {
     "title": "Hora de entrenar",
     "body": "Hoy toca {{day}}. Tu entreno está listo.",
-    "channel": "Recordatorios de entreno"
+    "channel": "Recordatorios de entreno",
+    "weighIn": {
+      "title": "Hora de pesarte",
+      "body": "Registra tu peso de hoy en Overset."
+    }
   },
   "daySummary": {
     "openHint": "Abre lo que hiciste ese día",
@@ -532,6 +577,270 @@
     "empty": {
       "title": "Sin entreno ese día",
       "body": "No hay una sesión terminada registrada en esta fecha."
+    }
+  },
+  "body": {
+    "title": "Peso corporal",
+    "entry": {
+      "title": "Peso de hoy",
+      "fine": "Ajuste fino",
+      "logged": "Hoy registraste {{weight}}. Puedes corregirlo.",
+      "save": "Registrar peso",
+      "update": "Actualizar peso de hoy"
+    },
+    "frequency": {
+      "title": "Cada cuánto te pesas",
+      "daily": "A diario",
+      "weekly": "Cada semana"
+    },
+    "status": {
+      "empty": "Registra tu primer peso para empezar a ver tu tendencia.",
+      "stale": "Llevas {{days}} días sin registrar. La tendencia ya no es fiable.",
+      "sparse": "Con menos de {{min}} registros en los últimos 7 días, la media aún no es fiable.",
+      "due": {
+        "daily": "Aún no registras tu peso de hoy.",
+        "weekly": "Ya pasó una semana desde tu último registro: toca pesarte."
+      },
+      "ok": {
+        "daily": "Vas al día. Sigue así para que la media sea fiable.",
+        "weekly": "Vas al día con tu registro semanal."
+      }
+    },
+    "tip": {
+      "daily": "Pésate al despertar, después de ir al baño y antes de comer. El peso varía 1 a 2 kg de un día a otro por agua y comida; por eso se muestra la media de 7 días. Apunta a 3 registros o más por semana.",
+      "weekly": "Pésate siempre el mismo día y a la misma hora, al despertar y antes de comer. Se compara una semana con la anterior."
+    },
+    "summary": {
+      "average": "Media de 7 días",
+      "entries_one": "Con {{count}} registro",
+      "entries_other": "Con {{count}} registros",
+      "rate": {
+        "up": "+{{value}} por semana en las últimas {{weeks}} semanas",
+        "down": "−{{value}} por semana en las últimas {{weeks}} semanas",
+        "same": "Estable en las últimas {{weeks}} semanas"
+      },
+      "noRate": "El cambio semanal aparece cuando hay registros en dos semanas distintas."
+    },
+    "chart": {
+      "title": "Media por semana",
+      "none": "–"
+    },
+    "bmi": {
+      "label": "IMC",
+      "value": "{{value}} · {{category}}",
+      "category": {
+        "underweight": "Bajo peso",
+        "normal": "Rango normal",
+        "overweight": "Sobrepeso",
+        "obesity": "Obesidad"
+      },
+      "note": "Rangos de la OMS para adultos. El IMC no distingue músculo de grasa: si entrenas fuerza puede marcar de más. Tómalo solo como referencia.",
+      "missing": "Agrega tu estatura para ver tu IMC. Solo se usa para ese cálculo.",
+      "height": "Estatura",
+      "addHeight": "Agregar estatura"
+    },
+    "history": {
+      "title": "Registros recientes",
+      "delete": "Borrar el registro del {{date}}"
+    },
+    "reminder": {
+      "label": "Recordatorio de pesaje",
+      "whenDaily": "Todos los días a las {{time}}",
+      "whenWeekly": "Cada {{day}} a las {{time}}",
+      "day": "Día"
+    }
+  },
+  "substitute": {
+    "title": "Sustituir {{name}}",
+    "search": "Buscar otro ejercicio",
+    "allEquipment": "Todos",
+    "close": "Cerrar",
+    "reason": {
+      "pattern": "Mismo movimiento · {{equipment}}",
+      "muscle": "Mismo músculo principal · {{equipment}}",
+      "search": "{{equipment}}"
+    },
+    "withHistory": "{{reason}} · Ya lo hiciste",
+    "empty": "No hay sugerencias para este ejercicio. Busca uno por nombre.",
+    "emptySearch": "Ningún ejercicio coincide con tu búsqueda.",
+    "onlyToday": "Usar solo hoy",
+    "alsoPlan": "Cambiar también en el plan",
+    "restore": "Volver al ejercicio del plan",
+    "active": "Sustituto solo por hoy"
+  },
+  "exerciseInfo": {
+    "open": "Ver cómo se hace {{name}}",
+    "notFound": "No encontramos este ejercicio.",
+    "history": "Ver historial",
+    "credit": "Fotos e instrucciones en inglés: free-exercise-db (dominio público).",
+    "images": {
+      "start": "{{name}}: posición inicial",
+      "end": "{{name}}: posición final",
+      "none": "Este ejercicio aún no tiene fotos.",
+      "failed": "No se pudieron cargar las fotos. La primera vez necesitan conexión; después quedan guardadas."
+    },
+    "steps": {
+      "title": "Cómo se hace",
+      "number": "{{number}}.",
+      "none": "Aún no hay instrucciones para este ejercicio.",
+      "untranslated": "Aún sin traducir: se muestran en inglés."
+    },
+    "muscles": {
+      "title": "Músculos que trabaja",
+      "primary": "Principal: {{names}}",
+      "secondary": "Secundarios: {{names}}"
+    }
+  },
+  "intro": {
+    "progress": "{{current}} de {{total}}",
+    "skip": "Saltar",
+    "start": "Empezar",
+    "steps": {
+      "plan": {
+        "title": "Arma tu semana una sola vez",
+        "body": "Crea tu plan desde cero o impórtalo de tus notas. Cada día, Overset te deja la sesión lista para empezar."
+      },
+      "log": {
+        "title": "Cada serie, con un toque",
+        "body": "Sin teclado: tu peso y tus repeticiones ya están puestos. Marca la serie y el descanso se cronometra solo."
+      },
+      "progress": {
+        "title": "Sabe cuándo subir peso",
+        "body": "Overset sigue tu fuerza estimada, tus récords y tu volumen, y te avisa cuando estás listo para cargar más."
+      },
+      "muscles": {
+        "title": "Mira qué trabajaste y qué ya descansó",
+        "body": "Cada sesión pinta los músculos que entrenaste. Así ves cuáles siguen recuperándose y cuáles están listos."
+      },
+      "body": {
+        "title": "Tu constancia y tu peso, a la vista",
+        "body": "Un calendario con los días que entrenaste, tu racha y tu peso corporal con su tendencia semanal."
+      }
+    },
+    "art": {
+      "plan": "Ejemplo de plan semanal con el día de hoy marcado",
+      "log": "Ejemplo de ejercicio con dos series hechas, una pendiente y el descanso corriendo",
+      "progress": "Ejemplo de fuerza estimada con un récord y una sugerencia de subir peso",
+      "body": "Ejemplo de calendario de constancia con racha y peso corporal"
+    },
+    "samples": {
+      "days": {
+        "chest": "Pecho y tríceps",
+        "back": "Espalda y bíceps",
+        "rest": "Descanso",
+        "legs": "Pierna"
+      },
+      "dayMeta_one": "{{count}} ejercicio · ~{{minutes}} min",
+      "dayMeta_other": "{{count}} ejercicios · ~{{minutes}} min",
+      "today": "Hoy",
+      "exercise": "Press de banca",
+      "set": "{{weight}} × {{reps}}",
+      "done": "Hecha",
+      "mark": "Marcar",
+      "rest": "Descanso",
+      "oneRepMax": "Press de banca · 1RM estimado",
+      "record": "Récord",
+      "increase": "Sube a {{weight}}",
+      "increaseReason": "Completaste todas las series dos sesiones seguidas.",
+      "consistency": "Constancia",
+      "streak_one": "{{count}} día de racha",
+      "streak_other": "{{count}} días de racha",
+      "trained": "Día entrenado",
+      "bodyWeight": "Peso corporal · media de 7 días",
+      "weeklyChange": "−{{weight}} por semana"
+    }
+  },
+  "account": {
+    "brand": "Overset",
+    "eyebrow": "Cuenta",
+    "social": {
+      "apple": "Continuar con Apple",
+      "google": "Continuar con Google"
+    },
+    "errors": {
+      "unavailable": {
+        "title": "Las cuentas aún no están disponibles",
+        "message": "Por ahora Overset guarda todo en este teléfono. Puedes usar la app sin cuenta."
+      },
+      "invalid_credentials": {
+        "title": "No pudimos entrar",
+        "message": "El correo o la contraseña no coinciden. Revisa e inténtalo de nuevo."
+      },
+      "unknown": {
+        "title": "Algo salió mal",
+        "message": "No se pudo completar. Inténtalo de nuevo en un momento."
+      }
+    },
+    "fields": {
+      "name": "Nombre",
+      "email": "Correo",
+      "password": "Contraseña",
+      "emailPlaceholder": "tu@correo.com",
+      "passwordPlaceholder": "Tu contraseña",
+      "emailInvalid": "Escribe un correo válido.",
+      "showPassword": "Mostrar contraseña",
+      "hidePassword": "Ocultar contraseña"
+    },
+    "welcome": {
+      "haveAccount": "Ya tengo cuenta",
+      "title": "Todo tu entreno, en un solo lugar",
+      "body": "Planifica la semana, registra cada serie con un toque y mira tu progreso.",
+      "start": "Empezar",
+      "orCloud": "O guarda tu progreso en la nube",
+      "withEmail": "Crear cuenta con mi correo",
+      "legal": "Sin cuenta, todo se guarda en este teléfono. Al continuar aceptas los Términos y la Privacidad.",
+      "preview": {
+        "label": "Vista previa de la app: entreno de hoy, progreso y recuperación muscular",
+        "today": "Hoy · ~{{minutes}} min",
+        "done": "{{done}} de {{total}} hechos",
+        "day": "Pecho y tríceps",
+        "progress": "Progreso",
+        "recovery": "Recuperación",
+        "group": "Pierna",
+        "ready": "Lista para entrenar"
+      }
+    },
+    "signIn": {
+      "title": "Iniciar sesión",
+      "subtitle": "Recupera tu plan y tu historial en cualquier teléfono.",
+      "orEmail": "O con tu correo",
+      "forgot": "¿Olvidaste tu contraseña?",
+      "submit": "Entrar",
+      "noAccount": "¿No tienes cuenta?",
+      "create": "Crear cuenta",
+      "wrongPassword": "Contraseña incorrecta"
+    },
+    "signUp": {
+      "title": "Crear cuenta",
+      "subtitle": "Respalda tus entrenos y úsalos en otro teléfono.",
+      "rulesLabel": "Requisitos de la contraseña",
+      "rules": {
+        "minLength": "Al menos {{length}} caracteres",
+        "letterAndNumber": "Una letra y un número"
+      },
+      "terms": "Acepto los Términos y la Política de privacidad",
+      "submit": "Crear cuenta",
+      "uploadNote": "Los entrenos que ya tienes en este teléfono se suben a tu cuenta.",
+      "haveAccount": "¿Ya tienes cuenta?",
+      "signIn": "Iniciar sesión"
+    },
+    "forgot": {
+      "title": "Recuperar contraseña",
+      "subtitle": "Te enviamos un enlace para crear una nueva. Caduca en 1 hora.",
+      "emailLabel": "Correo de tu cuenta",
+      "submit": "Enviar enlace",
+      "remembered": "¿La recordaste?",
+      "backToSignIn": "Volver a entrar"
+    },
+    "checkEmail": {
+      "title": "Revisa tu correo",
+      "body": "Enviamos el enlace a {{email}}. Ábrelo en este teléfono para crear tu nueva contraseña.",
+      "tipSpam": "¿No llega? Revisa la carpeta de spam o promociones.",
+      "tipTypo": "Si escribiste mal el correo, vuelve y corrígelo.",
+      "openMail": "Abrir app de correo",
+      "openMailError": "No se pudo abrir la app de correo.",
+      "resend": "Reenviar enlace",
+      "resendIn": "Reenviar en {{time}}"
     }
   }
 }

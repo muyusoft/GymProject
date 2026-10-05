@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Overload",
-    "slug": "overload",
+    "name": "Overset",
+    "slug": "overset",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "overload",
+    "scheme": "overset",
     "userInterfaceStyle": "dark",
     "ios": {
       "icon": "./assets/expo.icon"

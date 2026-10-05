@@ -1,19 +1,17 @@
 import { and, eq, gte, isNotNull } from "drizzle-orm";
-import { subWeeks } from "date-fns";
 import { db } from "@/shared/db/client";
 import { listAllExerciseMuscles } from "@/shared/db/queries/exercise.queries";
 import { findActivePlan, listPlanDays } from "@/shared/db/queries/plan.queries";
 import { sessions, setLogs } from "@/shared/db/schema";
 import { startOfWeekMonday, toIsoDate } from "@/shared/utils/week.utils";
 import type { MuscleLink } from "../types/muscles.types";
-import { CONSISTENCY_WEEKS } from "../utils/consistency.utils";
 import { toMuscleLink } from "../utils/exercise-muscles.utils";
 
 export interface MuscleMapData {
   /** Una entrada por serie completada esta semana. */
   weekSets: { exerciseId: string }[];
   links: MuscleLink[];
-  /** Fechas yyyy-MM-dd de las sesiones terminadas de las últimas 12 semanas. */
+  /** Fechas yyyy-MM-dd de todas las sesiones terminadas (el calendario de constancia recorre cualquier mes). */
   sessionDates: string[];
   plannedWeekdays: number[];
   today: Date;
@@ -21,7 +19,6 @@ export interface MuscleMapData {
 
 export async function loadMuscleMap(today: Date): Promise<MuscleMapData> {
   const weekStart = toIsoDate(startOfWeekMonday(today));
-  const historyStart = toIsoDate(subWeeks(startOfWeekMonday(today), CONSISTENCY_WEEKS - 1));
   const [weekSets, sessionRows, rows, plan] = await Promise.all([
     db
       .select({ exerciseId: setLogs.exerciseId })
@@ -31,7 +28,7 @@ export async function loadMuscleMap(today: Date): Promise<MuscleMapData> {
     db
       .select({ date: sessions.date })
       .from(sessions)
-      .where(and(isNotNull(sessions.endedAt), gte(sessions.date, historyStart))),
+      .where(isNotNull(sessions.endedAt)),
     listAllExerciseMuscles(),
     findActivePlan(),
   ]);

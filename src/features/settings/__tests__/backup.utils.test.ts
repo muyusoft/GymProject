@@ -125,6 +125,18 @@ describe("parseBackup rechaza archivos que no sirven", () => {
     expect(code(JSON.stringify({ ...base, data: badUnit }))).toBe("invalid_data");
   });
 
+  it("acepta el peso corporal y también los respaldos viejos que no lo traen", () => {
+    const withWeights = data({ bodyWeights: [{ id: "bw-1", date: "2026-10-02", weight: 72.4, unit: "kg", updatedAt: 1 }] });
+    expect(parseBackup(serialize(withWeights)).data).toEqual(withWeights);
+    expect(parseBackup(serialize(data())).data.bodyWeights).toBeUndefined();
+  });
+
+  it("rechaza un peso corporal con tipos equivocados", () => {
+    const base = { app: "overload", version: 1, exportedAt: "2026-10-02T00:00:00Z" };
+    const badBodyWeight = data({ bodyWeights: [{ id: "bw-1", date: "2026-10-02", weight: 72.4, unit: "stone" as "kg", updatedAt: 1 }] });
+    expect(code(JSON.stringify({ ...base, data: badBodyWeight }))).toBe("invalid_data");
+  });
+
   it("referencias a filas que no están en el archivo", () => {
     const base = { app: "overload", version: 1, exportedAt: "2026-10-02T00:00:00Z" };
     const orphanLog = data({ setLogs: [{ ...data().setLogs[0]!, sessionId: "no-existe" }] });

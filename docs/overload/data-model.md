@@ -12,8 +12,10 @@ SQLite con expo-sqlite y Drizzle en `src/shared/db/`: `client.ts` (abre la base 
 | plan_exercises | id, planDayId, exerciseId, order, sets, reps, seconds, restSec, targetWeight, unit (`lb` \| `kg`), loadType, progressionRule (JSON) | Plantilla de cada ejercicio en un día |
 | sessions | id, planDayId, date, startedAt, endedAt, origin (`app` \| `import`) | Entreno realizado |
 | set_logs | id, sessionId, exerciseId, setIndex, weight, unit, loadType, reps, seconds, rpe, completed, isPR | Cada serie |
+| exercise_swaps | id, date (yyyy-MM-dd), planExerciseId, exerciseId, targetWeight, unit, loadType; única por (date, planExerciseId) | Sustitución de un ejercicio del plan solo para esa fecha |
 | equipment_increments | id, equipment, unit, step | Saltos de peso del gym |
-| settings | key, value | Idioma, unidad preferida, sugerencias, RPE, deload |
+| body_weights | id, date (yyyy-MM-dd, única), weight, unit (`lb` \| `kg`) | Peso corporal: un registro por día; guardar otra vez el mismo día lo corrige |
+| settings | key, value | Idioma, unidad preferida, sugerencias, RPE, deload, recordatorio, estatura (`heightCm`) y frecuencia de pesaje (`weighInFrequency`: `daily` \| `weekly`) |
 
 ## Valores permitidos
 

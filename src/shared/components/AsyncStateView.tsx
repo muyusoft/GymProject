@@ -29,7 +29,9 @@ export function AsyncStateView({ status, onRetry, children }: AsyncStateViewProp
       ) : (
         <>
           <Text style={[styles.message, { color: c.text }]}>{t("common.error")}</Text>
-          <Button variant="secondary" label={t("common.retry")} onPress={onRetry} />
+          <View style={styles.action}>
+            <Button variant="secondary" label={t("common.retry")} onPress={onRetry} />
+          </View>
         </>
       )}
     </View>
@@ -45,4 +47,6 @@ const styles = StyleSheet.create({
     padding: tokens.spacing[6],
   },
   message: getTextStyle("body"),
+  // Button fija alignSelf: en fila, el centrado horizontal lo decide este contenedor.
+  action: { alignSelf: "stretch", flexDirection: "row", justifyContent: "center" },
 });

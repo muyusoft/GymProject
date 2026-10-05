@@ -1,7 +1,7 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { getTextStyle, tokens } from "@/design/tokens";
-import { ListRow } from "@/shared/components";
+import { ExerciseInfoButton, ListRow } from "@/shared/components";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 import IconRenderer from "@/shared/icons/icon-renderer";
 import { getExerciseName } from "@/shared/utils/exercise-name.utils";
@@ -31,7 +31,7 @@ export function LibraryListRow({ exercise, canAdd, onAdd }: LibraryListRowProps)
     .join(" · ");
 
   const { plan } = exercise;
-  const trailing = plan ? (
+  const action = plan ? (
     plan.targetWeight !== null && (
       <Text style={[styles.weight, { color: c.textSecondary }]}>
         {formatWeight({ value: plan.targetWeight, unit: plan.unit, locale: i18n.language })}
@@ -50,10 +50,18 @@ export function LibraryListRow({ exercise, canAdd, onAdd }: LibraryListRowProps)
     )
   );
 
-  return <ListRow title={name} subtitle={subtitle} trailing={trailing || undefined} />;
+  const trailing = (
+    <View style={styles.trailing}>
+      <ExerciseInfoButton exerciseId={exercise.id} name={name} />
+      {action}
+    </View>
+  );
+
+  return <ListRow title={name} subtitle={subtitle} trailing={trailing} />;
 }
 
 const styles = StyleSheet.create({
+  trailing: { flexDirection: "row", alignItems: "center", gap: tokens.spacing[2] },
   weight: getTextStyle("title"),
   add: {
     width: tokens.dimensions.minTouch,

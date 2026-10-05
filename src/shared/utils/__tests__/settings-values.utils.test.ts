@@ -13,7 +13,19 @@ describe("parseSettings", () => {
       reminderEnabled: false,
       reminderHour: 18,
       reminderMinute: 0,
+      heightCm: 0,
+      weighInFrequency: "daily",
+      weighInReminderEnabled: false,
+      weighInReminderHour: 7,
+      weighInReminderMinute: 0,
+      weighInWeekday: 0,
+      onboardingDone: false,
     });
+  });
+
+  it("lee la estatura y la frecuencia de pesaje, e ignora las que no sirven", () => {
+    expect(parseSettings({ heightCm: "172", weighInFrequency: "weekly" }, "es")).toMatchObject({ heightCm: 172, weighInFrequency: "weekly" });
+    expect(parseSettings({ heightCm: "999", weighInFrequency: "monthly" }, "es")).toMatchObject({ heightCm: 0, weighInFrequency: "daily" });
   });
 
   it("lee lo guardado", () => {

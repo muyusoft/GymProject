@@ -12,7 +12,21 @@ import {
 import { useThemeStore } from "./theme.store";
 
 /** El texto de los avisos depende del idioma y su horario del recordatorio. */
+<<<<<<< Updated upstream
 const REMINDER_KEYS: readonly AppSettingKey[] = ["language", "reminderEnabled", "reminderHour", "reminderMinute"];
+=======
+const REMINDER_KEYS: ReadonlySet<AppSettingKey> = new Set([
+  "language",
+  "reminderEnabled",
+  "reminderHour",
+  "reminderMinute",
+  "weighInFrequency",
+  "weighInReminderEnabled",
+  "weighInReminderHour",
+  "weighInReminderMinute",
+  "weighInWeekday",
+]);
+>>>>>>> Stashed changes
 
 interface SettingsState extends AppSettings {
   isHydrated: boolean;

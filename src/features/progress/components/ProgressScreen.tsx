@@ -48,6 +48,7 @@ export function ProgressScreen() {
               label={t("progress.volume.label")}
               value={formatNumber(view.volume.tonnes, locale)}
               unit={t("progress.volume.unit")}
+              caption={t("progress.volume.note")}
               {...(volumeDelta && { delta: volumeDelta })}
             />
             <StatTile
@@ -61,6 +62,7 @@ export function ProgressScreen() {
           </View>
           <RecordsCard records={view.records} />
           <Button variant="secondary" label={t("progress.muscleSets")} icon="body" block onPress={() => router.push("/progress/muscles")} />
+          <Button variant="secondary" label={t("progress.bodyWeight")} icon="scale" block onPress={() => router.push("/body")} />
         </ScrollView>
       )}
     </AsyncStateView>

@@ -63,13 +63,22 @@ export interface DayExerciseMuscles {
   sources: SourceInfo[];
 }
 
-export type CellState = "done" | "pending" | "empty";
+export const DAY_STATES = ["done", "pending", "none"] as const;
+/** Hecho, pendiente (planeado esta semana y aún sin hacer) o sin entreno. */
+export type DayState = (typeof DAY_STATES)[number];
 
-export interface WeekColumn {
-  weekStart: Date;
-  cells: CellState[];
-  /** Fechas yyyy-MM-dd de las sesiones de esa semana, en orden; la celda hecha i corresponde a dates[i]. */
-  dates: string[];
+export interface CalendarDay {
+  /** yyyy-MM-dd. */
+  date: string;
+  dayOfMonth: number;
+  state: DayState;
+  isToday: boolean;
+}
+
+export interface ConsistencyMonth {
+  /** Filas de lunes a domingo; null es un hueco de otro mes. */
+  rows: (CalendarDay | null)[][];
+  doneCount: number;
 }
 
 /** Una serie completada en el resumen de un día. */

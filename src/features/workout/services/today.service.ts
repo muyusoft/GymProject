@@ -1,6 +1,5 @@
 import { findActivePlan, listPlanDays } from "@/shared/db/queries/plan.queries";
 import { listIncrements } from "@/shared/db/queries/equipment.queries";
-import { listPlanExercisesByDay } from "@/shared/db/queries/plan-exercise.queries";
 import { listCompletedPlanDayIds } from "@/shared/db/queries/session.queries";
 import type { PlanDayRow } from "@/shared/db/types";
 import { estimateDurationMinutes } from "@/shared/utils/duration.utils";
@@ -10,6 +9,7 @@ import { buildHints } from "../utils/hints.utils";
 import { buildInsight, type InsightSettings } from "../utils/insight.utils";
 import { buildTemplate } from "../utils/template.utils";
 import { buildWeekStrip } from "../utils/week-strip.utils";
+import { listDayExercises } from "./day-exercises.service";
 import { loadHistory } from "./history.service";
 import { countCompletedExercises, findActiveSession } from "./session-read.service";
 
@@ -19,8 +19,9 @@ interface DayDetails {
 }
 
 async function loadDayDetails(day: PlanDayRow, now: Date, settings: InsightSettings): Promise<DayDetails> {
-  const [details, increments] = await Promise.all([listPlanExercisesByDay(day.id), listIncrements()]);
+  const [details, increments] = await Promise.all([listDayExercises(day.id, toIsoDate(now)), listIncrements()]);
   const exercises = details.map((detail) => ({
+    slot: detail.slot,
     exerciseId: detail.exercise.id,
     nameEs: detail.exercise.nameEs,
     nameEn: detail.exercise.nameEn,
@@ -76,7 +77,7 @@ export async function loadToday({ now, settings }: LoadTodayOptions): Promise<To
     listPlanDays(plan.id),
     listCompletedPlanDayIds({
       from: toIsoDate(weekStart),
-      to: toIsoDate(dates[dates.length - 1] ?? weekStart),
+      to: toIsoDate(dates.at(-1) ?? weekStart),
     }),
   ]);
   const completedDayIds = new Set(completed);

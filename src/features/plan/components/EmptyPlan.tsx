@@ -13,9 +13,12 @@ export function EmptyPlan({ isCreating, hasError, onCreate }: EmptyPlanProps) {
 
   return (
     <View style={styles.container}>
-      <EmptyState title={t("plan.empty.title")} body={t("plan.empty.body")}>
+      <EmptyState
+        title={t("plan.empty.title")}
+        body={t("plan.empty.body")}
+        action={<Button label={t("plan.empty.create")} loading={isCreating} onPress={onCreate} />}
+      >
         {hasError && <InlineError message={t("common.saveError")} />}
-        <Button label={t("plan.empty.create")} loading={isCreating} onPress={onCreate} />
       </EmptyState>
     </View>
   );

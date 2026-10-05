@@ -2,10 +2,6 @@ import { and, asc, eq, isNull } from "drizzle-orm";
 import { db } from "@/shared/db/client";
 import { listIncrements } from "@/shared/db/queries/equipment.queries";
 import { findPlanDay } from "@/shared/db/queries/plan.queries";
-import {
-  listPlanExercisesByDay,
-  type PlanExerciseDetail,
-} from "@/shared/db/queries/plan-exercise.queries";
 import { sessions, setLogs } from "@/shared/db/schema";
 import type { EquipmentIncrementRow } from "@/shared/db/types";
 import type {
@@ -15,7 +11,9 @@ import type {
 } from "../types/workout.types";
 import { buildInsight, type InsightSettings } from "../utils/insight.utils";
 import { isExerciseDone } from "../utils/session-stats.utils";
+import type { DayExercise } from "../utils/swap.utils";
 import { buildTemplate } from "../utils/template.utils";
+import { listDayExercises } from "./day-exercises.service";
 import { loadHistory } from "./history.service";
 
 export async function findActiveSession(dayId: string, date: string): Promise<string | null> {
@@ -45,7 +43,7 @@ interface SessionContext {
 }
 
 function toSessionExercise(
-  detail: PlanExerciseDetail,
+  detail: DayExercise,
   sets: SessionSet[],
   { settings, now, increments, history }: SessionContext,
 ): SessionExercise {
@@ -55,6 +53,7 @@ function toSessionExercise(
     increments,
   });
   return {
+    slot: detail.slot,
     exerciseId: detail.exercise.id,
     nameEs: detail.exercise.nameEs,
     nameEn: detail.exercise.nameEn,
@@ -85,7 +84,7 @@ export async function loadSession({
   if (!session || !day) return null;
 
   const [details, logs, increments] = await Promise.all([
-    listPlanExercisesByDay(day.id),
+    listDayExercises(day.id, session.date),
     db.select().from(setLogs).where(eq(setLogs.sessionId, sessionId)).orderBy(asc(setLogs.setIndex)),
     listIncrements(),
   ]);

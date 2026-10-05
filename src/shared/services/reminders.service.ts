@@ -4,8 +4,8 @@ import i18n from "@/config/i18n";
 import { logger } from "@/config/logger";
 import { getAllSettings } from "@/shared/db/queries/settings.queries";
 import { findActivePlan, listPlanDays } from "@/shared/db/queries/plan.queries";
-import { buildReminderSlots } from "@/shared/utils/reminder.utils";
-import { parseSettings } from "@/shared/utils/settings-values.utils";
+import { buildReminderSlots, buildWeighInSlot } from "@/shared/utils/reminder.utils";
+import { parseSettings, type AppSettings } from "@/shared/utils/settings-values.utils";
 
 const CHANNEL_ID = "workout-reminders";
 
@@ -44,17 +44,58 @@ export async function requestReminderPermission(): Promise<boolean> {
   }
 }
 
+/** Un aviso semanal por cada día de entreno del plan, a la hora elegida. */
+async function scheduleWorkoutReminders(settings: AppSettings): Promise<void> {
+  if (!settings.reminderEnabled) return;
+  const plan = await findActivePlan();
+  const days = plan ? await listPlanDays(plan.id) : [];
+  const slots = buildReminderSlots({ days, hour: settings.reminderHour, minute: settings.reminderMinute });
+  await Promise.all(
+    slots.map((slot) =>
+      Notifications.scheduleNotificationAsync({
+        content: { title: i18n.t("reminder.title"), body: i18n.t("reminder.body", { day: slot.dayName }) },
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.WEEKLY,
+          weekday: slot.weekday,
+          hour: slot.hour,
+          minute: slot.minute,
+          channelId: CHANNEL_ID,
+        },
+      }),
+    ),
+  );
+}
+
+/** El aviso de pesaje: cada día, o una vez por semana el día elegido. */
+async function scheduleWeighInReminder(settings: AppSettings): Promise<void> {
+  if (!settings.weighInReminderEnabled) return;
+  const { weekday, hour, minute } = buildWeighInSlot({
+    frequency: settings.weighInFrequency,
+    weekday: settings.weighInWeekday,
+    hour: settings.weighInReminderHour,
+    minute: settings.weighInReminderMinute,
+  });
+  await Notifications.scheduleNotificationAsync({
+    content: { title: i18n.t("reminder.weighIn.title"), body: i18n.t("reminder.weighIn.body") },
+    trigger:
+      weekday === null
+        ? { type: Notifications.SchedulableTriggerInputTypes.DAILY, hour, minute, channelId: CHANNEL_ID }
+        : { type: Notifications.SchedulableTriggerInputTypes.WEEKLY, weekday, hour, minute, channelId: CHANNEL_ID },
+  });
+}
+
 /**
- * Deja programados los avisos según Ajustes y el plan: uno semanal por día de entreno, a la hora elegida.
- * Se llama al arrancar y cada vez que cambian el recordatorio, el idioma o los días del plan.
+ * Deja programados los avisos según Ajustes y el plan: los de entreno y el de pesaje.
+ * Se llama al arrancar y cada vez que cambian un recordatorio, el idioma o los días del plan.
  * Un fallo se registra y nunca rompe la pantalla que lo pidió.
  */
 export async function syncReminders(): Promise<void> {
   try {
     await Notifications.cancelAllScheduledNotificationsAsync();
     const settings = parseSettings(await getAllSettings(), "en");
-    if (!settings.reminderEnabled) return;
+    if (!settings.reminderEnabled && !settings.weighInReminderEnabled) return;
     if (!(await Notifications.getPermissionsAsync()).granted) return;
+<<<<<<< Updated upstream
 
     const plan = await findActivePlan();
     const days = plan ? await listPlanDays(plan.id) : [];
@@ -71,6 +112,9 @@ export async function syncReminders(): Promise<void> {
         },
       });
     }
+=======
+    await Promise.all([scheduleWorkoutReminders(settings), scheduleWeighInReminder(settings)]);
+>>>>>>> Stashed changes
   } catch (error) {
     logger.error("Failed to sync reminders", { error });
   }

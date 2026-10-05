@@ -147,7 +147,13 @@ describe("buildInsight", () => {
 });
 
 describe("buildHints", () => {
-  const exercise = (id: string) => ({ exerciseId: id, nameEs: id, nameEn: id, template: TEMPLATE });
+  const exercise = (id: string) => ({
+    slot: { planExerciseId: `pe-${id}`, originalExerciseId: id, isSubstituted: false },
+    exerciseId: id,
+    nameEs: id,
+    nameEn: id,
+    template: TEMPLATE,
+  });
 
   it("devuelve un aviso de subir y uno de descarga como máximo", () => {
     const hints = buildHints([

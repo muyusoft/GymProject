@@ -3,14 +3,20 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { getTextStyle, tokens } from "@/design/tokens";
 import { AsyncStateView, InlineError } from "@/shared/components";
+import { toIsoDate } from "@/shared/utils/week.utils";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 import { useSession } from "../hooks/use-session";
+import { useSubstitution } from "../hooks/use-substitution";
+import type { SessionExercise } from "../types/workout.types";
 import { sessionProgress } from "../utils/session-stats.utils";
 import { ExerciseCard } from "./ExerciseCard";
 import { NextExerciseCard } from "./NextExerciseCard";
 import { RestTimer } from "./RestTimer";
 import { SessionHeader } from "./SessionHeader";
 import { SessionHint } from "./SessionHint";
+import { SubstituteSheet } from "./SubstituteSheet";
+
+const EMPTY_EXERCISES: readonly SessionExercise[] = [];
 
 interface SessionScreenProps {
   sessionId: string;
@@ -23,6 +29,12 @@ export function SessionScreen({ sessionId }: SessionScreenProps) {
   const { view, current, timer } = session;
   const exercise = view?.exercises[current];
   const next = view?.exercises[current + 1];
+  const substitution = useSubstitution({
+    date: toIsoDate(new Date(view?.startedAt ?? Date.now())),
+    sessionId,
+    exercises: view?.exercises ?? EMPTY_EXERCISES,
+    onChanged: session.reload,
+  });
 
   return (
     <AsyncStateView status={session.status} onRetry={() => void session.reload()}>
@@ -50,10 +62,19 @@ export function SessionScreen({ sessionId }: SessionScreenProps) {
               onEditSet={session.setEditingSetId}
               onChangeSet={(setId, patch) => session.changeSet(exercise, setId, patch)}
               onAddSet={() => void session.appendSet(exercise)}
+              onSubstitute={() => substitution.open(exercise)}
             />
             {next && <NextExerciseCard exercise={next} onPress={() => session.goTo(current + 1)} />}
             {session.hasError && <InlineError message={t("common.saveError")} />}
           </ScrollView>
+          <SubstituteSheet
+            target={substitution.target}
+            excludedIds={substitution.excludedIds}
+            isApplying={substitution.isApplying}
+            hasError={substitution.hasError}
+            onApply={(substituteId, scope) => void substitution.apply(substituteId, scope)}
+            onClose={substitution.close}
+          />
           {timer.rest && (
             <View style={styles.rest}>
               <RestTimer

@@ -63,9 +63,23 @@
     "status": {
       "done": "done",
       "planned": "planned",
-      "rest": "rest"
+      "rest": "rest",
+      "none": "no workout"
     },
-    "recovery": "Muscle recovery"
+    "recovery": "Muscle recovery",
+    "fewerExercises": "Show less",
+    "week": {
+      "range": "{{from}} – {{to}}",
+      "backToToday": "Today",
+      "openCalendar": "Open calendar"
+    },
+    "calendar": {
+      "previous": "Previous month",
+      "next": "Next month",
+      "close": "Close calendar",
+      "day": "{{date}}, {{status}}",
+      "legend": "The dot marks days with a workout. Tap a day to go to its week."
+    }
   },
   "session": {
     "finish": "Finish",
@@ -162,17 +176,26 @@
       "sets_one": "{{count}} set",
       "sets_other": "{{count}} sets",
       "balance": "{{top}} has {{ratio}} times more sets than {{low}}. Want to add a set to those?",
-      "and": "and"
+      "and": "and",
+      "description": "This week's sets per muscle group. Each set adds 1 to its primary muscles and 0.5 to the secondary ones."
     },
     "consistency": {
-      "title": "Consistency · 12 weeks",
+      "title": "Consistency",
       "streak_one": "Streak: {{count}} day",
       "streak_other": "Streak: {{count}} days",
       "todayMissing": "Today: {{weekday}} is missing",
       "missing": "{{weekday}} is missing",
       "complete": "Week complete",
-      "a11y_one": "{{count}} session in the last 12 weeks",
-      "a11y_other": "{{count}} sessions in the last 12 weeks"
+      "previous": "Previous month",
+      "next": "Next month",
+      "monthCount_one": "{{count}} workout",
+      "monthCount_other": "{{count}} workouts",
+      "day": "{{date}}, {{state}}",
+      "state": {
+        "done": "workout done",
+        "pending": "workout pending",
+        "none": "no workout"
+      }
     }
   },
   "stepper": {
@@ -223,7 +246,7 @@
       "label": "Workout reminder",
       "when": "On your training days ({{days}}) at {{time}}",
       "noDays": "Add training days to your plan to get reminders",
-      "denied": "Notifications are blocked. Turn them on for Overload in your phone settings.",
+      "denied": "Notifications are blocked. Turn them on for Overset in your phone settings.",
       "hour": "Hour",
       "minute": "Minutes"
     },
@@ -238,8 +261,8 @@
       "imported": "Data restored: {{days}} days and {{sessions}} sessions.",
       "errors": {
         "not_json": "That file isn't valid JSON.",
-        "wrong_app": "That file isn't an Overload backup.",
-        "unsupported_version": "That backup comes from a newer version of Overload. Update the app and try again.",
+        "wrong_app": "That file isn't an Overset backup.",
+        "unsupported_version": "That backup comes from a newer version of Overset. Update the app and try again.",
         "invalid_data": "The backup is damaged or incomplete, so nothing was changed.",
         "generic": "Something went wrong and nothing was changed. Try again."
       }
@@ -335,7 +358,23 @@
       "addExercise": "+ Exercise",
       "save": "Save day",
       "moveUp": "Move up",
-      "moveDown": "Move down"
+      "moveDown": "Move down",
+      "suggest": {
+        "use": "Suggestion: {{name}}",
+        "fullBody": "Full body",
+        "two": "{{first}} and {{second}}",
+        "three": "{{first}}, {{second}} and {{third}}",
+        "focus": {
+          "chest": "Chest",
+          "back": "Back",
+          "shoulder": "Shoulders",
+          "legs": "Legs",
+          "biceps": "Biceps",
+          "triceps": "Triceps",
+          "arms": "Arms",
+          "core": "Core"
+        }
+      }
     },
     "load": {
       "suffix": {
@@ -459,7 +498,8 @@
     "volume": {
       "label": "Weekly volume",
       "unit": "t",
-      "vsPrevious": "{{percent}} vs previous"
+      "vsPrevious": "{{percent}} vs previous",
+      "note": "Tonnes: weight × reps this week"
     },
     "sessions": {
       "label": "Sessions this month",
@@ -482,7 +522,8 @@
       "sessions_one": "{{count}} session",
       "sessions_other": "{{count}} sessions"
     },
-    "muscleSets": "Sets per muscle"
+    "muscleSets": "Sets per muscle",
+    "bodyWeight": "Body weight"
   },
   "history": {
     "inPlan": "In your plan on {{days}} · one single history",
@@ -517,7 +558,11 @@
   "reminder": {
     "title": "Time to train",
     "body": "Today is {{day}}. Your workout is ready.",
-    "channel": "Workout reminders"
+    "channel": "Workout reminders",
+    "weighIn": {
+      "title": "Time to weigh in",
+      "body": "Log today's weight in Overset."
+    }
   },
   "daySummary": {
     "openHint": "Opens what you did that day",
@@ -532,6 +577,270 @@
     "empty": {
       "title": "No workout that day",
       "body": "There is no finished session recorded on this date."
+    }
+  },
+  "body": {
+    "title": "Body weight",
+    "entry": {
+      "title": "Today's weight",
+      "fine": "Fine adjustment",
+      "logged": "You logged {{weight}} today. You can correct it.",
+      "save": "Log weight",
+      "update": "Update today's weight"
+    },
+    "frequency": {
+      "title": "How often you weigh in",
+      "daily": "Daily",
+      "weekly": "Weekly"
+    },
+    "status": {
+      "empty": "Log your first weight to start seeing your trend.",
+      "stale": "It has been {{days}} days since your last entry. The trend is no longer reliable.",
+      "sparse": "With fewer than {{min}} entries in the last 7 days, the average is not reliable yet.",
+      "due": {
+        "daily": "You have not logged today's weight yet.",
+        "weekly": "A week has passed since your last entry: time to weigh in."
+      },
+      "ok": {
+        "daily": "You are up to date. Keep it up so the average stays reliable.",
+        "weekly": "You are up to date with your weekly entry."
+      }
+    },
+    "tip": {
+      "daily": "Weigh yourself after waking up, after using the bathroom and before eating. Weight swings 1 to 2 kg from day to day with water and food, so the 7-day average is shown. Aim for 3 or more entries a week.",
+      "weekly": "Always weigh yourself on the same day at the same time, after waking up and before eating. Each week is compared with the one before."
+    },
+    "summary": {
+      "average": "7-day average",
+      "entries_one": "From {{count}} entry",
+      "entries_other": "From {{count}} entries",
+      "rate": {
+        "up": "+{{value}} per week over the last {{weeks}} weeks",
+        "down": "−{{value}} per week over the last {{weeks}} weeks",
+        "same": "Stable over the last {{weeks}} weeks"
+      },
+      "noRate": "The weekly change appears once there are entries in two different weeks."
+    },
+    "chart": {
+      "title": "Average per week",
+      "none": "–"
+    },
+    "bmi": {
+      "label": "BMI",
+      "value": "{{value}} · {{category}}",
+      "category": {
+        "underweight": "Underweight",
+        "normal": "Normal range",
+        "overweight": "Overweight",
+        "obesity": "Obesity"
+      },
+      "note": "WHO ranges for adults. BMI cannot tell muscle from fat: if you lift, it may read high. Use it only as a reference.",
+      "missing": "Add your height to see your BMI. It is only used for that calculation.",
+      "height": "Height",
+      "addHeight": "Add height"
+    },
+    "history": {
+      "title": "Recent entries",
+      "delete": "Delete the entry from {{date}}"
+    },
+    "reminder": {
+      "label": "Weigh-in reminder",
+      "whenDaily": "Every day at {{time}}",
+      "whenWeekly": "Every {{day}} at {{time}}",
+      "day": "Day"
+    }
+  },
+  "substitute": {
+    "title": "Substitute {{name}}",
+    "search": "Search another exercise",
+    "allEquipment": "All",
+    "close": "Close",
+    "reason": {
+      "pattern": "Same movement · {{equipment}}",
+      "muscle": "Same primary muscle · {{equipment}}",
+      "search": "{{equipment}}"
+    },
+    "withHistory": "{{reason}} · Done before",
+    "empty": "No suggestions for this exercise. Search one by name.",
+    "emptySearch": "No exercise matches your search.",
+    "onlyToday": "Use today only",
+    "alsoPlan": "Also change it in the plan",
+    "restore": "Back to the plan's exercise",
+    "active": "Substitute for today only"
+  },
+  "exerciseInfo": {
+    "open": "See how to do {{name}}",
+    "notFound": "We could not find this exercise.",
+    "history": "See history",
+    "credit": "Photos and English instructions: free-exercise-db (public domain).",
+    "images": {
+      "start": "{{name}}: starting position",
+      "end": "{{name}}: end position",
+      "none": "This exercise has no photos yet.",
+      "failed": "The photos could not be loaded. They need a connection the first time; after that they stay saved."
+    },
+    "steps": {
+      "title": "How to do it",
+      "number": "{{number}}.",
+      "none": "There are no instructions for this exercise yet.",
+      "untranslated": "Not translated yet: shown in English."
+    },
+    "muscles": {
+      "title": "Muscles worked",
+      "primary": "Primary: {{names}}",
+      "secondary": "Secondary: {{names}}"
+    }
+  },
+  "intro": {
+    "progress": "{{current}} of {{total}}",
+    "skip": "Skip",
+    "start": "Get started",
+    "steps": {
+      "plan": {
+        "title": "Build your week once",
+        "body": "Create your plan from scratch or import it from your notes. Every day, Overset has your session ready to go."
+      },
+      "log": {
+        "title": "Every set, one tap",
+        "body": "No keyboard: your weight and reps are already filled in. Mark the set and the rest timer starts by itself."
+      },
+      "progress": {
+        "title": "Know when to add weight",
+        "body": "Overset tracks your estimated strength, your records and your volume, and tells you when you're ready for more."
+      },
+      "muscles": {
+        "title": "See what you worked and what has rested",
+        "body": "Each session paints the muscles you trained, so you can see which are still recovering and which are ready."
+      },
+      "body": {
+        "title": "Your consistency and weight at a glance",
+        "body": "A calendar of the days you trained, your streak, and your body weight with its weekly trend."
+      }
+    },
+    "art": {
+      "plan": "Sample weekly plan with today highlighted",
+      "log": "Sample exercise with two sets done, one pending and the rest timer running",
+      "progress": "Sample estimated strength with a record and a suggestion to add weight",
+      "body": "Sample consistency calendar with a streak and body weight"
+    },
+    "samples": {
+      "days": {
+        "chest": "Chest and triceps",
+        "back": "Back and biceps",
+        "rest": "Rest",
+        "legs": "Legs"
+      },
+      "dayMeta_one": "{{count}} exercise · ~{{minutes}} min",
+      "dayMeta_other": "{{count}} exercises · ~{{minutes}} min",
+      "today": "Today",
+      "exercise": "Bench press",
+      "set": "{{weight}} × {{reps}}",
+      "done": "Done",
+      "mark": "Mark",
+      "rest": "Rest",
+      "oneRepMax": "Bench press · estimated 1RM",
+      "record": "Record",
+      "increase": "Go up to {{weight}}",
+      "increaseReason": "You completed every set two sessions in a row.",
+      "consistency": "Consistency",
+      "streak_one": "{{count}}-day streak",
+      "streak_other": "{{count}}-day streak",
+      "trained": "Day trained",
+      "bodyWeight": "Body weight · 7-day average",
+      "weeklyChange": "−{{weight}} per week"
+    }
+  },
+  "account": {
+    "brand": "Overset",
+    "eyebrow": "Account",
+    "social": {
+      "apple": "Continue with Apple",
+      "google": "Continue with Google"
+    },
+    "errors": {
+      "unavailable": {
+        "title": "Accounts aren't available yet",
+        "message": "For now Overset keeps everything on this phone. You can use the app without an account."
+      },
+      "invalid_credentials": {
+        "title": "We couldn't sign you in",
+        "message": "The email or password doesn't match. Check them and try again."
+      },
+      "unknown": {
+        "title": "Something went wrong",
+        "message": "That couldn't be completed. Try again in a moment."
+      }
+    },
+    "fields": {
+      "name": "Name",
+      "email": "Email",
+      "password": "Password",
+      "emailPlaceholder": "you@email.com",
+      "passwordPlaceholder": "Your password",
+      "emailInvalid": "Enter a valid email.",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password"
+    },
+    "welcome": {
+      "haveAccount": "I have an account",
+      "title": "All your training, in one place",
+      "body": "Plan your week, log every set with one tap and watch your progress.",
+      "start": "Get started",
+      "orCloud": "Or save your progress to the cloud",
+      "withEmail": "Create an account with my email",
+      "legal": "Without an account, everything stays on this phone. By continuing you accept the Terms and Privacy Policy.",
+      "preview": {
+        "label": "App preview: today's workout, progress and muscle recovery",
+        "today": "Today · ~{{minutes}} min",
+        "done": "{{done}} of {{total}} done",
+        "day": "Chest and triceps",
+        "progress": "Progress",
+        "recovery": "Recovery",
+        "group": "Legs",
+        "ready": "Ready to train"
+      }
+    },
+    "signIn": {
+      "title": "Sign in",
+      "subtitle": "Get your plan and history back on any phone.",
+      "orEmail": "Or with your email",
+      "forgot": "Forgot your password?",
+      "submit": "Sign in",
+      "noAccount": "Don't have an account?",
+      "create": "Create account",
+      "wrongPassword": "Wrong password"
+    },
+    "signUp": {
+      "title": "Create account",
+      "subtitle": "Back up your workouts and use them on another phone.",
+      "rulesLabel": "Password requirements",
+      "rules": {
+        "minLength": "At least {{length}} characters",
+        "letterAndNumber": "One letter and one number"
+      },
+      "terms": "I accept the Terms and the Privacy Policy",
+      "submit": "Create account",
+      "uploadNote": "The workouts already on this phone are uploaded to your account.",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign in"
+    },
+    "forgot": {
+      "title": "Reset password",
+      "subtitle": "We'll send you a link to create a new one. It expires in 1 hour.",
+      "emailLabel": "Your account email",
+      "submit": "Send link",
+      "remembered": "Remembered it?",
+      "backToSignIn": "Back to sign in"
+    },
+    "checkEmail": {
+      "title": "Check your email",
+      "body": "We sent the link to {{email}}. Open it on this phone to create your new password.",
+      "tipSpam": "Not there? Check your spam or promotions folder.",
+      "tipTypo": "If you mistyped your email, go back and fix it.",
+      "openMail": "Open mail app",
+      "openMailError": "Couldn't open the mail app.",
+      "resend": "Resend link",
+      "resendIn": "Resend in {{time}}"
     }
   }
 }

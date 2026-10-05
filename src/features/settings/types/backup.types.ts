@@ -1,4 +1,4 @@
-import type { sessions, setLogs } from "@/shared/db/schema";
+import type { bodyWeights, sessions, setLogs } from "@/shared/db/schema";
 import type {
   EquipmentIncrementRow,
   PlanDayRow,
@@ -9,6 +9,7 @@ import type { Equipment, LoadType } from "@/shared/types/training.types";
 
 export type SessionRecord = typeof sessions.$inferSelect;
 export type SetLogRecord = typeof setLogs.$inferSelect;
+export type BodyWeightRecord = typeof bodyWeights.$inferSelect;
 
 /** Un ejercicio al que apunta el plan o el historial; se identifica por `sourceId` o por nombre al restaurar. */
 export interface BackupExercise {
@@ -31,6 +32,8 @@ export interface BackupData {
   planExercises: PlanExerciseRow[];
   sessions: SessionRecord[];
   setLogs: SetLogRecord[];
+  /** Falta en los respaldos anteriores al peso corporal; al restaurar uno de esos, los registros actuales se conservan. */
+  bodyWeights?: BodyWeightRecord[];
 }
 
 export const BACKUP_APP = "overload";

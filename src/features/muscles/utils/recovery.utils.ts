@@ -68,7 +68,12 @@ function recoverGroup(group: MuscleGroup, impacts: ReadonlyMap<string, SessionIm
     impact,
     percent: Math.min(1, Math.max(0, (now - impact.endedAt) / MS_PER_HOUR / requiredHours(impact))),
   }));
+<<<<<<< Updated upstream
   const limiting = scored.sort((a, b) => a.percent - b.percent)[0];
+=======
+  // [...].sort en vez de toSorted: Hermes no trae los métodos de arreglo de ES2023.
+  const limiting = [...scored].sort((a, b) => a.percent - b.percent)[0];
+>>>>>>> Stashed changes
   const latest = own.reduce<number | null>((max, impact) => (max === null ? impact.endedAt : Math.max(max, impact.endedAt)), null);
   if (!limiting) return { group, state: "ready", percent: 1, role: null, lastWorkedAt: null, cause: null };
   return {

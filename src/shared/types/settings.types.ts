@@ -9,9 +9,19 @@ export const SETTING_KEYS = {
   reminderEnabled: "reminderEnabled",
   reminderHour: "reminderHour",
   reminderMinute: "reminderMinute",
+  heightCm: "heightCm",
+  weighInFrequency: "weighInFrequency",
+  weighInReminderEnabled: "weighInReminderEnabled",
+  weighInReminderHour: "weighInReminderHour",
+  weighInReminderMinute: "weighInReminderMinute",
+  weighInWeekday: "weighInWeekday",
+  onboardingDone: "onboardingDone",
 } as const;
 
 export type SettingKey = (typeof SETTING_KEYS)[keyof typeof SETTING_KEYS];
 
 export const LANGUAGES = ["es", "en"] as const;
 export type Language = (typeof LANGUAGES)[number];
+
+export const WEIGH_IN_FREQUENCIES = ["daily", "weekly"] as const;
+export type WeighInFrequency = (typeof WEIGH_IN_FREQUENCIES)[number];

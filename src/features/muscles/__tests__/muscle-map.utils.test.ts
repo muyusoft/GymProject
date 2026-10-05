@@ -2,10 +2,12 @@ import { describe, expect, it } from "vitest";
 import { getSemanticColors } from "@/design/tokens";
 import type { MuscleLink } from "../types/muscles.types";
 import { joinGroupNames } from "../utils/group-labels.utils";
+import { toIsoDate } from "@/shared/utils/week.utils";
 import {
-  buildConsistency,
+  buildConsistencyMonth,
   computeStreak,
-  consistencyRows,
+  firstConsistencyMonth,
+  isCurrentMonth,
   nextPendingDay,
 } from "../utils/consistency.utils";
 import {
@@ -136,28 +138,44 @@ describe("constancia", () => {
   const lastWeek = ["2026-09-21", "2026-09-22", "2026-09-23", "2026-09-24", "2026-09-25"];
   const options = { sessionDates: [...thisWeek, ...lastWeek], plannedWeekdays: planned, today };
 
-  it("arma 12 semanas con una fila por entreno planeado", () => {
-    const columns = buildConsistency(options);
-    expect(columns).toHaveLength(12);
-    expect(consistencyRows(planned)).toBe(5);
-    expect(columns[0]?.cells).toEqual(["empty", "empty", "empty", "empty", "empty"]);
+  it("arma el mes de lunes a domingo, con huecos para los días de otros meses", () => {
+    const { rows } = buildConsistencyMonth({ ...options, month: new Date(2026, 9, 1) });
+    expect(rows).toHaveLength(5);
+    expect(rows[0]?.map((day) => day?.dayOfMonth ?? null)).toEqual([null, null, null, 1, 2, 3, 4]);
   });
 
-  it("marca hechas, pendientes en la semana actual y completa la anterior", () => {
-    const columns = buildConsistency(options);
-    expect(columns[11]?.cells).toEqual(["done", "done", "done", "done", "pending"]);
-    expect(columns[10]?.cells).toEqual(["done", "done", "done", "done", "done"]);
+  it("marca los días hechos, el pendiente de esta semana y los demás sin entreno", () => {
+    const october = buildConsistencyMonth({ ...options, month: new Date(2026, 9, 1) });
+    expect(october.rows[0]?.map((day) => day?.state ?? null)).toEqual([null, null, null, "done", "pending", "none", "none"]);
+    expect(october.rows[0]?.[4]).toEqual({ date: "2026-10-02", dayOfMonth: 2, state: "pending", isToday: true });
+    expect(october.doneCount).toBe(1);
   });
 
-  it("guarda las fechas de cada semana para abrir el resumen del día", () => {
-    const columns = buildConsistency({ ...options, sessionDates: ["2026-10-01", "2026-09-28", "2026-09-28"] });
-    expect(columns[11]?.dates).toEqual(["2026-09-28", "2026-10-01"]);
-    expect(columns[0]?.dates).toEqual([]);
+  it("en un mes pasado no hay pendientes: solo hecho o sin entreno", () => {
+    const september = buildConsistencyMonth({ ...options, month: new Date(2026, 8, 15) });
+    const states = september.rows.flat().flatMap((day) => (day ? [day.state] : []));
+    expect(states.filter((state) => state === "done")).toHaveLength(8);
+    expect(states).not.toContain("pending");
+    expect(september.doneCount).toBe(8);
+  });
+
+  it("un entreno planeado de esta semana que ya pasó sin hacerse queda sin entreno, no pendiente", () => {
+    const missed = buildConsistencyMonth({ ...options, sessionDates: lastWeek, month: new Date(2026, 9, 1) });
+    expect(missed.rows[0]?.[3]?.state).toBe("none");
+    expect(missed.rows[0]?.[4]?.state).toBe("pending");
   });
 
   it("dos sesiones el mismo día cuentan una sola vez", () => {
-    const columns = buildConsistency({ ...options, sessionDates: ["2026-09-28", "2026-09-28"] });
-    expect(columns[11]?.cells.filter((cell) => cell === "done")).toHaveLength(1);
+    const month = buildConsistencyMonth({ ...options, sessionDates: ["2026-10-01", "2026-10-01"], month: new Date(2026, 9, 1) });
+    expect(month.doneCount).toBe(1);
+  });
+
+  it("se puede retroceder hasta el mes de la primera sesión", () => {
+    expect(toIsoDate(firstConsistencyMonth(options.sessionDates, today))).toBe("2026-09-01");
+    expect(toIsoDate(firstConsistencyMonth([], today))).toBe("2026-10-01");
+    expect(toIsoDate(firstConsistencyMonth(["2027-01-05"], today))).toBe("2026-10-01");
+    expect(isCurrentMonth(new Date(2026, 9, 20), today)).toBe(true);
+    expect(isCurrentMonth(new Date(2026, 8, 20), today)).toBe(false);
   });
 
   it("la racha cuenta los entrenos planeados seguidos y hoy sin hacer todavía no la corta", () => {

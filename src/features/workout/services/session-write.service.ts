@@ -1,7 +1,6 @@
 import { eq } from "drizzle-orm";
 import { db } from "@/shared/db/client";
 import { listIncrements } from "@/shared/db/queries/equipment.queries";
-import { listPlanExercisesByDay } from "@/shared/db/queries/plan-exercise.queries";
 import { sessions, setLogs } from "@/shared/db/schema";
 import { chunk } from "@/shared/utils/chunk.utils";
 import { generateId } from "@/shared/utils/id.utils";
@@ -10,6 +9,7 @@ import type { SessionSet } from "../types/workout.types";
 import { buildInsight, type InsightSettings } from "../utils/insight.utils";
 import { buildInitialSets, nextSetValues, type NewSetLog } from "../utils/session-plan.utils";
 import { buildTemplate } from "../utils/template.utils";
+import { listDayExercises } from "./day-exercises.service";
 import { loadHistory } from "./history.service";
 import { findActiveSession } from "./session-read.service";
 
@@ -22,7 +22,7 @@ interface StartSessionOptions {
 }
 
 async function buildSessionSets(sessionId: string, { dayId, now, settings }: StartSessionOptions) {
-  const [details, increments] = await Promise.all([listPlanExercisesByDay(dayId), listIncrements()]);
+  const [details, increments] = await Promise.all([listDayExercises(dayId, toIsoDate(now)), listIncrements()]);
   const history = await loadHistory(details.map((detail) => detail.exercise.id), now.getTime());
   return details.flatMap((detail): NewSetLog[] => {
     const template = buildTemplate({

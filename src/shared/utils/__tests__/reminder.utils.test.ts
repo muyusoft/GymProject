@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildReminderSlots, formatReminderTime, toNotificationWeekday } from "../reminder.utils";
+import { buildReminderSlots, buildWeighInSlot, formatReminderTime, toNotificationWeekday } from "../reminder.utils";
 
 describe("toNotificationWeekday", () => {
   it("pasa de lunes = 0 a domingo = 1 de expo-notifications", () => {
@@ -29,6 +29,17 @@ describe("buildReminderSlots", () => {
 
   it("sin días de entreno no hay avisos", () => {
     expect(buildReminderSlots({ days: [], hour: 18, minute: 0 })).toEqual([]);
+  });
+});
+
+describe("buildWeighInSlot", () => {
+  it("a diario avisa todos los días, sin día de la semana", () => {
+    expect(buildWeighInSlot({ frequency: "daily", weekday: 3, hour: 7, minute: 15 })).toEqual({ weekday: null, hour: 7, minute: 15 });
+  });
+
+  it("cada semana avisa solo el día elegido, en la numeración de expo-notifications", () => {
+    expect(buildWeighInSlot({ frequency: "weekly", weekday: 0, hour: 7, minute: 0 })).toEqual({ weekday: 2, hour: 7, minute: 0 });
+    expect(buildWeighInSlot({ frequency: "weekly", weekday: 6, hour: 6, minute: 30 }).weekday).toBe(1);
   });
 });
 

@@ -1,10 +1,8 @@
 import { useCallback, useMemo } from "react";
 import { useFocusResource, type ResourceStatus } from "@/shared/hooks/use-focus-resource";
 import { startOfWeekMonday } from "@/shared/utils/week.utils";
-import type { WeekColumn } from "../types/muscles.types";
 import { loadMuscleMap } from "../services/muscle-map.service";
 import {
-  buildConsistency,
   computeStreak,
   nextPendingDay,
   type PendingDay,
@@ -23,7 +21,10 @@ export interface MuscleMapView {
   ranking: GroupTotal[];
   maxSets: number;
   balance: BalanceInsight | null;
-  columns: WeekColumn[];
+  /** Lo que necesita el calendario de constancia para armar cualquier mes. */
+  sessionDates: string[];
+  plannedWeekdays: number[];
+  today: Date;
   streak: number;
   pending: PendingDay | null;
 }
@@ -48,7 +49,7 @@ export function useMuscleMap(): MuscleMapState {
       ranking,
       maxSets: ranking[0]?.sets ?? 0,
       balance: balanceInsight(totals),
-      columns: buildConsistency(consistency),
+      ...consistency,
       streak: computeStreak(consistency),
       pending: nextPendingDay(consistency),
     };

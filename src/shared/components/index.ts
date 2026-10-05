@@ -6,6 +6,7 @@ export { Button } from "./Button";
 export { Chip } from "./Chip";
 export { EmptyState } from "./EmptyState";
 export { ErrorBoundary } from "./ErrorBoundary";
+export { ExerciseInfoButton } from "./ExerciseInfoButton";
 export { InlineError } from "./InlineError";
 export { ListRow } from "./ListRow";
 export { PlateMotif } from "./PlateMotif";
