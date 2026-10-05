@@ -7,6 +7,7 @@ import { formatClock } from "@/shared/utils/duration.utils";
 import {
   CONFIG_LIMITS,
   loadTypeUsesTime,
+  patchReps,
   type ConfigDraft,
 } from "../utils/exercise-config.utils";
 
@@ -15,15 +16,25 @@ interface MetricSteppersProps {
   onChange: (patch: Partial<ConfigDraft>) => void;
 }
 
-export function MetricSteppers({ draft, onChange }: Readonly<MetricSteppersProps>) {
+export function MetricSteppers({
+  draft,
+  onChange,
+}: Readonly<MetricSteppersProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
   const isTimed = loadTypeUsesTime(draft.loadType);
 
   return (
     <View style={styles.group}>
-      <Text style={[styles.label, { color: c.textSecondary }]}>{t("plan.config.sets")}</Text>
-      <Stepper {...CONFIG_LIMITS.sets} value={draft.sets} unit="" onChange={(sets) => onChange({ sets })} />
+      <Text style={[styles.label, { color: c.textSecondary }]}>
+        {t("plan.config.sets")}
+      </Text>
+      <Stepper
+        {...CONFIG_LIMITS.sets}
+        value={draft.sets}
+        unit=""
+        onChange={(sets) => onChange({ sets })}
+      />
       <Text style={[styles.label, { color: c.textSecondary }]}>
         {t(isTimed ? "plan.config.seconds" : "plan.config.reps")}
       </Text>
@@ -36,9 +47,36 @@ export function MetricSteppers({ draft, onChange }: Readonly<MetricSteppersProps
           onChange={(seconds) => onChange({ seconds })}
         />
       ) : (
-        <Stepper {...CONFIG_LIMITS.reps} value={draft.reps} unit="" onChange={(reps) => onChange({ reps })} />
+        <>
+          <Stepper
+            {...CONFIG_LIMITS.reps}
+            value={draft.reps}
+            unit=""
+            onChange={(reps) => onChange(patchReps(draft, reps))}
+          />
+          <Text style={[styles.label, { color: c.textSecondary }]}>
+            {t("plan.config.repsMin")}
+          </Text>
+          <Stepper
+            {...CONFIG_LIMITS.reps}
+            max={draft.reps}
+            value={draft.repsMin}
+            unit=""
+            onChange={(repsMin) => onChange({ repsMin })}
+          />
+          <Text style={[styles.hint, { color: c.textSecondary }]}>
+            {draft.repsMin < draft.reps
+              ? t("plan.config.rangeHint", {
+                  min: draft.repsMin,
+                  max: draft.reps,
+                })
+              : t("plan.config.rangeOff")}
+          </Text>
+        </>
       )}
-      <Text style={[styles.label, { color: c.textSecondary }]}>{t("plan.config.rest")}</Text>
+      <Text style={[styles.label, { color: c.textSecondary }]}>
+        {t("plan.config.rest")}
+      </Text>
       <Stepper
         {...CONFIG_LIMITS.restSec}
         value={draft.restSec}
@@ -53,4 +91,5 @@ export function MetricSteppers({ draft, onChange }: Readonly<MetricSteppersProps
 const styles = StyleSheet.create({
   group: { gap: tokens.spacing[2] },
   label: getTextStyle("label"),
+  hint: getTextStyle("bodySm"),
 });

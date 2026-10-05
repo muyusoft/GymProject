@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next";
 import { tokens } from "@/design/tokens";
 import { Toggle } from "@/shared/components";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
+import { formatReps } from "@/shared/utils/progression-rule.utils";
 import { formatNumber } from "@/shared/utils/weight.utils";
-import { DEFAULT_PROGRESSION_RULE } from "../utils/progression-rule.utils";
 import type { ConfigDraft } from "../utils/exercise-config.utils";
 
 interface ProgressionToggleProps {
@@ -13,7 +13,11 @@ interface ProgressionToggleProps {
   onChange: (isEnabled: boolean) => void;
 }
 
-export function ProgressionToggle({ draft, step, onChange }: Readonly<ProgressionToggleProps>) {
+export function ProgressionToggle({
+  draft,
+  step,
+  onChange,
+}: Readonly<ProgressionToggleProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
 
@@ -23,8 +27,10 @@ export function ProgressionToggle({ draft, step, onChange }: Readonly<Progressio
         label={t("plan.config.progression")}
         description={t("plan.config.progressionHint", {
           sets: draft.sets,
-          reps: draft.reps,
-          sessions: DEFAULT_PROGRESSION_RULE.sessions,
+          reps: formatReps(
+            draft.reps,
+            draft.repsMin < draft.reps ? draft.repsMin : null,
+          ),
           step: formatNumber(step, i18n.language),
           unit: draft.unit,
         })}

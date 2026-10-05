@@ -422,9 +422,12 @@
       "seconds": "Segundos",
       "rest": "Descanso",
       "progression": "Sugerirme subir peso",
-      "progressionHint": "Cuando completes {{sets}} × {{reps}} en {{sessions}} sesiones seguidas, proponer +{{step}} {{unit}}",
+      "progressionHint": "Cuando completes {{sets}} × {{reps}}, proponer +{{step}} {{unit}}",
       "remove": "Quitar",
-      "save": "Guardar ejercicio"
+      "save": "Guardar ejercicio",
+      "repsMin": "Reps mínimas",
+      "rangeHint": "Rango {{min}}–{{max}}: primero subes repeticiones hasta {{max}} y luego el peso. Al subir de peso vuelves a {{min}}.",
+      "rangeOff": "Bájalas para trabajar con un rango de repeticiones."
     },
     "importNotes": "Importar notas"
   },
@@ -452,7 +455,7 @@
   },
   "hint": {
     "dismiss": "Descartar sugerencia",
-    "increase": "{{name}}: completaste {{sets}} × {{reps}} con {{current}} en tus últimas 2 sesiones. Hoy prueba {{next}}.",
+    "increase": "{{name}}: completaste {{sets}} × {{reps}} con {{current}}. Hoy prueba {{next}}.",
     "preview": "Si hoy completas {{sets}} × {{reps}}, la próxima vez te sugerimos {{next}}.",
     "deload": "{{name}}: sin progreso en 3 semanas. Prueba una semana más ligera con {{next}}."
   },

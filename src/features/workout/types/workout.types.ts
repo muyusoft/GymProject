@@ -20,7 +20,10 @@ export interface SessionSet {
 
 export interface ExerciseTemplate {
   sets: number;
+  /** Objetivo de repeticiones: el tope del rango si lo hay. */
   reps: number | null;
+  /** Mínimo del rango de repeticiones (doble progresión); null con objetivo fijo. */
+  repsMin: number | null;
   seconds: number | null;
   restSec: number;
   targetWeight: number | null;
@@ -28,6 +31,8 @@ export interface ExerciseTemplate {
   loadType: LoadType;
   /** Salto de peso del equipo en la unidad del ejercicio. */
   weightStep: number;
+  /** "Sugerirme subir peso" de este ejercicio en el plan. */
+  isProgressionEnabled: boolean;
 }
 
 export interface ExerciseInsight {

@@ -221,6 +221,8 @@ const TEMPLATE: ExerciseTemplate = {
   unit: "lb",
   loadType: "per_arm",
   weightStep: 2.5,
+  repsMin: null,
+  isProgressionEnabled: true,
 };
 const SETTINGS = {
   progressionSuggestions: true,
@@ -237,6 +239,16 @@ describe("buildInsight", () => {
       buildInsight({ history, template: TEMPLATE, settings: SETTINGS, today })
         .increase,
     ).toBe(17.5);
+  });
+
+  it("respeta el interruptor del ejercicio en el plan", () => {
+    const off = { ...TEMPLATE, isProgressionEnabled: false };
+    expect(
+      buildInsight({ history, template: off, settings: SETTINGS, today }),
+    ).toMatchObject({
+      increase: null,
+      preview: null,
+    });
   });
 
   it("respeta el interruptor de sugerencias de Ajustes", () => {

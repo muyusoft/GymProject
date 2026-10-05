@@ -3,8 +3,9 @@ import type { LoadType, WeightUnit } from "@/shared/types/training.types";
 import { convertWeight, roundToIncrement } from "@/shared/utils/weight.utils";
 import {
   parseProgressionRule,
+  repRangeMin,
   serializeProgressionRule,
-} from "./progression-rule.utils";
+} from "@/shared/utils/progression-rule.utils";
 
 export const CONFIG_LIMITS = {
   sets: { min: 1, max: 10, step: 1 },
@@ -21,14 +22,19 @@ export interface ConfigDraft {
   unit: WeightUnit;
   weight: number;
   sets: number;
+  /** Objetivo de repeticiones: el tope del rango. */
   reps: number;
+  /** Mínimo del rango; igual a `reps` significa objetivo fijo, sin rango. */
+  repsMin: number;
   seconds: number;
   restSec: number;
   isProgressionEnabled: boolean;
 }
 
 export function loadTypeUsesWeight(loadType: LoadType): boolean {
-  return loadType === "per_arm" || loadType === "total" || loadType === "plates";
+  return (
+    loadType === "per_arm" || loadType === "total" || loadType === "plates"
+  );
 }
 
 export function loadTypeUsesTime(loadType: LoadType): boolean {
@@ -36,21 +42,45 @@ export function loadTypeUsesTime(loadType: LoadType): boolean {
 }
 
 export function draftFromPlanExercise(row: PlanExerciseRow): ConfigDraft {
+  const rule = parseProgressionRule(row.progressionRule);
+  const reps = row.reps ?? CONFIG_LIMITS.reps.min;
   return {
     loadType: row.loadType,
     unit: row.unit,
     weight: row.targetWeight ?? 0,
     sets: row.sets,
-    reps: row.reps ?? CONFIG_LIMITS.reps.min,
+    reps,
+    repsMin: repRangeMin(rule, reps) ?? reps,
     seconds: row.seconds ?? DEFAULT_SECONDS,
     restSec: row.restSec,
-    isProgressionEnabled: parseProgressionRule(row.progressionRule).enabled,
+    isProgressionEnabled: rule.enabled,
   };
 }
 
+/** Al cambiar el objetivo, el mínimo lo acompaña si no había rango y nunca queda por encima. */
+export function patchReps(
+  draft: ConfigDraft,
+  reps: number,
+): Pick<ConfigDraft, "reps" | "repsMin"> {
+  const hadRange = draft.repsMin < draft.reps;
+  return { reps, repsMin: hadRange ? Math.min(draft.repsMin, reps) : reps };
+}
+
+function hasRepRange(draft: ConfigDraft): boolean {
+  return !loadTypeUsesTime(draft.loadType) && draft.repsMin < draft.reps;
+}
+
 /** Solo se guarda lo que el tipo de carga usa: sin peso en tiempo, sin reps en tiempo, sin segundos en reps. */
-export function draftToPatch(draft: ConfigDraft, currentRule: string | null): PlanExercisePatch {
-  const rule = { ...parseProgressionRule(currentRule), enabled: draft.isProgressionEnabled };
+export function draftToPatch(
+  draft: ConfigDraft,
+  currentRule: string | null,
+): PlanExercisePatch {
+  const { sessions } = parseProgressionRule(currentRule);
+  const rule = {
+    enabled: draft.isProgressionEnabled,
+    sessions,
+    ...(hasRepRange(draft) && { repsMin: draft.repsMin }),
+  };
   return {
     loadType: draft.loadType,
     unit: draft.unit,
@@ -71,6 +101,11 @@ interface SwitchUnitOptions {
 }
 
 /** Al cambiar de unidad el peso se convierte y se acerca al salto del equipo en la unidad nueva. */
-export function switchUnit({ weight, from, to, step }: SwitchUnitOptions): number {
+export function switchUnit({
+  weight,
+  from,
+  to,
+  step,
+}: SwitchUnitOptions): number {
   return roundToIncrement(convertWeight(weight, from, to), step);
 }

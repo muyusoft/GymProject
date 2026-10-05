@@ -43,8 +43,9 @@ async function buildSessionSets(
       equipment: detail.exercise.equipment,
       increments,
     });
+    const exerciseHistory = history.get(detail.exercise.id) ?? [];
     const insight = buildInsight({
-      history: history.get(detail.exercise.id) ?? [],
+      history: exerciseHistory,
       template,
       settings,
       today: now,
@@ -55,6 +56,7 @@ async function buildSessionSets(
       template,
       insight,
       createId: generateId,
+      latest: exerciseHistory[0],
     });
   });
 }
