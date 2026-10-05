@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import i18n from "@/config/i18n";
-import { getAllSettings, saveSetting } from "@/shared/db/queries/settings.queries";
+import {
+  getAllSettings,
+  saveSetting,
+} from "@/shared/db/queries/settings.queries";
 import { syncReminders } from "@/shared/services/reminders.service";
 import { useSettingsStore } from "../settings.store";
 import { useThemeStore } from "../theme.store";
@@ -10,16 +13,25 @@ vi.mock("@/shared/db/queries/settings.queries", () => ({
   saveSetting: vi.fn(() => Promise.resolve()),
 }));
 
-vi.mock("@/shared/services/reminders.service", () => ({ syncReminders: vi.fn() }));
+vi.mock("@/shared/services/reminders.service", () => ({
+  syncReminders: vi.fn(),
+}));
 
 describe("settings store", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    useSettingsStore.setState({ isHydrated: false, language: "en", theme: "auto" });
+    useSettingsStore.setState({
+      isHydrated: false,
+      language: "en",
+      theme: "auto",
+    });
   });
 
   it("hidrata con lo guardado y sincroniza idioma y tema", async () => {
-    vi.mocked(getAllSettings).mockResolvedValue({ language: "es", theme: "light" });
+    vi.mocked(getAllSettings).mockResolvedValue({
+      language: "es",
+      theme: "light",
+    });
 
     await useSettingsStore.getState().hydrate();
 
@@ -51,7 +63,9 @@ describe("settings store", () => {
   it("no cambia el estado si guardar falla", async () => {
     vi.mocked(saveSetting).mockRejectedValueOnce(new Error("disk full"));
 
-    await expect(useSettingsStore.getState().update("trackRpe", true)).rejects.toThrow("disk full");
-    expect(useSettingsStore.getState().trackRpe).toBe(false);
+    await expect(
+      useSettingsStore.getState().update("trackRpe", false),
+    ).rejects.toThrow("disk full");
+    expect(useSettingsStore.getState().trackRpe).toBe(true);
   });
 });

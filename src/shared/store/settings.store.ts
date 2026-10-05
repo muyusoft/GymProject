@@ -1,6 +1,9 @@
 import { create } from "zustand";
 import i18n from "@/config/i18n";
-import { saveSetting, getAllSettings } from "@/shared/db/queries/settings.queries";
+import {
+  saveSetting,
+  getAllSettings,
+} from "@/shared/db/queries/settings.queries";
 import { syncReminders } from "@/shared/services/reminders.service";
 import type { Language } from "@/shared/types/settings.types";
 import {
@@ -12,12 +15,25 @@ import {
 import { useThemeStore } from "./theme.store";
 
 /** El texto de los avisos depende del idioma y su horario del recordatorio. */
-const REMINDER_KEYS: ReadonlySet<AppSettingKey> = new Set(["language", "reminderEnabled", "reminderHour", "reminderMinute"]);
+const REMINDER_KEYS: ReadonlySet<AppSettingKey> = new Set([
+  "language",
+  "reminderEnabled",
+  "reminderHour",
+  "reminderMinute",
+  "weighInFrequency",
+  "weighInReminderEnabled",
+  "weighInReminderHour",
+  "weighInReminderMinute",
+  "weighInWeekday",
+]);
 
 interface SettingsState extends AppSettings {
   isHydrated: boolean;
   hydrate: () => Promise<void>;
-  update: <K extends AppSettingKey>(key: K, value: AppSettings[K]) => Promise<void>;
+  update: <K extends AppSettingKey>(
+    key: K,
+    value: AppSettings[K],
+  ) => Promise<void>;
 }
 
 function currentLanguage(): Language {
@@ -25,7 +41,9 @@ function currentLanguage(): Language {
 }
 
 /** Idioma y tema viven fuera del store (i18next y el store de tema); aquí se sincronizan. */
-function applySideEffects(settings: Pick<AppSettings, "language" | "theme">): void {
+function applySideEffects(
+  settings: Pick<AppSettings, "language" | "theme">,
+): void {
   void i18n.changeLanguage(settings.language);
   useThemeStore.getState().setTheme(settings.theme);
 }

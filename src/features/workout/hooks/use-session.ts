@@ -4,10 +4,17 @@ import { Alert } from "react-native";
 import { useTranslation } from "react-i18next";
 import { logger } from "@/config/logger";
 import { useActionRunner } from "@/shared/hooks/use-action-runner";
-import { successFeedback, tapFeedback } from "@/shared/services/haptics.service";
+import {
+  successFeedback,
+  tapFeedback,
+} from "@/shared/services/haptics.service";
+import { effortToRpe, type EffortLevel } from "@/shared/utils/effort.utils";
 import { toValidSet } from "@/shared/utils/one-rep-max.utils";
 import { isNewRecord } from "../services/record.service";
-import { finishSession, type SetPatch } from "../services/session-write.service";
+import {
+  finishSession,
+  type SetPatch,
+} from "../services/session-write.service";
 import type { SessionExercise, SessionSet } from "../types/workout.types";
 import { countDoneSets, countTotalSets } from "../utils/session-stats.utils";
 import { useRestTimer } from "./use-rest-timer";
@@ -28,7 +35,11 @@ export function useSession(sessionId: string) {
       const candidate = toValidSet({ ...set, completed: true });
       if (!candidate) return patchSet(set.id, { isPR: false });
       try {
-        const isPR = await isNewRecord({ exerciseId: exercise.exerciseId, sessionId, candidate });
+        const isPR = await isNewRecord({
+          exerciseId: exercise.exerciseId,
+          sessionId,
+          candidate,
+        });
         patchSet(set.id, { isPR });
       } catch (error) {
         logger.error("Failed to check personal record", { error });
@@ -39,12 +50,14 @@ export function useSession(sessionId: string) {
 
   const toggleSet = useCallback(
     (exercise: SessionExercise, set: SessionSet) => {
-      if (set.completed) return patchSet(set.id, { completed: false, isPR: false });
+      if (set.completed)
+        return patchSet(set.id, { completed: false, isPR: false });
       patchSet(set.id, { completed: true });
       void tapFeedback();
       void evaluateRecord(exercise, set);
       if (!view) return;
-      const pending = countTotalSets(view.exercises) - countDoneSets(view.exercises);
+      const pending =
+        countTotalSets(view.exercises) - countDoneSets(view.exercises);
       if (pending > 1) timer.start(exercise.template.restSec);
     },
     [patchSet, evaluateRecord, view, timer],
@@ -59,6 +72,15 @@ export function useSession(sessionId: string) {
     [patchSet, evaluateRecord],
   );
 
+  /** La respuesta de esfuerzo es del ejercicio entero: se guarda en todas sus series. */
+  const rateEffort = useCallback(
+    (exercise: SessionExercise, level: EffortLevel | null) => {
+      const rpe = level === null ? null : effortToRpe(level);
+      for (const set of exercise.sets) patchSet(set.id, { rpe });
+    },
+    [patchSet],
+  );
+
   const complete = useCallback(async () => {
     if (await run(() => finishSession(sessionId, new Date()))) {
       void successFeedback();
@@ -67,12 +89,21 @@ export function useSession(sessionId: string) {
   }, [run, sessionId]);
 
   const finish = useCallback(() => {
-    const pending = view ? countTotalSets(view.exercises) - countDoneSets(view.exercises) : 0;
+    const pending = view
+      ? countTotalSets(view.exercises) - countDoneSets(view.exercises)
+      : 0;
     if (pending === 0) return void complete();
-    Alert.alert(t("session.finishConfirm.title"), t("session.finishConfirm.message", { count: pending }), [
-      { text: t("common.cancel"), style: "cancel" },
-      { text: t("session.finishConfirm.confirm"), onPress: () => void complete() },
-    ]);
+    Alert.alert(
+      t("session.finishConfirm.title"),
+      t("session.finishConfirm.message", { count: pending }),
+      [
+        { text: t("common.cancel"), style: "cancel" },
+        {
+          text: t("session.finishConfirm.confirm"),
+          onPress: () => void complete(),
+        },
+      ],
+    );
   }, [view, complete, t]);
 
   return {
@@ -87,6 +118,7 @@ export function useSession(sessionId: string) {
     setEditingSetId,
     toggleSet,
     changeSet,
+    rateEffort,
     finish,
     hasError: data.hasError || hasFinishError,
   };

@@ -1,4 +1,8 @@
-import type { Equipment, LoadType, WeightUnit } from "@/shared/types/training.types";
+import type {
+  Equipment,
+  LoadType,
+  WeightUnit,
+} from "@/shared/types/training.types";
 
 export interface SessionSet {
   id: string;
@@ -10,6 +14,8 @@ export interface SessionSet {
   loadType: LoadType;
   completed: boolean;
   isPR: boolean;
+  /** Esfuerzo del ejercicio (respuesta guardada como RPE); null si no se respondió. */
+  rpe: number | null;
 }
 
 export interface ExerciseTemplate {

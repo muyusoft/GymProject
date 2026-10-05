@@ -12,7 +12,8 @@ type FieldCheck = (value: unknown) => boolean;
 type RowSpec = Readonly<Record<string, FieldCheck>>;
 
 const text: FieldCheck = (value) => typeof value === "string";
-const finite: FieldCheck = (value) => typeof value === "number" && Number.isFinite(value);
+const finite: FieldCheck = (value) =>
+  typeof value === "number" && Number.isFinite(value);
 const flag: FieldCheck = (value) => typeof value === "boolean";
 const nullable =
   (check: FieldCheck): FieldCheck =>
@@ -24,7 +25,13 @@ const oneOf =
     typeof value === "string" && isOneOf(values, value);
 
 const SPECS = {
-  equipmentIncrements: { id: text, equipment: oneOf(INCREMENT_EQUIPMENTS), unit: oneOf(WEIGHT_UNITS), step: finite, updatedAt: finite },
+  equipmentIncrements: {
+    id: text,
+    equipment: oneOf(INCREMENT_EQUIPMENTS),
+    unit: oneOf(WEIGHT_UNITS),
+    step: finite,
+    updatedAt: finite,
+  },
   exercises: {
     id: text,
     sourceId: nullable(text),
@@ -85,7 +92,13 @@ const SPECS = {
     isPR: flag,
     updatedAt: finite,
   },
-  bodyWeights: { id: text, date: text, weight: finite, unit: oneOf(WEIGHT_UNITS), updatedAt: finite },
+  bodyWeights: {
+    id: text,
+    date: text,
+    weight: finite,
+    unit: oneOf(WEIGHT_UNITS),
+    updatedAt: finite,
+  },
 } as const satisfies Record<string, RowSpec>;
 
 type BackupTable = keyof typeof SPECS;
@@ -97,10 +110,17 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function rowsMatch(rows: unknown, spec: RowSpec): rows is Record<string, unknown>[] {
+function rowsMatch(
+  rows: unknown,
+  spec: RowSpec,
+): rows is Record<string, unknown>[] {
   return (
     Array.isArray(rows) &&
-    rows.every((row) => isRecord(row) && Object.entries(spec).every(([field, check]) => check(row[field])))
+    rows.every(
+      (row) =>
+        isRecord(row) &&
+        Object.entries(spec).every(([field, check]) => check(row[field])),
+    )
   );
 }
 
@@ -110,24 +130,41 @@ function idsOf(rows: readonly Record<string, unknown>[]): Set<string> {
 
 function idValue(row: Record<string, unknown>, key: string): string {
   const value = row[key];
-  return typeof value === "string" || typeof value === "number" ? String(value) : "";
+  return typeof value === "string" || typeof value === "number"
+    ? String(value)
+    : "";
 }
 
 function isStringMap(value: unknown): value is Record<string, string> {
-  return isRecord(value) && Object.values(value).every((entry) => typeof entry === "string");
+  return (
+    isRecord(value) &&
+    Object.values(value).every((entry) => typeof entry === "string")
+  );
 }
 
 /** Cada referencia apunta a algo que existe en el mismo archivo: así restaurar nunca viola una clave foránea. */
-function referencesHold(data: Record<string, Record<string, unknown>[]>): boolean {
+function referencesHold(
+  data: Record<string, Record<string, unknown>[]>,
+): boolean {
   const plans = idsOf(data.plans ?? []);
   const days = idsOf(data.planDays ?? []);
   const exercises = idsOf(data.exercises ?? []);
   const sessions = idsOf(data.sessions ?? []);
   return (
     (data.planDays ?? []).every((row) => plans.has(idValue(row, "planId"))) &&
-    (data.planExercises ?? []).every((row) => days.has(idValue(row, "planDayId")) && exercises.has(idValue(row, "exerciseId"))) &&
-    (data.sessions ?? []).every((row) => row.planDayId === null || days.has(idValue(row, "planDayId"))) &&
-    (data.setLogs ?? []).every((row) => sessions.has(idValue(row, "sessionId")) && exercises.has(idValue(row, "exerciseId")))
+    (data.planExercises ?? []).every(
+      (row) =>
+        days.has(idValue(row, "planDayId")) &&
+        exercises.has(idValue(row, "exerciseId")),
+    ) &&
+    (data.sessions ?? []).every(
+      (row) => row.planDayId === null || days.has(idValue(row, "planDayId")),
+    ) &&
+    (data.setLogs ?? []).every(
+      (row) =>
+        sessions.has(idValue(row, "sessionId")) &&
+        exercises.has(idValue(row, "exerciseId")),
+    )
   );
 }
 
@@ -136,7 +173,8 @@ export function isBackupData(value: unknown): value is BackupData {
   if (!isRecord(value) || !isStringMap(value.settings)) return false;
   const tables = Object.keys(SPECS) as BackupTable[];
   const isValid = (table: BackupTable) =>
-    (value[table] === undefined && OPTIONAL_TABLES.has(table)) || rowsMatch(value[table], SPECS[table]);
+    (value[table] === undefined && OPTIONAL_TABLES.has(table)) ||
+    rowsMatch(value[table], SPECS[table]);
   if (!tables.every(isValid)) return false;
   return referencesHold(value as Record<string, Record<string, unknown>[]>);
 }

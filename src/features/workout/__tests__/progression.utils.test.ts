@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import type { SessionResult } from "@/shared/types/history.types";
-import { previewIncrease, suggestIncrease } from "@/shared/utils/progression.utils";
+import {
+  previewIncrease,
+  suggestIncrease,
+} from "@/shared/utils/progression.utils";
 import type { ExerciseTemplate } from "../types/workout.types";
 import { isStagnated, suggestDeload } from "../utils/deload.utils";
 import { buildHints } from "../utils/hints.utils";
@@ -15,7 +18,14 @@ interface SessionOptions {
   doneSets?: number;
 }
 
-function session({ date = "2026-09-28", weight = 15, reps = 12, sets = 4, rpe = null, doneSets = sets }: SessionOptions = {}): SessionResult {
+function session({
+  date = "2026-09-28",
+  weight = 15,
+  reps = 12,
+  sets = 4,
+  rpe = null,
+  doneSets = sets,
+}: SessionOptions = {}): SessionResult {
   return {
     date,
     sets: Array.from({ length: sets }, (_, index) => ({
@@ -33,7 +43,12 @@ const BASE = { target: TARGET, step: 2.5, trackRpe: false };
 
 describe("suggestIncrease", () => {
   it("sugiere peso + salto del equipo tras 2 sesiones completas al mismo peso", () => {
-    expect(suggestIncrease({ ...BASE, history: [session(), session({ date: "2026-09-21" })] })).toBe(17.5);
+    expect(
+      suggestIncrease({
+        ...BASE,
+        history: [session(), session({ date: "2026-09-21" })],
+      }),
+    ).toBe(17.5);
   });
 
   it("no sugiere con una sola sesión", () => {
@@ -41,23 +56,100 @@ describe("suggestIncrease", () => {
   });
 
   it("no sugiere si faltó una serie o quedaron reps por debajo del objetivo", () => {
-    expect(suggestIncrease({ ...BASE, history: [session({ doneSets: 3 }), session()] })).toBeNull();
-    expect(suggestIncrease({ ...BASE, history: [session({ reps: 10 }), session()] })).toBeNull();
+    expect(
+      suggestIncrease({
+        ...BASE,
+        history: [session({ doneSets: 3 }), session()],
+      }),
+    ).toBeNull();
+    expect(
+      suggestIncrease({ ...BASE, history: [session({ reps: 10 }), session()] }),
+    ).toBeNull();
   });
 
   it("no sugiere si el peso cambió entre las dos sesiones", () => {
-    expect(suggestIncrease({ ...BASE, history: [session({ weight: 17.5 }), session()] })).toBeNull();
+    expect(
+      suggestIncrease({
+        ...BASE,
+        history: [session({ weight: 17.5 }), session()],
+      }),
+    ).toBeNull();
   });
 
   it("acepta más reps que el objetivo", () => {
-    expect(suggestIncrease({ ...BASE, history: [session({ reps: 14 }), session({ reps: 13 })] })).toBe(17.5);
+    expect(
+      suggestIncrease({
+        ...BASE,
+        history: [session({ reps: 14 }), session({ reps: 13 })],
+      }),
+    ).toBe(17.5);
   });
 
   it("con RPE activado no sugiere si el esfuerzo medio fue 9 o más", () => {
     const hard = [session({ rpe: 9 }), session()];
-    expect(suggestIncrease({ ...BASE, trackRpe: true, history: hard })).toBeNull();
-    expect(suggestIncrease({ ...BASE, trackRpe: false, history: hard })).toBe(17.5);
-    expect(suggestIncrease({ ...BASE, trackRpe: true, history: [session({ rpe: 8 }), session()] })).toBe(17.5);
+    expect(
+      suggestIncrease({ ...BASE, trackRpe: true, history: hard }),
+    ).toBeNull();
+    expect(suggestIncrease({ ...BASE, trackRpe: false, history: hard })).toBe(
+      17.5,
+    );
+    expect(
+      suggestIncrease({
+        ...BASE,
+        trackRpe: true,
+        history: [session({ rpe: 8 }), session()],
+      }),
+    ).toBe(17.5);
+  });
+
+  it("con la pregunta de esfuerzo respondida basta la última sesión", () => {
+    expect(
+      suggestIncrease({
+        ...BASE,
+        trackRpe: true,
+        history: [session({ rpe: 7 })],
+      }),
+    ).toBe(17.5);
+    expect(
+      suggestIncrease({
+        ...BASE,
+        trackRpe: true,
+        history: [session({ rpe: 8.5 }), session({ doneSets: 2 })],
+      }),
+    ).toBe(17.5);
+  });
+
+  it("al límite no sugiere aunque haya dos sesiones completas", () => {
+    expect(
+      suggestIncrease({
+        ...BASE,
+        trackRpe: true,
+        history: [session({ rpe: 10 }), session()],
+      }),
+    ).toBeNull();
+  });
+
+  it("la respuesta no salva una sesión incompleta", () => {
+    expect(
+      suggestIncrease({
+        ...BASE,
+        trackRpe: true,
+        history: [session({ rpe: 7, reps: 10 }), session()],
+      }),
+    ).toBeNull();
+  });
+
+  it("sin respuesta, o con la pregunta apagada, siguen haciendo falta dos sesiones", () => {
+    expect(
+      suggestIncrease({ ...BASE, trackRpe: true, history: [session()] }),
+    ).toBeNull();
+    expect(
+      suggestIncrease({
+        ...BASE,
+        trackRpe: false,
+        history: [session({ rpe: 7 })],
+      }),
+    ).toBeNull();
   });
 
   it("no sugiere sin historial", () => {
@@ -71,8 +163,12 @@ describe("previewIncrease", () => {
   });
 
   it("no anticipa si ya toca subir o si la última quedó incompleta", () => {
-    expect(previewIncrease({ ...BASE, history: [session(), session()] })).toBeNull();
-    expect(previewIncrease({ ...BASE, history: [session({ doneSets: 2 })] })).toBeNull();
+    expect(
+      previewIncrease({ ...BASE, history: [session(), session()] }),
+    ).toBeNull();
+    expect(
+      previewIncrease({ ...BASE, history: [session({ doneSets: 2 })] }),
+    ).toBeNull();
   });
 });
 
@@ -95,15 +191,23 @@ describe("deload", () => {
   });
 
   it("no hay estancamiento si subió el peso o las reps", () => {
-    const moreWeight = [session({ date: "2026-10-02", weight: 52.5, reps: 10 }), ...stalled.slice(1)];
-    const moreReps = [session({ date: "2026-10-02", weight: 50, reps: 11 }), ...stalled.slice(1)];
+    const moreWeight = [
+      session({ date: "2026-10-02", weight: 52.5, reps: 10 }),
+      ...stalled.slice(1),
+    ];
+    const moreReps = [
+      session({ date: "2026-10-02", weight: 50, reps: 11 }),
+      ...stalled.slice(1),
+    ];
     expect(isStagnated({ history: moreWeight, today })).toBe(false);
     expect(isStagnated({ history: moreReps, today })).toBe(false);
   });
 
   it("no sugiere sin sesión anterior a la ventana o con una sola reciente", () => {
     expect(isStagnated({ history: stalled.slice(0, 3), today })).toBe(false);
-    expect(isStagnated({ history: [stalled[0]!, stalled[3]!], today })).toBe(false);
+    expect(isStagnated({ history: [stalled[0]!, stalled[3]!], today })).toBe(
+      false,
+    );
     expect(suggestDeload({ history: [], today, step: 2.5 })).toBeNull();
   });
 });
@@ -118,19 +222,28 @@ const TEMPLATE: ExerciseTemplate = {
   loadType: "per_arm",
   weightStep: 2.5,
 };
-const SETTINGS = { progressionSuggestions: true, trackRpe: false, autoDeload: true };
+const SETTINGS = {
+  progressionSuggestions: true,
+  trackRpe: false,
+  autoDeload: true,
+};
 
 describe("buildInsight", () => {
   const history = [session(), session({ date: "2026-09-21" })];
   const today = new Date(2026, 9, 2);
 
   it("calcula la sugerencia de subir peso", () => {
-    expect(buildInsight({ history, template: TEMPLATE, settings: SETTINGS, today }).increase).toBe(17.5);
+    expect(
+      buildInsight({ history, template: TEMPLATE, settings: SETTINGS, today })
+        .increase,
+    ).toBe(17.5);
   });
 
   it("respeta el interruptor de sugerencias de Ajustes", () => {
     const off = { ...SETTINGS, progressionSuggestions: false };
-    expect(buildInsight({ history, template: TEMPLATE, settings: off, today })).toMatchObject({
+    expect(
+      buildInsight({ history, template: TEMPLATE, settings: off, today }),
+    ).toMatchObject({
       increase: null,
       preview: null,
     });
@@ -138,7 +251,9 @@ describe("buildInsight", () => {
 
   it("no sugiere nada para ejercicios por tiempo o sin peso", () => {
     const timed = { ...TEMPLATE, reps: null, targetWeight: null };
-    expect(buildInsight({ history, template: timed, settings: SETTINGS, today })).toEqual({
+    expect(
+      buildInsight({ history, template: timed, settings: SETTINGS, today }),
+    ).toEqual({
       increase: null,
       preview: null,
       deload: null,
@@ -148,7 +263,11 @@ describe("buildInsight", () => {
 
 describe("buildHints", () => {
   const exercise = (id: string) => ({
-    slot: { planExerciseId: `pe-${id}`, originalExerciseId: id, isSubstituted: false },
+    slot: {
+      planExerciseId: `pe-${id}`,
+      originalExerciseId: id,
+      isSubstituted: false,
+    },
     exerciseId: id,
     nameEs: id,
     nameEn: id,
@@ -157,17 +276,35 @@ describe("buildHints", () => {
 
   it("devuelve un aviso de subir y uno de descarga como máximo", () => {
     const hints = buildHints([
-      { exercise: exercise("a"), insight: { increase: 17.5, preview: null, deload: null } },
-      { exercise: exercise("b"), insight: { increase: 20, preview: null, deload: null } },
-      { exercise: exercise("c"), insight: { increase: null, preview: null, deload: 9 } },
+      {
+        exercise: exercise("a"),
+        insight: { increase: 17.5, preview: null, deload: null },
+      },
+      {
+        exercise: exercise("b"),
+        insight: { increase: 20, preview: null, deload: null },
+      },
+      {
+        exercise: exercise("c"),
+        insight: { increase: null, preview: null, deload: 9 },
+      },
     ]);
-    expect(hints.map((hint) => [hint.kind, hint.exerciseId, hint.nextWeight])).toEqual([
+    expect(
+      hints.map((hint) => [hint.kind, hint.exerciseId, hint.nextWeight]),
+    ).toEqual([
       ["increase", "a", 17.5],
       ["deload", "c", 9],
     ]);
   });
 
   it("devuelve una lista vacía sin sugerencias", () => {
-    expect(buildHints([{ exercise: exercise("a"), insight: { increase: null, preview: null, deload: null } }])).toEqual([]);
+    expect(
+      buildHints([
+        {
+          exercise: exercise("a"),
+          insight: { increase: null, preview: null, deload: null },
+        },
+      ]),
+    ).toEqual([]);
   });
 });

@@ -19,7 +19,12 @@ import { useSettingsStore } from "@/shared/store";
 import { SETTING_KEYS } from "@/shared/types/settings.types";
 import { chunk } from "@/shared/utils/chunk.utils";
 import { isOneOf } from "@/shared/utils/guard.utils";
-import type { BackupData, BackupExercise, BackupFile, BackupSummary } from "../types/backup.types";
+import type {
+  BackupData,
+  BackupExercise,
+  BackupFile,
+  BackupSummary,
+} from "../types/backup.types";
 import {
   backupFileName,
   buildBackup,
@@ -31,7 +36,9 @@ import {
 
 const BATCH_SIZE = 50;
 const ID_BATCH_SIZE = 500;
-const KNOWN_SETTING_KEYS = Object.values(SETTING_KEYS).filter((key) => key !== SETTING_KEYS.seeded);
+const KNOWN_SETTING_KEYS = Object.values(SETTING_KEYS).filter(
+  (key) => key !== SETTING_KEYS.seeded,
+);
 
 const exerciseColumns = {
   id: exercises.id,
@@ -44,19 +51,35 @@ const exerciseColumns = {
 };
 
 /** Solo los ejercicios a los que apunta el plan o el historial; el resto del catálogo se siembra solo. */
-async function loadReferencedExercises(ids: readonly string[]): Promise<BackupExercise[]> {
+async function loadReferencedExercises(
+  ids: readonly string[],
+): Promise<BackupExercise[]> {
   if (ids.length === 0) return [];
 
   const parts = chunk(ids, ID_BATCH_SIZE);
   const found = await Promise.all(
-    parts.map((part) => db.select(exerciseColumns).from(exercises).where(inArray(exercises.id, part))),
+    parts.map((part) =>
+      db
+        .select(exerciseColumns)
+        .from(exercises)
+        .where(inArray(exercises.id, part)),
+    ),
   );
 
   return found.flat();
 }
 
 export async function collectBackupData(): Promise<BackupData> {
-  const [allSettings, increments, planRows, dayRows, planExerciseRows, sessionRows, logRows, bodyWeightRows] = await Promise.all([
+  const [
+    allSettings,
+    increments,
+    planRows,
+    dayRows,
+    planExerciseRows,
+    sessionRows,
+    logRows,
+    bodyWeightRows,
+  ] = await Promise.all([
     getAllSettings(),
     db.select().from(equipmentIncrements),
     db.select().from(plans),
@@ -66,7 +89,9 @@ export async function collectBackupData(): Promise<BackupData> {
     db.select().from(setLogs),
     db.select().from(bodyWeights),
   ]);
-  const referenced = new Set([...planExerciseRows, ...logRows].map((row) => row.exerciseId));
+  const referenced = new Set(
+    [...planExerciseRows, ...logRows].map((row) => row.exerciseId),
+  );
   return {
     settings: pickUserSettings(allSettings),
     equipmentIncrements: increments,
@@ -96,7 +121,9 @@ export async function exportBackup(now: Date): Promise<ExportResult | null> {
     const directory = await Directory.pickDirectoryAsync();
     const file = buildBackup(await collectBackupData(), now);
     const fileName = backupFileName(now);
-    directory.createFile(fileName, "application/json").write(JSON.stringify(file));
+    directory
+      .createFile(fileName, "application/json")
+      .write(JSON.stringify(file));
     return { fileName, summary: summarizeBackup(file) };
   } catch (error) {
     if (isCancellation(error)) return null;
@@ -116,7 +143,10 @@ export async function pickBackup(): Promise<BackupFile | null> {
   }
 }
 
-function insertInBatches<Row>(rows: readonly Row[], insert: (part: Row[]) => void): void {
+function insertInBatches<Row>(
+  rows: readonly Row[],
+  insert: (part: Row[]) => void,
+): void {
   for (const part of chunk(rows, BATCH_SIZE)) insert(part);
 }
 
@@ -129,41 +159,82 @@ export async function restoreBackup(file: BackupFile): Promise<BackupSummary> {
   const { data } = file;
   db.transaction((tx) => {
     const known = tx
-      .select({ id: exercises.id, sourceId: exercises.sourceId, nameEs: exercises.nameEs, nameEn: exercises.nameEn })
+      .select({
+        id: exercises.id,
+        sourceId: exercises.sourceId,
+        nameEs: exercises.nameEs,
+        nameEn: exercises.nameEn,
+      })
       .from(exercises)
       .all();
     const { idMap, toCreate } = resolveExercises(data.exercises, known);
     const remap = (id: string) => idMap.get(id) ?? id;
 
     insertInBatches(toCreate, (part) =>
-      tx.insert(exercises).values(part.map((item) => ({ ...item, status: "claude_draft" as const }))).run(),
+      tx
+        .insert(exercises)
+        .values(
+          part.map((item) => ({ ...item, status: "claude_draft" as const })),
+        )
+        .run(),
     );
-    for (const table of [exerciseSwaps, setLogs, sessions, planExercises, planDays, plans]) tx.delete(table).run();
-    for (const table of [setLogs, sessions, planExercises, planDays, plans]) tx.delete(table).run();
+    for (const table of [
+      exerciseSwaps,
+      setLogs,
+      sessions,
+      planExercises,
+      planDays,
+      plans,
+    ])
+      tx.delete(table).run();
     insertInBatches(data.plans, (part) => tx.insert(plans).values(part).run());
-    insertInBatches(data.planDays, (part) => tx.insert(planDays).values(part).run());
-    insertInBatches(data.planExercises, (part) =>
-      tx.insert(planExercises).values(part.map((row) => ({ ...row, exerciseId: remap(row.exerciseId) }))).run(),
+    insertInBatches(data.planDays, (part) =>
+      tx.insert(planDays).values(part).run(),
     );
-    insertInBatches(data.sessions, (part) => tx.insert(sessions).values(part).run());
+    insertInBatches(data.planExercises, (part) =>
+      tx
+        .insert(planExercises)
+        .values(
+          part.map((row) => ({ ...row, exerciseId: remap(row.exerciseId) })),
+        )
+        .run(),
+    );
+    insertInBatches(data.sessions, (part) =>
+      tx.insert(sessions).values(part).run(),
+    );
     insertInBatches(data.setLogs, (part) =>
-      tx.insert(setLogs).values(part.map((row) => ({ ...row, exerciseId: remap(row.exerciseId) }))).run(),
+      tx
+        .insert(setLogs)
+        .values(
+          part.map((row) => ({ ...row, exerciseId: remap(row.exerciseId) })),
+        )
+        .run(),
     );
     const { bodyWeights: bodyWeightRows } = data;
     if (bodyWeightRows) {
       tx.delete(bodyWeights).run();
-      insertInBatches(bodyWeightRows, (part) => tx.insert(bodyWeights).values(part).run());
+      insertInBatches(bodyWeightRows, (part) =>
+        tx.insert(bodyWeights).values(part).run(),
+      );
     }
 
     for (const { equipment, unit, step } of data.equipmentIncrements) {
       tx.update(equipmentIncrements)
         .set({ step })
-        .where(and(eq(equipmentIncrements.equipment, equipment), eq(equipmentIncrements.unit, unit)))
+        .where(
+          and(
+            eq(equipmentIncrements.equipment, equipment),
+            eq(equipmentIncrements.unit, unit),
+          ),
+        )
         .run();
     }
     for (const [key, value] of Object.entries(data.settings)) {
       if (!isOneOf(KNOWN_SETTING_KEYS, key)) continue;
-      tx.insert(settings).values({ key, value }).onConflictDoUpdate({ target: settings.key, set: { value } }).run();
+      tx.insert(settings)
+        .values({ key, value })
+        .onConflictDoUpdate({ target: settings.key, set: { value } })
+        .run();
     }
   });
 

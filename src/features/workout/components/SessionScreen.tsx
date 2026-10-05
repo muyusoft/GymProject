@@ -9,6 +9,7 @@ import { useSession } from "../hooks/use-session";
 import { useSubstitution } from "../hooks/use-substitution";
 import type { SessionExercise } from "../types/workout.types";
 import { sessionProgress } from "../utils/session-stats.utils";
+import { EffortPrompt } from "./EffortPrompt";
 import { ExerciseCard } from "./ExerciseCard";
 import { NextExerciseCard } from "./NextExerciseCard";
 import { RestTimer } from "./RestTimer";
@@ -37,15 +38,24 @@ export function SessionScreen({ sessionId }: Readonly<SessionScreenProps>) {
   });
 
   return (
-    <AsyncStateView status={session.status} onRetry={() => void session.reload()}>
+    <AsyncStateView
+      status={session.status}
+      onRetry={() => void session.reload()}
+    >
       {view && !exercise && (
-        <Text style={[styles.empty, { color: c.textSecondary }]}>{t("session.empty")}</Text>
+        <Text style={[styles.empty, { color: c.textSecondary }]}>
+          {t("session.empty")}
+        </Text>
       )}
       {view && exercise && (
         <View style={styles.screen}>
           <View style={styles.header}>
             <SessionHeader
-              eyebrow={t("session.eyebrow", { day: view.dayName, index: current + 1, total: view.exercises.length })}
+              eyebrow={t("session.eyebrow", {
+                day: view.dayName,
+                index: current + 1,
+                total: view.exercises.length,
+              })}
               startedAt={view.startedAt}
               endedAt={view.endedAt}
               progress={sessionProgress(view.exercises)}
@@ -53,26 +63,44 @@ export function SessionScreen({ sessionId }: Readonly<SessionScreenProps>) {
               onFinish={session.finish}
             />
           </View>
-          <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+          <ScrollView
+            contentContainerStyle={styles.content}
+            keyboardShouldPersistTaps="handled"
+          >
             <SessionHint key={exercise.exerciseId} exercise={exercise} />
             <ExerciseCard
               exercise={exercise}
               editingSetId={session.editingSetId}
               onToggleSet={(set) => session.toggleSet(exercise, set)}
               onEditSet={session.setEditingSetId}
-              onChangeSet={(setId, patch) => session.changeSet(exercise, setId, patch)}
+              onChangeSet={(setId, patch) =>
+                session.changeSet(exercise, setId, patch)
+              }
               onAddSet={() => void session.appendSet(exercise)}
               onSubstitute={() => substitution.open(exercise)}
             />
-            {next && <NextExerciseCard exercise={next} onPress={() => session.goTo(current + 1)} />}
-            {session.hasError && <InlineError message={t("common.saveError")} />}
+            <EffortPrompt
+              exercise={exercise}
+              onRate={(level) => session.rateEffort(exercise, level)}
+            />
+            {next && (
+              <NextExerciseCard
+                exercise={next}
+                onPress={() => session.goTo(current + 1)}
+              />
+            )}
+            {session.hasError && (
+              <InlineError message={t("common.saveError")} />
+            )}
           </ScrollView>
           <SubstituteSheet
             target={substitution.target}
             excludedIds={substitution.excludedIds}
             isApplying={substitution.isApplying}
             hasError={substitution.hasError}
-            onApply={(substituteId, scope) => void substitution.apply(substituteId, scope)}
+            onApply={(substituteId, scope) =>
+              void substitution.apply(substituteId, scope)
+            }
             onClose={substitution.close}
           />
           {timer.rest && (
@@ -100,5 +128,9 @@ const styles = StyleSheet.create({
     paddingBottom: tokens.spacing[6],
   },
   rest: { padding: tokens.dimensions.screenGutter },
-  empty: { ...getTextStyle("body"), textAlign: "center", padding: tokens.spacing[6] },
+  empty: {
+    ...getTextStyle("body"),
+    textAlign: "center",
+    padding: tokens.spacing[6],
+  },
 });

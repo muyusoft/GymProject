@@ -113,7 +113,21 @@
       "confirm": "Terminar"
     },
     "record": "PR",
-    "recordLabel": "Récord personal"
+    "recordLabel": "Récord personal",
+    "effort": {
+      "question": "¿Cómo te fue?",
+      "hint": "Tu respuesta ajusta cuándo te sugerimos subir peso.",
+      "levels": {
+        "easy": "Me sobraron 3 o más repeticiones",
+        "solid": "Me sobraron 1 o 2 repeticiones",
+        "limit": "Llegué al límite"
+      },
+      "outcome": {
+        "easy": "Si completaste todas las repeticiones, la próxima vez te sugeriremos subir peso.",
+        "solid": "Si completaste todas las repeticiones, la próxima vez te sugeriremos subir peso.",
+        "limit": "La próxima vez repite este peso antes de subir."
+      }
+    }
   },
   "recovery": {
     "worked": "Recién trabajado",
@@ -227,8 +241,8 @@
     },
     "progression": {
       "suggestions": "Sugerencias de subir peso",
-      "rpe": "Registrar esfuerzo (RPE)",
-      "rpeHint": "Afina las sugerencias",
+      "rpe": "Preguntar el esfuerzo en cada ejercicio",
+      "rpeHint": "Al terminar un ejercicio dices cuánto te costó; con eso la sugerencia de subir peso se adelanta o espera.",
       "deload": "Deload automático",
       "deloadHint": "Al estancarte 3 semanas"
     },

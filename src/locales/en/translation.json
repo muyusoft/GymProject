@@ -113,7 +113,21 @@
       "confirm": "Finish"
     },
     "record": "PR",
-    "recordLabel": "Personal record"
+    "recordLabel": "Personal record",
+    "effort": {
+      "question": "How did it go?",
+      "hint": "Your answer adjusts when we suggest adding weight.",
+      "levels": {
+        "easy": "I had 3 or more reps left",
+        "solid": "I had 1 or 2 reps left",
+        "limit": "I hit my limit"
+      },
+      "outcome": {
+        "easy": "If you completed every rep, we'll suggest adding weight next time.",
+        "solid": "If you completed every rep, we'll suggest adding weight next time.",
+        "limit": "Next time, repeat this weight before going up."
+      }
+    }
   },
   "recovery": {
     "worked": "Just trained",
@@ -227,8 +241,8 @@
     },
     "progression": {
       "suggestions": "Suggest adding weight",
-      "rpe": "Log effort (RPE)",
-      "rpeHint": "Fine-tunes the suggestions",
+      "rpe": "Ask about effort after each exercise",
+      "rpeHint": "When you finish an exercise you say how hard it was; the suggestion to add weight comes sooner or waits.",
       "deload": "Automatic deload",
       "deloadHint": "When you stall for 3 weeks"
     },
