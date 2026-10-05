@@ -14,7 +14,7 @@ export type TabBarProps = Parameters<
 
 type TabRoute = TabBarProps["state"]["routes"][number];
 
-export function TabBar({ state, descriptors, navigation, insets }: TabBarProps) {
+export function TabBar({ state, descriptors, navigation, insets }: Readonly<TabBarProps>) {
   const { c } = useOverloadTheme();
 
   const handlePress = (route: TabRoute, isFocused: boolean) => {

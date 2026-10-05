@@ -14,7 +14,7 @@ interface RestRingProps {
 }
 
 /** Anillo de progreso del descanso (en info); el tiempo restante también va en texto al lado. */
-export function RestRing({ fraction }: RestRingProps) {
+export function RestRing({ fraction }: Readonly<RestRingProps>) {
   const { c } = useOverloadTheme();
 
   return (
@@ -30,8 +30,7 @@ export function RestRing({ fraction }: RestRingProps) {
         strokeDasharray={CIRCUMFERENCE}
         strokeDashoffset={CIRCUMFERENCE * (1 - fraction)}
         fill="none"
-        rotation={-90}
-        origin={`${HALF}, ${HALF}`}
+        transform={`rotate(-90 ${HALF} ${HALF})`}
       />
     </Svg>
   );

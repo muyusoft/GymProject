@@ -22,7 +22,7 @@ interface RestTimerProps {
 }
 
 /** Recibe la hora de fin, no un contador: sigue bien aunque se bloquee la pantalla. Vibra al terminar. */
-export function RestTimer({ endsAt, totalSec, onAdd, onSkip }: RestTimerProps) {
+export function RestTimer({ endsAt, totalSec, onAdd, onSkip }: Readonly<RestTimerProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
   const handleDone = useCallback(() => void successFeedback(), []);

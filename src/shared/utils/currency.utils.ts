@@ -7,8 +7,15 @@ interface CurrencyFormat {
   precision: number;
 }
 
+const DEFAULT_CURRENCY: CurrencyFormat = {
+  symbol: "$",
+  decimal: ".",
+  thousands: ",",
+  precision: 2,
+};
+
 const CURRENCIES: Record<string, CurrencyFormat> = {
-  USD: { symbol: "$", decimal: ".", thousands: ",", precision: 2 },
+  USD: DEFAULT_CURRENCY,
   EUR: { symbol: "€", decimal: ",", thousands: ".", precision: 2 },
   // Ecuador (USD es la moneda oficial)
 };
@@ -20,7 +27,7 @@ export const currencyUtils = {
    */
   format(amount: number, currency: string = "USD", locale?: string): string {
     const lang = locale || i18n.language;
-    const curr = CURRENCIES[currency] || CURRENCIES.USD;
+    const curr: CurrencyFormat = CURRENCIES[currency] ?? CURRENCIES.USD;
 
     const formatted = amount.toLocaleString(lang === "es" ? "es-ES" : "en-US", {
       minimumFractionDigits: curr.precision,
@@ -58,13 +65,13 @@ export const currencyUtils = {
 
     if (isES) {
       // "1.234,56" → "1234.56"
-      cleaned = cleaned.replace(/\./g, "").replace(",", ".");
+      cleaned = cleaned.replaceAll('.', "").replace(",", ".");
     } else {
       // "1,234.56" → "1234.56"
-      cleaned = cleaned.replace(/,/g, "");
+      cleaned = cleaned.replaceAll(',', "");
     }
 
-    return parseFloat(cleaned) || 0;
+    return Number.parseFloat(cleaned) || 0;
   },
 
   /**

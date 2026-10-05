@@ -105,7 +105,12 @@ function rowsMatch(rows: unknown, spec: RowSpec): rows is Record<string, unknown
 }
 
 function idsOf(rows: readonly Record<string, unknown>[]): Set<string> {
-  return new Set(rows.map((row) => String(row.id)));
+  return new Set(rows.map((row) => idValue(row, "id")));
+}
+
+function idValue(row: Record<string, unknown>, key: string): string {
+  const value = row[key];
+  return typeof value === "string" || typeof value === "number" ? String(value) : "";
 }
 
 function isStringMap(value: unknown): value is Record<string, string> {
@@ -119,10 +124,10 @@ function referencesHold(data: Record<string, Record<string, unknown>[]>): boolea
   const exercises = idsOf(data.exercises ?? []);
   const sessions = idsOf(data.sessions ?? []);
   return (
-    (data.planDays ?? []).every((row) => plans.has(String(row.planId))) &&
-    (data.planExercises ?? []).every((row) => days.has(String(row.planDayId)) && exercises.has(String(row.exerciseId))) &&
-    (data.sessions ?? []).every((row) => row.planDayId === null || days.has(String(row.planDayId))) &&
-    (data.setLogs ?? []).every((row) => sessions.has(String(row.sessionId)) && exercises.has(String(row.exerciseId)))
+    (data.planDays ?? []).every((row) => plans.has(idValue(row, "planId"))) &&
+    (data.planExercises ?? []).every((row) => days.has(idValue(row, "planDayId")) && exercises.has(idValue(row, "exerciseId"))) &&
+    (data.sessions ?? []).every((row) => row.planDayId === null || days.has(idValue(row, "planDayId"))) &&
+    (data.setLogs ?? []).every((row) => sessions.has(idValue(row, "sessionId")) && exercises.has(idValue(row, "exerciseId")))
   );
 }
 

@@ -18,7 +18,7 @@ interface TrendBadgeProps {
 }
 
 /** Subir va en volt; igual y bajar, en gris (nunca rojo). La dirección va en icono y en el texto. */
-export function TrendBadge({ direction, text }: TrendBadgeProps) {
+export function TrendBadge({ direction, text }: Readonly<TrendBadgeProps>) {
   const { c } = useOverloadTheme();
   const color = direction === "up" ? c.accentText : c.textSecondary;
 

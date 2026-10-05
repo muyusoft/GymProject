@@ -10,7 +10,7 @@ interface InlineErrorProps {
 }
 
 /** Aviso de error con icono y texto (nunca solo color). */
-export function InlineError({ message }: InlineErrorProps) {
+export function InlineError({ message }: Readonly<InlineErrorProps>) {
   const { c } = useOverloadTheme();
 
   return (

@@ -20,11 +20,13 @@ interface SetRowProps {
 }
 
 /** Tocar el check completa la serie; tocar peso o reps abre el ajuste (sin teclado). */
-export function SetRow({ set, status, onToggle, onEdit }: SetRowProps) {
+export function SetRow({ set, status, onToggle, onEdit }: Readonly<SetRowProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
   const isDone = status === "done";
   const number = set.index + 1;
+  const editLabel = t("session.editSet", { index: number });
+  const recordLabel = set.isPR ? `, ${t("session.recordLabel")}` : "";
 
   const repsValue = isTimed(set.loadType) ? formatClock(set.seconds ?? 0) : String(set.reps ?? 0);
   const repsUnit = isTimed(set.loadType) ? "" : t("session.repsUnit");
@@ -41,7 +43,7 @@ export function SetRow({ set, status, onToggle, onEdit }: SetRowProps) {
     >
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={`${t("session.editSet", { index: number })}${set.isPR ? `, ${t("session.recordLabel")}` : ""}`}
+        accessibilityLabel={`${editLabel}${recordLabel}`}
         onPress={onEdit}
         style={styles.values}
       >

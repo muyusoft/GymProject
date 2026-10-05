@@ -15,7 +15,7 @@ interface OneRepMaxCardProps {
   featured: FeaturedView;
 }
 
-export function OneRepMaxCard({ featured }: OneRepMaxCardProps) {
+export function OneRepMaxCard({ featured }: Readonly<OneRepMaxCardProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
   const { bucketStarts, spanUnit, trend, current } = featured;
@@ -52,7 +52,7 @@ export function OneRepMaxCard({ featured }: OneRepMaxCardProps) {
         {value}
         <Text style={[styles.unit, { color: c.textSecondary }]}>{` ${featured.unit}`}</Text>
       </Text>
-      {trend && trendText && <TrendBadge direction={trend.direction} text={trendText} />}
+      {trend && !!(trendText) && <TrendBadge direction={trend.direction} text={trendText} />}
       <BarChart
         bars={bars}
         labels={labels}

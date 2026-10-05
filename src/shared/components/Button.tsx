@@ -31,7 +31,7 @@ export function Button({
   loading = false,
   disabled = false,
   onPress,
-}: ButtonProps) {
+}: Readonly<ButtonProps>) {
   const { c } = useOverloadTheme();
   const colors = getButtonColors(variant, c);
   const isInert = isButtonInert(disabled, loading);
@@ -43,15 +43,25 @@ export function Button({
       accessibilityState={{ disabled: isInert, busy: loading }}
       disabled={isInert}
       onPress={onPress}
-      style={({ pressed }) => [
-        styles.base,
-        block ? styles.block : styles.inline,
-        {
-          backgroundColor: colors.background,
-          borderColor: colors.border,
-          opacity: disabled ? DISABLED_OPACITY : pressed ? PRESSED_OPACITY : 1,
-        },
-      ]}
+      style={({ pressed }) => {
+        let opacity = 1;
+
+        if (disabled) {
+          opacity = DISABLED_OPACITY;
+        } else if (pressed) {
+          opacity = PRESSED_OPACITY;
+        }
+
+        return [
+          styles.base,
+          block ? styles.block : styles.inline,
+          {
+            backgroundColor: colors.background,
+            borderColor: colors.border,
+            opacity,
+          },
+        ];
+      }}
     >
       {loading ? (
         <ActivityIndicator color={colors.foreground} />

@@ -3,7 +3,7 @@ import { tokens } from "@/design/tokens";
 import { styles } from "../styles/playground.styles";
 import type { ColorPaletteProps } from "../types/playground.types";
 
-export function ColorPalette({ name, colors, textColor }: ColorPaletteProps) {
+export function ColorPalette({ name, colors, textColor }: Readonly<ColorPaletteProps>) {
   return (
     <View style={styles.paletteSection}>
       <Text style={[styles.paletteName, { color: textColor }]}>{name}</Text>

@@ -8,7 +8,7 @@ interface ChipProps {
   onPress: () => void;
 }
 
-export function Chip({ label, selected, onPress }: ChipProps) {
+export function Chip({ label, selected, onPress }: Readonly<ChipProps>) {
   const { c } = useOverloadTheme();
 
   return (

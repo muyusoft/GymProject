@@ -15,7 +15,7 @@ const MOCK_USER = {
   name: "Test User",
 };
 
-export function ControlsBar({ colors }: ControlsBarProps) {
+export function ControlsBar({ colors }: Readonly<ControlsBarProps>) {
   const { i18n } = useTranslation();
   const { theme, setTheme } = useThemeStore();
   const { user, setUser } = useAuthStore();
@@ -25,7 +25,7 @@ export function ControlsBar({ colors }: ControlsBarProps) {
   };
 
   const toggleLanguage = () => {
-    i18n.changeLanguage(i18n.language === "en" ? "es" : "en");
+    void i18n.changeLanguage(i18n.language === "en" ? "es" : "en");
   };
 
   const toggleAuth = () => {

@@ -13,7 +13,7 @@ interface StatTileProps {
   compact?: boolean;
 }
 
-export function StatTile({ label, value, unit, delta, caption, compact = false }: StatTileProps) {
+export function StatTile({ label, value, unit, delta, caption, compact = false }: Readonly<StatTileProps>) {
   const { c } = useOverloadTheme();
 
   return (
@@ -24,7 +24,7 @@ export function StatTile({ label, value, unit, delta, caption, compact = false }
         {unit ? <Text style={[styles.unit, { color: c.textSecondary }]}>{` ${unit}`}</Text> : null}
       </Text>
       {delta && <TrendBadge direction={delta.direction} text={delta.text} />}
-      {caption && <Text style={[styles.caption, { color: c.textSecondary }]}>{caption}</Text>}
+      {!!(caption) && <Text style={[styles.caption, { color: c.textSecondary }]}>{caption}</Text>}
     </View>
   );
 }

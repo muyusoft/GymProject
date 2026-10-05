@@ -10,7 +10,7 @@ interface NotesInputProps {
   onChange: (value: string) => void;
 }
 
-export function NotesInput({ value, onChange }: NotesInputProps) {
+export function NotesInput({ value, onChange }: Readonly<NotesInputProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
 

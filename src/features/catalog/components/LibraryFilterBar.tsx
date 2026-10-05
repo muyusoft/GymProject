@@ -22,7 +22,7 @@ export function LibraryFilterBar({
   filters,
   onCategoryChange,
   onEquipmentChange,
-}: LibraryFilterBarProps) {
+}: Readonly<LibraryFilterBarProps>) {
   const { t } = useTranslation();
   const [isEquipmentOpen, setIsEquipmentOpen] = useState(filters.equipment !== null);
 

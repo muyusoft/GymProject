@@ -17,7 +17,7 @@ interface DayDefaultsPanelProps {
 }
 
 /** Valores base del día: solo se aplican a los ejercicios que se agreguen después. */
-export function DayDefaultsPanel({ defaults, onChange }: DayDefaultsPanelProps) {
+export function DayDefaultsPanel({ defaults, onChange }: Readonly<DayDefaultsPanelProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
   const [isEditing, setIsEditing] = useState(false);

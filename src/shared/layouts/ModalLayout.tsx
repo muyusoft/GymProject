@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
-import { View, SafeAreaView, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet, Pressable } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { tokens } from "@/design/tokens";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 
@@ -21,7 +22,7 @@ export function ModalLayout({
   title,
   onDismiss,
   backgroundColor,
-}: ModalLayoutProps) {
+}: Readonly<ModalLayoutProps>) {
   const { c: colors } = useOverloadTheme();
 
   return (

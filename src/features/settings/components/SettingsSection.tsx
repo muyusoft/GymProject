@@ -8,7 +8,7 @@ interface SettingsSectionProps {
   children: ReactNode;
 }
 
-export function SettingsSection({ title, children }: SettingsSectionProps) {
+export function SettingsSection({ title, children }: Readonly<SettingsSectionProps>) {
   const { c } = useOverloadTheme();
 
   return (

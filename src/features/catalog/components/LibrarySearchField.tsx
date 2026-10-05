@@ -11,7 +11,7 @@ interface LibrarySearchFieldProps {
   onChange: (value: string) => void;
 }
 
-export function LibrarySearchField({ value, onChange }: LibrarySearchFieldProps) {
+export function LibrarySearchField({ value, onChange }: Readonly<LibrarySearchFieldProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
 

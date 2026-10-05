@@ -20,7 +20,23 @@ export function persistedStore<T>(
   initializer: StateCreator<T>,
 ): StateCreator<T> {
   return (set, get, api) => {
-    const baseState = initializer(set, get, api);
+    const persistSet = ((state: any, replace?: boolean) => {
+      const nextState = typeof state === "function" ? state(get()) : state;
+
+      set(nextState, replace as any);
+
+      AsyncStorage.setItem(`zustand:${name}`, JSON.stringify(nextState))
+        .then(() => {
+          logger.debug(`Store "${name}" persisted to AsyncStorage`);
+        })
+        .catch((error) => {
+          logger.error(`Failed to persist store "${name}"`, {
+            error: error instanceof Error ? error.message : "Unknown error",
+          });
+        });
+    }) as typeof set;
+
+    const baseState = initializer(persistSet, get, api);
 
     // Restaurar estado al crear el store
     AsyncStorage.getItem(`zustand:${name}`)
@@ -44,23 +60,6 @@ export function persistedStore<T>(
           error: error instanceof Error ? error.message : "Unknown error",
         });
       });
-
-    // Interceptar cambios de estado para persistir
-    const originalSet = set;
-    const persistingSet = ((state: any) => {
-      originalSet(state);
-
-      // Guardar en AsyncStorage
-      AsyncStorage.setItem(`zustand:${name}`, JSON.stringify(state))
-        .then(() => {
-          logger.debug(`Store "${name}" persisted to AsyncStorage`);
-        })
-        .catch((error) => {
-          logger.error(`Failed to persist store "${name}"`, {
-            error: error instanceof Error ? error.message : "Unknown error",
-          });
-        });
-    }) as typeof set;
 
     return baseState;
   };

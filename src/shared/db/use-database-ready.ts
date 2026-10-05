@@ -23,7 +23,17 @@ export function useDatabaseReady(seedInput: SeedInput): DatabaseState {
       .then(() => setIsSeeded(true))
       .catch((error: unknown) => {
         logger.error("Database seed failed", { error });
-        setSeedError(error instanceof Error ? error : new Error(String(error)));
+
+        if (error instanceof Error) {
+          setSeedError(error);
+          return;
+        }
+
+        setSeedError(
+          typeof error === "string"
+            ? new Error(error)
+            : new Error("Unknown database seed error")
+        );
       });
   }, [success, seedInput]);
 

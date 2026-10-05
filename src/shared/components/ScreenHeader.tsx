@@ -13,7 +13,7 @@ interface ScreenHeaderProps {
   trailing?: ReactNode;
 }
 
-export function ScreenHeader({ eyebrow, onBack, trailing }: ScreenHeaderProps) {
+export function ScreenHeader({ eyebrow, onBack, trailing }: Readonly<ScreenHeaderProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
 

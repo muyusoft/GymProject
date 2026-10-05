@@ -17,7 +17,7 @@ interface SetEditorProps {
 }
 
 /** Peso (± salto del equipo) y reps (± 1) con botones: registrar una serie nunca pide el teclado. */
-export function SetEditor({ set, template, onChange, onClose }: SetEditorProps) {
+export function SetEditor({ set, template, onChange, onClose }: Readonly<SetEditorProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
 

@@ -24,7 +24,7 @@ export function Stepper({
   unit,
   onChange,
   formatValue = String,
-}: StepperProps) {
+}: Readonly<StepperProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
   const range = { min, max };

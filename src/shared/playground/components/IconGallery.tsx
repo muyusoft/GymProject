@@ -13,7 +13,7 @@ export function IconGallery({
   onIconSizeChange,
   searchIcons,
   onSearchChange,
-}: IconGalleryProps) {
+}: Readonly<IconGalleryProps>) {
   const isDark = colors.bgColor === tokens.colors.neutral[950];
 
   return (

@@ -17,7 +17,7 @@ interface LibraryListRowProps {
   onAdd: (exerciseId: string) => void;
 }
 
-export function LibraryListRow({ exercise, canAdd, onAdd }: LibraryListRowProps) {
+export function LibraryListRow({ exercise, canAdd, onAdd }: Readonly<LibraryListRowProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
   const name = getExerciseName(exercise, i18n.language);

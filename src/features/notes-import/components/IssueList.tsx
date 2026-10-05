@@ -12,7 +12,7 @@ interface IssueListProps {
 }
 
 /** Las líneas que no se pudieron usar, con su texto y el motivo: nada se pierde sin aviso. */
-export function IssueList({ issues }: IssueListProps) {
+export function IssueList({ issues }: Readonly<IssueListProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
   if (issues.length === 0) return null;

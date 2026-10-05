@@ -19,7 +19,7 @@ export function StepperButton({
   accessibilityLabel,
   isDisabled,
   onPress,
-}: StepperButtonProps) {
+}: Readonly<StepperButtonProps>) {
   const { c } = useOverloadTheme();
 
   return (

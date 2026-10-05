@@ -20,12 +20,20 @@ export function useProgress(): ProgressState {
   const { status, data, reload } = useFocusResource(loader);
   const preference = useSettingsStore((state) => state.weightUnit);
   const [range, setRange] = useState<ProgressRange>("quarter");
-  const [chosenId, select] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const view = useMemo(
-    () => (data ? buildProgressView({ data, range, preference, selectedId: chosenId }) : null),
-    [data, range, preference, chosenId],
+    () => (data ? buildProgressView({ data, range, preference, selectedId }) : null),
+    [data, range, preference, selectedId],
   );
 
-  return { status, reload, view, range, setRange, selectedId: view?.featured?.exerciseId ?? null, select };
+  return {
+    status,
+    reload,
+    view,
+    range,
+    setRange,
+    selectedId: view?.featured?.exerciseId ?? null,
+    select: setSelectedId,
+  };
 }

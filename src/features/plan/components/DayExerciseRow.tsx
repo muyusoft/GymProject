@@ -15,7 +15,7 @@ interface DayExerciseRowProps {
   onMove: (planExerciseId: string, direction: ReorderDirection) => void;
 }
 
-export function DayExerciseRow({ entry, index, count, onPress, onMove }: DayExerciseRowProps) {
+export function DayExerciseRow({ entry, index, count, onPress, onMove }: Readonly<DayExerciseRowProps>) {
   const { t, i18n } = useTranslation();
   const { planExercise, exercise } = entry;
 

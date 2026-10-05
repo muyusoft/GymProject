@@ -8,7 +8,7 @@ interface BadgeProps {
   tone?: "neutral" | "info" | "record";
 }
 
-export function Badge({ label, tone = "neutral" }: BadgeProps) {
+export function Badge({ label, tone = "neutral" }: Readonly<BadgeProps>) {
   const { c } = useOverloadTheme();
   const colors = {
     neutral: { background: c.surfaceAlt, text: c.textSecondary },

@@ -13,7 +13,7 @@ interface ProgressionToggleProps {
   onChange: (isEnabled: boolean) => void;
 }
 
-export function ProgressionToggle({ draft, step, onChange }: ProgressionToggleProps) {
+export function ProgressionToggle({ draft, step, onChange }: Readonly<ProgressionToggleProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
 

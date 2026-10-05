@@ -16,7 +16,7 @@ interface DayEditorHeaderProps {
   draft: ReturnType<typeof useDayDraft>;
 }
 
-export function DayEditorHeader({ detail, draft }: DayEditorHeaderProps) {
+export function DayEditorHeader({ detail, draft }: Readonly<DayEditorHeaderProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
   const suggestedName = useDayNameSuggestion(detail.nameSuggestion);

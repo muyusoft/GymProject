@@ -13,7 +13,7 @@ export function AuthSection({
   setExpandedSection,
   colors,
   user,
-}: AuthSectionProps) {
+}: Readonly<AuthSectionProps>) {
   return (
     <Section
       title="🔐 Auth Store"

@@ -45,11 +45,14 @@ const exerciseColumns = {
 
 /** Solo los ejercicios a los que apunta el plan o el historial; el resto del catálogo se siembra solo. */
 async function loadReferencedExercises(ids: readonly string[]): Promise<BackupExercise[]> {
-  const found: BackupExercise[] = [];
-  for (const part of chunk(ids, ID_BATCH_SIZE)) {
-    found.push(...(await db.select(exerciseColumns).from(exercises).where(inArray(exercises.id, part))));
-  }
-  return found;
+  if (ids.length === 0) return [];
+
+  const parts = chunk(ids, ID_BATCH_SIZE);
+  const found = await Promise.all(
+    parts.map((part) => db.select(exerciseColumns).from(exercises).where(inArray(exercises.id, part))),
+  );
+
+  return found.flat();
 }
 
 export async function collectBackupData(): Promise<BackupData> {
@@ -93,7 +96,7 @@ export async function exportBackup(now: Date): Promise<ExportResult | null> {
     const directory = await Directory.pickDirectoryAsync();
     const file = buildBackup(await collectBackupData(), now);
     const fileName = backupFileName(now);
-    await directory.createFile(fileName, "application/json").write(JSON.stringify(file));
+    directory.createFile(fileName, "application/json").write(JSON.stringify(file));
     return { fileName, summary: summarizeBackup(file) };
   } catch (error) {
     if (isCancellation(error)) return null;
@@ -113,43 +116,38 @@ export async function pickBackup(): Promise<BackupFile | null> {
   }
 }
 
-async function insertInBatches<Row>(rows: readonly Row[], insert: (part: Row[]) => Promise<unknown>): Promise<void> {
-  for (const part of chunk(rows, BATCH_SIZE)) await insert(part);
+function insertInBatches<Row>(rows: readonly Row[], insert: (part: Row[]) => void): void {
+  for (const part of chunk(rows, BATCH_SIZE)) insert(part);
 }
 
 /**
  * Reemplaza el plan y el historial por los del respaldo, en una transacción: o entra todo o no cambia nada.
  * Los ejercicios del catálogo se vinculan por su id de origen o por nombre; los que no existen se crean.
+ * La transacción de Drizzle con expo-sqlite es síncrona: adentro todo usa .run()/.all(), sin await.
  */
 export async function restoreBackup(file: BackupFile): Promise<BackupSummary> {
   const { data } = file;
-  await db.transaction(async (tx) => {
-    const known = await tx
+  db.transaction((tx) => {
+    const known = tx
       .select({ id: exercises.id, sourceId: exercises.sourceId, nameEs: exercises.nameEs, nameEn: exercises.nameEn })
-      .from(exercises);
+      .from(exercises)
+      .all();
     const { idMap, toCreate } = resolveExercises(data.exercises, known);
     const remap = (id: string) => idMap.get(id) ?? id;
 
-    await insertInBatches(toCreate, (part) =>
-      tx.insert(exercises).values(part.map((item) => ({ ...item, status: "claude_draft" as const }))),
+    insertInBatches(toCreate, (part) =>
+      tx.insert(exercises).values(part.map((item) => ({ ...item, status: "claude_draft" as const }))).run(),
     );
-<<<<<<< Updated upstream
-    for (const table of [setLogs, sessions, planExercises, planDays, plans]) await tx.delete(table);
-    await insertInBatches(data.plans, (part) => tx.insert(plans).values(part));
-    await insertInBatches(data.planDays, (part) => tx.insert(planDays).values(part));
-    await insertInBatches(data.planExercises, (part) =>
-      tx.insert(planExercises).values(part.map((row) => ({ ...row, exerciseId: remap(row.exerciseId) }))),
-=======
     for (const table of [exerciseSwaps, setLogs, sessions, planExercises, planDays, plans]) tx.delete(table).run();
+    for (const table of [setLogs, sessions, planExercises, planDays, plans]) tx.delete(table).run();
     insertInBatches(data.plans, (part) => tx.insert(plans).values(part).run());
     insertInBatches(data.planDays, (part) => tx.insert(planDays).values(part).run());
     insertInBatches(data.planExercises, (part) =>
       tx.insert(planExercises).values(part.map((row) => ({ ...row, exerciseId: remap(row.exerciseId) }))).run(),
->>>>>>> Stashed changes
     );
-    await insertInBatches(data.sessions, (part) => tx.insert(sessions).values(part));
-    await insertInBatches(data.setLogs, (part) =>
-      tx.insert(setLogs).values(part.map((row) => ({ ...row, exerciseId: remap(row.exerciseId) }))),
+    insertInBatches(data.sessions, (part) => tx.insert(sessions).values(part).run());
+    insertInBatches(data.setLogs, (part) =>
+      tx.insert(setLogs).values(part.map((row) => ({ ...row, exerciseId: remap(row.exerciseId) }))).run(),
     );
     const { bodyWeights: bodyWeightRows } = data;
     if (bodyWeightRows) {
@@ -158,14 +156,14 @@ export async function restoreBackup(file: BackupFile): Promise<BackupSummary> {
     }
 
     for (const { equipment, unit, step } of data.equipmentIncrements) {
-      await tx
-        .update(equipmentIncrements)
+      tx.update(equipmentIncrements)
         .set({ step })
-        .where(and(eq(equipmentIncrements.equipment, equipment), eq(equipmentIncrements.unit, unit)));
+        .where(and(eq(equipmentIncrements.equipment, equipment), eq(equipmentIncrements.unit, unit)))
+        .run();
     }
     for (const [key, value] of Object.entries(data.settings)) {
       if (!isOneOf(KNOWN_SETTING_KEYS, key)) continue;
-      await tx.insert(settings).values({ key, value }).onConflictDoUpdate({ target: settings.key, set: { value } });
+      tx.insert(settings).values({ key, value }).onConflictDoUpdate({ target: settings.key, set: { value } }).run();
     }
   });
 

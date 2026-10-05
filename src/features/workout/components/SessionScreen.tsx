@@ -22,7 +22,7 @@ interface SessionScreenProps {
   sessionId: string;
 }
 
-export function SessionScreen({ sessionId }: SessionScreenProps) {
+export function SessionScreen({ sessionId }: Readonly<SessionScreenProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
   const session = useSession(sessionId);

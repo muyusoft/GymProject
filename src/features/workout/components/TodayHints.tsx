@@ -9,7 +9,7 @@ interface TodayHintsProps {
   onDismiss: (kind: HintKind) => void;
 }
 
-export function TodayHints({ hints, onDismiss }: TodayHintsProps) {
+export function TodayHints({ hints, onDismiss }: Readonly<TodayHintsProps>) {
   const { t, i18n } = useTranslation();
   const weight = (value: number, unit: ProgressionHintData["unit"]) =>
     formatWeight({ value, unit, locale: i18n.language });

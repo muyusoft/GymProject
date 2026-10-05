@@ -28,12 +28,7 @@ export function ExerciseCard({
   onEditSet,
   onChangeSet,
   onAddSet,
-<<<<<<< Updated upstream
-}: ExerciseCardProps) {
-=======
-  onSubstitute,
 }: Readonly<ExerciseCardProps>) {
->>>>>>> Stashed changes
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
   const statuses = getSetStatuses(exercise.sets);

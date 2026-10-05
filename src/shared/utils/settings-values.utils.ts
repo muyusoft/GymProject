@@ -40,9 +40,7 @@ export const MIN_HEIGHT_CM = 120;
 export const MAX_HEIGHT_CM = 230;
 export const HEIGHT_NOT_SET = 0;
 
-export function serializeSetting(value: string | boolean | number): string {
-  return String(value);
-}
+export const serializeSetting: (value: string | boolean | number) => string = String;
 
 function parseBoolean(raw: string | undefined, fallback: boolean): boolean {
   return raw === undefined ? fallback : raw === TRUE_VALUE;

@@ -17,7 +17,7 @@ interface DetectedDaySectionProps {
 }
 
 /** Muestra siempre lo dudoso y lo nuevo; lo reconocido se pliega tras las primeras líneas. */
-export function DetectedDaySection({ review, dayIndex, decisions, onDecide }: DetectedDaySectionProps) {
+export function DetectedDaySection({ review, dayIndex, decisions, onDecide }: Readonly<DetectedDaySectionProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
   const [isExpanded, setIsExpanded] = useState(false);

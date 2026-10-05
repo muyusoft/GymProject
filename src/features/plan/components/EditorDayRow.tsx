@@ -13,14 +13,14 @@ interface EditorDayRowProps {
   onLongPress: () => void;
 }
 
-export function EditorDayRow({ day, onPress, onLongPress }: EditorDayRowProps) {
+export function EditorDayRow({ day, onPress, onLongPress }: Readonly<EditorDayRowProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`${t(`weekday.long.${day.weekday}`)}, ${day.name}`}
+      accessibilityLabel={`${t("weekday.long." + day.weekday)}, ${day.name}`}
       accessibilityHint={t("plan.editor.longPressHint")}
       onPress={onPress}
       onLongPress={onLongPress}

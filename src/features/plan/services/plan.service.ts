@@ -114,21 +114,24 @@ export async function duplicateDay({ dayId, weekday, name }: DuplicateDayOptions
     defaultReps: source.defaultReps,
     defaultRestSec: source.defaultRestSec,
   });
-  for (const { planExercise } of await listPlanExercisesByDay(source.id)) {
-    await insertPlanExercise({
-      planDayId: copy.id,
-      exerciseId: planExercise.exerciseId,
-      order: planExercise.order,
-      sets: planExercise.sets,
-      reps: planExercise.reps,
-      seconds: planExercise.seconds,
-      restSec: planExercise.restSec,
-      targetWeight: planExercise.targetWeight,
-      unit: planExercise.unit,
-      loadType: planExercise.loadType,
-      progressionRule: planExercise.progressionRule,
-    });
-  }
+  const sourceExercises = await listPlanExercisesByDay(source.id);
+  await Promise.all(
+    sourceExercises.map(({ planExercise }) =>
+      insertPlanExercise({
+        planDayId: copy.id,
+        exerciseId: planExercise.exerciseId,
+        order: planExercise.order,
+        sets: planExercise.sets,
+        reps: planExercise.reps,
+        seconds: planExercise.seconds,
+        restSec: planExercise.restSec,
+        targetWeight: planExercise.targetWeight,
+        unit: planExercise.unit,
+        loadType: planExercise.loadType,
+        progressionRule: planExercise.progressionRule,
+      }),
+    ),
+  );
   void syncReminders();
 }
 

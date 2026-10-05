@@ -19,7 +19,7 @@ interface ExerciseConfigSheetProps {
   planExerciseId: string;
 }
 
-export function ExerciseConfigSheet({ planExerciseId }: ExerciseConfigSheetProps) {
+export function ExerciseConfigSheet({ planExerciseId }: Readonly<ExerciseConfigSheetProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
   const form = useExerciseConfig(planExerciseId);

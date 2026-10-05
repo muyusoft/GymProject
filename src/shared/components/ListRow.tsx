@@ -22,7 +22,7 @@ export function ListRow({
   onPress,
   hasDragHandle = false,
   isDragging = false,
-}: ListRowProps) {
+}: Readonly<ListRowProps>) {
   const { c } = useOverloadTheme();
 
   return (
@@ -48,7 +48,7 @@ export function ListRow({
       )}
       <View style={styles.texts}>
         <Text style={[styles.title, { color: c.text }]}>{title}</Text>
-        {subtitle && (
+        {!!(subtitle) && (
           <Text style={[styles.subtitle, { color: c.textSecondary }]}>
             {subtitle}
           </Text>

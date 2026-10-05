@@ -1,10 +1,4 @@
 import { View, Text } from "react-native";
-import {
-  AppLayout,
-  AuthLayout,
-  PublicLayout,
-  ModalLayout,
-} from "@/shared/layouts";
 import { tokens } from "@/design/tokens";
 import { styles } from "../styles/playground.styles";
 import { Section } from "../components";
@@ -27,7 +21,7 @@ export function LayoutsSection({
   expandedSection,
   setExpandedSection,
   colors,
-}: LayoutsSectionProps) {
+}: Readonly<LayoutsSectionProps>) {
   return (
     <Section
       title="🎨 Layout System (4 tipos)"

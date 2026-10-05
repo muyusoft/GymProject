@@ -4,11 +4,11 @@ import { parseDuration } from "./duration.utils";
 import { detectLoadType } from "./load-type.utils";
 import { capitalize, cleanLine, fixTypos } from "./normalize.utils";
 
-const DURATION = "\\d+m\\d+s|\\d+m|\\d+s";
-const REST = new RegExp(`descansos?\\s+(?:de\\s+)?(${DURATION})`);
-const SETS = new RegExp(`(\\d+)\\s*series?\\s+(?:de\\s+)?(${DURATION}|\\d+)`);
+const DURATION = String.raw`\d+m\d+s|\d+m|\d+s`;
+const REST = new RegExp(String.raw`descansos?\s+(?:de\s+)?(${DURATION})`);
+const SETS = new RegExp(String.raw`(\d+)\s*series?\s+(?:de\s+)?(${DURATION}|\d+)`);
 const WEIGHT = /(\d+(?:[.,]\d+)?)\s*(lbs?|kgs?)\b/;
-const PARENTHESES = /\(([^)]*)\)/g;
+const PARENTHESES = /\(([^()]*)\)/g;
 
 function splitName(rawName: string): { name: string; note: string | null } {
   const notes = [...rawName.matchAll(PARENTHESES)].map((match) => (match[1] ?? "").trim());
@@ -45,17 +45,22 @@ export function parseExerciseLine(raw: string, lineNumber: number): ParsedLine |
   const seconds = parseDuration(work);
   const isTimed = seconds !== null;
   const weightMatch = isTimed ? null : weight.match;
+  const unit = weightMatch ? getUnit(weightMatch[2] ?? "") : null;
   return {
     lineNumber,
     raw: raw.trim(),
     name,
     note,
     weight: weightMatch ? Number((weightMatch[1] ?? "").replace(",", ".")) : null,
-    unit: weightMatch ? ((weightMatch[2] ?? "").startsWith("lb") ? "lb" : "kg") : null,
+    unit,
     loadType: detectLoadType({ modifiers: weight.remaining, hasWeight: weightMatch !== null, isTimed }),
     sets: Number(sets.match[1]),
     reps: isTimed ? null : Number(work),
     seconds,
     restSec: rest.match ? parseDuration(rest.match[1] ?? "") : null,
   };
+}
+
+function getUnit(rawUnit: string): "lb" | "kg" {
+  return rawUnit.startsWith("lb") ? "lb" : "kg";
 }

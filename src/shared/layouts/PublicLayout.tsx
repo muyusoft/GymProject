@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
-import { View, SafeAreaView, ScrollView, StyleSheet } from "react-native";
+import { View, ScrollView, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { tokens } from "@/design/tokens";
 
 interface PublicLayoutProps {
@@ -17,7 +18,7 @@ export function PublicLayout({
   children,
   header,
   backgroundColor,
-}: PublicLayoutProps) {
+}: Readonly<PublicLayoutProps>) {
   return (
     <SafeAreaView
       style={[

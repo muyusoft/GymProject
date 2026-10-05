@@ -13,7 +13,7 @@ export function DesignTokensSection({
   expandedSection,
   setExpandedSection,
   colors,
-}: DesignTokensSectionProps) {
+}: Readonly<DesignTokensSectionProps>) {
   return (
     <>
       <Section

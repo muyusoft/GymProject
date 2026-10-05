@@ -8,7 +8,7 @@ interface EmptyPlanProps {
   onCreate: () => void;
 }
 
-export function EmptyPlan({ isCreating, hasError, onCreate }: EmptyPlanProps) {
+export function EmptyPlan({ isCreating, hasError, onCreate }: Readonly<EmptyPlanProps>) {
   const { t } = useTranslation();
 
   return (

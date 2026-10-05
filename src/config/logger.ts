@@ -16,7 +16,7 @@ export interface LogEntry {
 
 class Logger {
   private logs: LogEntry[] = [];
-  private maxLogs = 100;
+  private readonly maxLogs = 100;
 
   private formatTime(): string {
     return new Date().toISOString();
@@ -66,8 +66,26 @@ class Logger {
   }
 
   private logToSentry(entry: LogEntry) {
-    // TODO: Implementar cuando Sentry esté configurado
-    // Sentry.captureMessage(entry.message, entry.level);
+    const sentry = (globalThis as any).Sentry;
+
+    if (!sentry || typeof sentry.captureMessage !== "function") {
+      return;
+    }
+
+    const levelMap: Record<LogLevel, string> = {
+      debug: "debug",
+      info: "info",
+      warn: "warning",
+      error: "error",
+    };
+
+    sentry.captureMessage(entry.message, {
+      level: levelMap[entry.level],
+      extra: {
+        timestamp: entry.timestamp,
+        data: entry.data,
+      },
+    });
   }
 
   debug(message: string, data?: any) {

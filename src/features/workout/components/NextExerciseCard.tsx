@@ -13,7 +13,7 @@ interface NextExerciseCardProps {
   onPress: () => void;
 }
 
-export function NextExerciseCard({ exercise, onPress }: NextExerciseCardProps) {
+export function NextExerciseCard({ exercise, onPress }: Readonly<NextExerciseCardProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
   const { template } = exercise;

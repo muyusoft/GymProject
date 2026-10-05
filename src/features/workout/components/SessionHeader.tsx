@@ -25,7 +25,7 @@ export function SessionHeader({
   progress,
   onBack,
   onFinish,
-}: SessionHeaderProps) {
+}: Readonly<SessionHeaderProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
   const clock = useElapsed(startedAt, endedAt);

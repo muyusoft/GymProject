@@ -18,7 +18,14 @@ export function buildWeekStrip({
 }: WeekStripOptions): WeekStripDay[] {
   return weekDates(weekStart).map((date, weekday) => {
     const planned = days.find((day) => day.weekday === weekday);
-    const status = !planned ? "rest" : completedDayIds.has(planned.id) ? "done" : "planned";
+    let status: WeekStripDay["status"];
+    if (!planned) {
+      status = "rest";
+    } else if (completedDayIds.has(planned.id)) {
+      status = "done";
+    } else {
+      status = "planned";
+    }
     return { date, weekday, status, isToday: isSameDay(date, today) };
   });
 }

@@ -24,7 +24,7 @@ export function recentRecords(rows: readonly LoggedSetRow[], limit: number): Rec
     const estimate = oneRepMaxKg(valid);
     const current = best.get(row.exerciseId);
     const isNewer = !current || row.date > current.record.date;
-    const isBetter = current && row.date === current.record.date && estimate > current.estimate;
+    const isBetter = row.date === current?.record.date && estimate > current.estimate;
     if (isNewer || isBetter) {
       best.set(row.exerciseId, {
         estimate,

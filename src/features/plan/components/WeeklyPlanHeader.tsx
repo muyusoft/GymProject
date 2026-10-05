@@ -9,7 +9,7 @@ interface WeeklyPlanHeaderProps {
   plan: WeeklyPlan;
 }
 
-export function WeeklyPlanHeader({ plan }: WeeklyPlanHeaderProps) {
+export function WeeklyPlanHeader({ plan }: Readonly<WeeklyPlanHeaderProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
   const weekOf = new Intl.DateTimeFormat(i18n.language, {

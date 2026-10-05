@@ -19,7 +19,7 @@ interface HistoryChartProps {
 }
 
 /** Peso por sesión: un punto por sesión (las últimas 6). La tendencia aparece desde la 4.ª sesión. */
-export function HistoryChart({ sessions, unit }: HistoryChartProps) {
+export function HistoryChart({ sessions, unit }: Readonly<HistoryChartProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
   const points = sessions

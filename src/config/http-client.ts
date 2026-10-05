@@ -20,11 +20,11 @@ httpClient.interceptors.request.use(
       baseURL: config.baseURL,
     });
 
-    // Aquí irá la lógica para añadir el token de autenticación
-    // TODO: import token from auth store
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`;
-    // }
+    // Añadir token de autenticación desde el store de auth
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
 
     return config;
   },
@@ -67,8 +67,12 @@ httpClient.interceptors.response.use(
       logger.warn("Unauthorized - Token expired or invalid", {
         url,
       });
-      // TODO: trigger logout
-      // useAuthStore.getState().logout();
+
+      localStorage.removeItem("token");
+
+      if (typeof window !== "undefined") {
+        window.location.assign("/login");
+      }
     }
 
     if (status === 500) {

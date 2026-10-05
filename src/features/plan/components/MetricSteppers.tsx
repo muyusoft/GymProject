@@ -15,7 +15,7 @@ interface MetricSteppersProps {
   onChange: (patch: Partial<ConfigDraft>) => void;
 }
 
-export function MetricSteppers({ draft, onChange }: MetricSteppersProps) {
+export function MetricSteppers({ draft, onChange }: Readonly<MetricSteppersProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
   const isTimed = loadTypeUsesTime(draft.loadType);

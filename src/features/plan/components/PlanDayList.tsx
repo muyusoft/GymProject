@@ -12,7 +12,7 @@ interface PlanDayListProps {
 }
 
 /** Días del plan (abrir con toque, opciones con pulsación larga) y descansos que se pueden convertir en día. */
-export function PlanDayList({ plan, onLongPressDay, onAddDay }: PlanDayListProps) {
+export function PlanDayList({ plan, onLongPressDay, onAddDay }: Readonly<PlanDayListProps>) {
   return (
     <View style={styles.list}>
       {plan.days.map((day) => (

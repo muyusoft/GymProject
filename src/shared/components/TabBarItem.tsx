@@ -18,7 +18,7 @@ export function TabBarItem({
   labelColor,
   onPress,
   onLongPress,
-}: TabBarItemProps) {
+}: Readonly<TabBarItemProps>) {
   return (
     <Pressable
       accessibilityRole="tab"
