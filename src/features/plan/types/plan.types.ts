@@ -1,5 +1,6 @@
 import type { PlanDayRow } from "@/shared/db/types";
 import type { PlanExerciseDetail } from "@/shared/db/queries/plan-exercise.queries";
+import type { DayNameSuggestion } from "../utils/day-name.utils";
 
 export interface DayDefaults {
   sets: number;
@@ -32,6 +33,8 @@ export interface DayDetail {
   day: PlanDayRow;
   planName: string;
   exercises: PlanExerciseDetail[];
+  /** Nombre sugerido según los ejercicios del día; null si no hay músculos con fuente para deducirlo. */
+  nameSuggestion: DayNameSuggestion | null;
 }
 
 export type ReorderDirection = "up" | "down";

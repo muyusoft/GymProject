@@ -17,11 +17,14 @@ App de gimnasio personal de Muyusoft, construida sobre muyusoft-template. Reempl
 | --- | --- | --- |
 | `workout` | Hoy, sesión en vivo, cronómetro, regla de subir peso | `src/app/(tabs)/index.tsx`, `src/app/session/[id].tsx` |
 | `plan` | Plan semanal, editar día, configurar ejercicio | `src/app/(tabs)/routines.tsx`, `src/app/plan/**`, `src/app/exercise/configure.tsx` |
-| `catalog` | Catálogo, biblioteca, semillas y mapeo de músculos | `src/app/library.tsx` |
+| `catalog` | Catálogo, biblioteca, ficha del ejercicio (fotos, pasos, músculos), semillas y mapeo de músculos | `src/app/library.tsx`, `src/app/exercise/info/[id].tsx` |
 | `notes-import` | Parser de notas e importación | `src/app/import.tsx` |
 | `progress` | Historial, 1RM, récords, volumen | `src/app/(tabs)/progress.tsx`, `src/app/exercise/[id].tsx` |
 | `muscles` | Recuperación, músculos por ejercicio, series por músculo | `src/app/recovery.tsx`, `src/app/muscles.tsx`, `src/app/progress/muscles.tsx` |
+| `body` | Peso corporal, media de 7 días, cambio semanal, IMC | `src/app/body.tsx` |
 | `settings` | Idioma, unidad, saltos de peso, interruptores | `src/app/(tabs)/settings.tsx` |
+| `onboarding` | Introducción de primera apertura (cinco tarjetas) | `src/app/intro.tsx` |
+| `account` | Bienvenida y pantallas de cuenta, solo interfaz (sin backend) | `src/app/welcome.tsx`, `src/app/account/**` |
 
 ## Documentación del proyecto (léela según la tarea, no toda a la vez)
 
@@ -29,6 +32,7 @@ App de gimnasio personal de Muyusoft, construida sobre muyusoft-template. Reempl
 - `docs/overload/components.md` — antes de crear o cambiar un componente.
 - `docs/overload/screens.md` — antes de construir una pantalla (pide la captura del mockup).
 - `docs/overload/data-model.md` — antes de tocar la base de datos.
+- `docs/overload/backend-and-database.md` — cómo se guardan y leen los datos (sin backend), migraciones, seed, transacciones y respaldo.
 - `docs/overload/domain-rules.md` — antes de tocar unidades, progresión, recuperación, series o el parser.
 - `docs/overload/muscle-map.md` — antes de tocar músculos, la figura o el catálogo.
 - `docs/overload/phases.md` — el plan por fases y sus criterios de aceptación.

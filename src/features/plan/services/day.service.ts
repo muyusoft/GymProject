@@ -8,15 +8,21 @@ import {
   listPlanExercisesByDay,
   setPlanExerciseOrders,
 } from "@/shared/db/queries/plan-exercise.queries";
+import { listPrimaryMuscles } from "@/shared/db/queries/exercise.queries";
 import type { PlanDayPatch } from "@/shared/db/types";
 import { syncReminders } from "@/shared/services/reminders.service";
 import type { DayDetail, ReorderDirection } from "../types/plan.types";
+import { suggestDayName } from "../utils/day-name.utils";
 
 export async function loadDay(dayId: string): Promise<DayDetail | null> {
   const day = await findPlanDay(dayId);
   if (!day) return null;
-  const [plan, exercises] = await Promise.all([findActivePlan(), listPlanExercisesByDay(dayId)]);
-  return { day, planName: plan?.name ?? "", exercises };
+  const [plan, exercises, muscles] = await Promise.all([findActivePlan(), listPlanExercisesByDay(dayId), listPrimaryMuscles()]);
+  const named = exercises.map(({ planExercise, exercise }) => ({
+    sets: planExercise.sets,
+    primary: muscles.filter((muscle) => muscle.exerciseId === exercise.id).map((muscle) => muscle.muscleGroup),
+  }));
+  return { day, planName: plan?.name ?? "", exercises, nameSuggestion: suggestDayName(named) };
 }
 
 /** El nombre del día va en el texto del recordatorio, así que se reprograman al guardar. */

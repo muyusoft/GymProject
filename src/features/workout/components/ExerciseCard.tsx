@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { getTextStyle, tokens } from "@/design/tokens";
-import { Badge, Button } from "@/shared/components";
+import { Badge, Button, ExerciseInfoButton } from "@/shared/components";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 import { getExerciseName } from "@/shared/utils/exercise-name.utils";
 import type { SetPatch } from "../services/session-write.service";
@@ -18,6 +18,7 @@ interface ExerciseCardProps {
   onEditSet: (setId: string | null) => void;
   onChangeSet: (setId: string, patch: SetPatch) => void;
   onAddSet: () => void;
+  onSubstitute: () => void;
 }
 
 export function ExerciseCard({
@@ -37,11 +38,15 @@ export function ExerciseCard({
     <View style={[styles.card, { backgroundColor: c.surface }]}>
       <View style={styles.header}>
         <Text style={[styles.name, { color: c.text }]}>{getExerciseName(exercise, i18n.language)}</Text>
+        <ExerciseInfoButton exerciseId={exercise.exerciseId} name={getExerciseName(exercise, i18n.language)} />
         <Badge label={`${doneCount}/${exercise.sets.length}`} />
       </View>
       <Text style={[styles.template, { color: c.textSecondary }]}>
         {t("session.template", { summary: formatTemplateSummary(exercise.template, i18n.language) })}
       </Text>
+      {exercise.slot.isSubstituted && (
+        <Text style={[styles.template, { color: c.textSecondary }]}>{t("substitute.active")}</Text>
+      )}
       <View style={styles.columns}>
         <Text style={[styles.column, styles.indexColumn, { color: c.textSecondary }]}>{t("session.columns.set")}</Text>
         <Text style={[styles.column, { color: c.textSecondary }]}>{t("session.columns.weight")}</Text>
@@ -66,6 +71,7 @@ export function ExerciseCard({
         </View>
       ))}
       <Button variant="secondary" label={t("session.addSet")} block onPress={onAddSet} />
+      <Button variant="ghost" label={t("session.substitute")} icon="arrow-right-left" block onPress={onSubstitute} />
     </View>
   );
 }

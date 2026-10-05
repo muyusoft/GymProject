@@ -85,7 +85,13 @@ const SPECS = {
     isPR: flag,
     updatedAt: finite,
   },
+  bodyWeights: { id: text, date: text, weight: finite, unit: oneOf(WEIGHT_UNITS), updatedAt: finite },
 } as const satisfies Record<string, RowSpec>;
+
+type BackupTable = keyof typeof SPECS;
+
+/** Tablas agregadas después de la versión 1 del respaldo: un archivo viejo sin ellas sigue siendo válido. */
+const OPTIONAL_TABLES: ReadonlySet<BackupTable> = new Set(["bodyWeights"]);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -128,7 +134,9 @@ function referencesHold(data: Record<string, Record<string, unknown>[]>): boolea
 /** El contenido de un respaldo es válido: tablas completas con sus tipos y referencias consistentes. */
 export function isBackupData(value: unknown): value is BackupData {
   if (!isRecord(value) || !isStringMap(value.settings)) return false;
-  const tables = Object.keys(SPECS) as (keyof typeof SPECS)[];
-  if (!tables.every((table) => rowsMatch(value[table], SPECS[table]))) return false;
+  const tables = Object.keys(SPECS) as BackupTable[];
+  const isValid = (table: BackupTable) =>
+    (value[table] === undefined && OPTIONAL_TABLES.has(table)) || rowsMatch(value[table], SPECS[table]);
+  if (!tables.every(isValid)) return false;
   return referencesHold(value as Record<string, Record<string, unknown>[]>);
 }

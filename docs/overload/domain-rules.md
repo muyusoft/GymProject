@@ -27,12 +27,60 @@ Si un ejercicio no mejora peso ni reps durante 3 semanas, sugerir una semana al 
 
 Por semana, cada serie completada suma 1 a cada grupo principal del ejercicio y 0.5 a cada secundario (método fraccional de Pelland et al., el que mejor predijo resultados).
 
+## Constancia (`features/muscles/utils/consistency.utils.ts`) — regla de producto
+
+- Calendario de un mes, de lunes a domingo, con flechas para ir a meses anteriores hasta el de la primera sesión; no avanza más allá del mes actual.
+- Cada día está hecho (hay una sesión terminada), pendiente (planeado esta semana, de hoy en adelante y aún sin hacer) o sin entreno. Dos sesiones el mismo día cuentan una vez.
+- Hecho va relleno, pendiente con borde punteado y hoy con borde sólido; cada estado se anuncia también con texto. Tocar un día hecho abre su resumen.
+- Racha: entrenos planeados seguidos sin saltarse ninguno; los descansos y el entreno de hoy aún sin hacer no la cortan.
+
 ## Recuperación (`features/muscles/utils/recovery.utils.ts`) — inspirada en evidencia, calibrar con uso real
 
 - Horas requeridas por grupo tras una sesión: 48 si fue principal, 24 si fue secundario; +24 si alguna serie tuvo RPE 9 o más (Morán-Navarro et al. 2017: al fallo la recuperación tardó unas 48 h; sin fallo, unas 6 h).
 - Porcentaje = horas transcurridas / horas requeridas, tope 100%. Si el grupo se trabajó en varias sesiones, cuenta la más exigente pendiente.
 - Estado: menos de 50% = recién trabajado; 50 a 99% = recuperando; 100% = listo.
 - Siempre mostrar el estado en texto junto al color.
+
+## Peso corporal e IMC (`features/body/utils/`) — regla de producto
+
+- El peso se guarda en la unidad registrada, uno por día. Se muestra en la unidad de Ajustes; con "según ejercicio", en la del último registro (kg si no hay).
+- Media de 7 días: promedio de los registros de hoy y los 6 días anteriores. Las semanas anteriores son tramos de 7 días hacia atrás. Si la semana actual no tiene registros, se muestra la última que sí.
+- Cambio semanal: (media de la semana más nueva − media de la más vieja) / semanas entre ellas, mirando las últimas 4 semanas. Hace falta tener registros en dos semanas distintas. Menos de 0.05 por semana se muestra como estable. Subir o bajar no es bueno ni malo: va en gris, con icono y texto.
+- La persona elige pesarse a diario o cada semana. A diario: con menos de 3 registros en 7 días la media "aún no es fiable"; tras más de 7 días sin registrar, la tendencia "ya no es fiable". Cada semana: toca pesarse desde el día 7 y deja de ser fiable tras el día 14.
+- IMC = peso (kg) / estatura (m)², con la media de 7 días. Rangos de la OMS: menos de 18.5 bajo peso, 18.5 a 24.9 normal, 25 a 29.9 sobrepeso, 30 o más obesidad. Es un extra: siempre va con la nota de que no distingue músculo de grasa y nunca en color de alarma.
+- Recordatorio de pesaje (opcional, apagado por defecto, 7:00): a diario avisa todos los días; cada semana, solo el día elegido. Se programa junto con los avisos de entreno en `shared/services/reminders.service.ts`.
+- Registrar no requiere teclado: un paso de 1 y un paso fino de 0.1 kg o 0.2 lb, partiendo del último peso.
+
+## Sustituir un ejercicio (`features/workout/utils/substitutes.utils.ts`, `swap.utils.ts`) — regla de producto
+
+- Sugerencias: primero los ejercicios con el mismo patrón de movimiento (`pattern`), luego los que comparten algún músculo principal de `exercise_muscles` (más compartidos, antes). Dentro de cada grupo, antes los que ya se registraron alguna vez. Máximo 8, con filtro por equipo.
+- Un ejercicio sin patrón ni músculos con fuente no se sugiere; se puede elegir igual buscándolo por nombre.
+- Nunca se ofrece el original, un ejercicio que ya está en el entreno de hoy, ni uno por tiempo a cambio de uno de repeticiones (o al revés).
+- "Solo hoy" guarda la sustitución en `exercise_swaps` para esa fecha y no toca el plan. "También en el plan" cambia `plan_exercises` para las siguientes semanas.
+- El sustituto conserva series, reps y descanso del plan. Su peso inicial es el de su último registro; sin historial queda vacío (no se convierte el peso del ejercicio original).
+- Con la sesión abierta: las series ya hechas del ejercicio anterior se quedan en su historial y las pendientes se reemplazan por series del sustituto (las que faltan del plan, al menos una).
+- El historial, los récords y los músculos trabajados van al ejercicio que realmente se hizo.
+
+## Ficha del ejercicio (`features/catalog/utils/exercise-info.utils.ts`)
+
+- Se abre con el icono de información (`ExerciseInfoButton`, en shared) desde sustitutos, la sesión, Hoy y la biblioteca.
+- Fotos: dos por ejercicio (posición inicial y final), desde free-exercise-db con el `sourceId`; se descargan una vez y quedan en caché (expo-image). Un ejercicio propio no tiene fotos; si no cargan, se avisa con texto.
+- Pasos: en español se usa la traducción de `data/instructions-es.json` (por `sourceId`); están traducidos los 871 ejercicios que traen instrucciones; si faltara alguno, se muestra en inglés con el aviso "aún sin traducir". Una traducción debe tener los mismos pasos que el original (lo verifica una prueba).
+- Músculos: solo los de `exercise_muscles`, en la figura y en texto.
+
+## Semanas pasadas en Hoy (`features/workout/utils/week-history.utils.ts`) — regla de producto
+
+- La franja de Hoy se desliza por semanas completas (lunes a domingo), desde la semana de la primera sesión terminada hasta la actual; no avanza al futuro.
+- En semanas pasadas un día está "hecho" (hay una sesión terminada en esa fecha) o "sin entreno". No se dice "planificado" porque el plan pudo cambiar desde entonces.
+- El calendario muestra un mes con un punto en los días con entreno. Elegir un día lleva la franja a su semana y, si tuvo entreno, abre su resumen. No se pueden elegir días futuros ni anteriores a la primera semana.
+- La tarjeta del entreno y la lista de ejercicios siempre muestran hoy.
+
+## Nombre sugerido del día (`features/plan/utils/day-name.utils.ts`) — regla de producto
+
+- Cada ejercicio suma sus series a los focos de sus músculos principales (`exercise_muscles`): pecho, espalda, hombro, pierna, bíceps, tríceps, brazos, core. Un ejercicio sin músculos con fuente no aporta.
+- El nombre lleva los focos con al menos 20% de las series del día, del mayor al menor ("Pecho y tríceps"). Bíceps y tríceps juntos se nombran "Brazos".
+- Con más de tres focos, o tan repartido que ninguno llega al 20%, se sugiere "Cuerpo completo".
+- Es solo una sugerencia en el editor del día: nunca cambia el nombre sin que la persona la toque, y no aparece si ya coincide con el nombre actual.
 
 ## Duración estimada (`features/workout/utils/duration.utils.ts`)
 

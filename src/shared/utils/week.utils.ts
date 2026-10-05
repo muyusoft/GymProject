@@ -1,4 +1,4 @@
-import { addDays, format, startOfWeek } from "date-fns";
+import { addDays, addMonths, format, isSameMonth, startOfMonth, startOfWeek } from "date-fns";
 
 export const WEEKDAY_COUNT = 7;
 const SUNDAY_INDEX = 0;
@@ -21,4 +21,14 @@ export function weekDates(weekStart: Date): Date[] {
 
 export function toIsoDate(date: Date): string {
   return format(date, ISO_DATE_FORMAT);
+}
+
+/** El mes como filas de lunes a domingo; los huecos de otros meses van en null. */
+export function buildMonthGrid(month: Date): (Date | null)[][] {
+  const first = startOfMonth(month);
+  const rows: (Date | null)[][] = [];
+  for (let start = startOfWeekMonday(first); start < addMonths(first, 1); start = addDays(start, WEEKDAY_COUNT)) {
+    rows.push(weekDates(start).map((date) => (isSameMonth(date, first) ? date : null)));
+  }
+  return rows;
 }

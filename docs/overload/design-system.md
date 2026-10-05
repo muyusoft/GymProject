@@ -59,6 +59,8 @@ Directa, de coach, en segunda persona, sin exclamaciones de más. Unidades siemp
 | musclePrimary / muscleSecondary / muscleIdle | #c6ff3d / #5f7d1f / #2a2d26 | #4a7300 / #8fb52c / #d3d6cb | Figura muscular (en claro el principal es verde oscuro para verse sobre el fondo) |
 | recoveryWorked / recoveryRecovering / recoveryReady | = danger / info / accent | danger / info / #4a7300 | Estados de recuperación, siempre con texto |
 
+`tokens.brand.dark` / `.light` guarda los colores oficiales de los botones "Continuar con Apple / Google" (blanco o negro para Apple; el tema oscuro o claro de Google). Solo los usa `SocialButton`, junto con los logotipos `brand-apple` y `brand-google`, que son la excepción a los iconos de trazo.
+
 Las escalas `tokens.colors.primary` (volt), `secondary` (ember), `success`, `error`, `info`, `warning` y `neutral` existen para casos puntuales y para el playground; en pantallas usa los semánticos.
 
 ## Tipografía (`getTextStyle(name)`)

@@ -1,4 +1,4 @@
-import { index, integer, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { index, integer, real, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 import {
   LOAD_TYPES,
   SESSION_ORIGINS,
@@ -6,7 +6,29 @@ import {
 } from "../../types/training.types";
 import { exercises } from "./catalog";
 import { idColumn, updatedAtColumn } from "./columns";
-import { planDays } from "./plan";
+import { planDays, planExercises } from "./plan";
+
+/** Sustitución de un ejercicio del plan solo para una fecha; el plan no cambia. */
+export const exerciseSwaps = sqliteTable(
+  "exercise_swaps",
+  {
+    id: idColumn(),
+    /** Fecha local en formato yyyy-MM-dd. */
+    date: text("date").notNull(),
+    planExerciseId: text("plan_exercise_id")
+      .notNull()
+      .references(() => planExercises.id, { onDelete: "cascade" }),
+    exerciseId: text("exercise_id")
+      .notNull()
+      .references(() => exercises.id),
+    /** Peso, unidad y tipo de carga con que arranca el sustituto (de su último registro, si lo tiene). */
+    targetWeight: real("target_weight"),
+    unit: text("unit", { enum: WEIGHT_UNITS }).notNull(),
+    loadType: text("load_type", { enum: LOAD_TYPES }).notNull(),
+    updatedAt: updatedAtColumn(),
+  },
+  (table) => [uniqueIndex("exercise_swaps_slot_idx").on(table.date, table.planExerciseId)],
+);
 
 export const sessions = sqliteTable("sessions", {
   id: idColumn(),

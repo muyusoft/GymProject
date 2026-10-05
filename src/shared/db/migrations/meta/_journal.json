@@ -8,6 +8,20 @@
       "when": 1791067002742,
       "tag": "0000_fancy_the_order",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1791144061026,
+      "tag": "0001_regular_pestilence",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1791145618078,
+      "tag": "0002_spotty_manta",
+      "breakpoints": true
     }
   ]
 }

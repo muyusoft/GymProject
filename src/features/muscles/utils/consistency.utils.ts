@@ -1,9 +1,7 @@
-import { addWeeks, subDays, subWeeks } from "date-fns";
-import { startOfWeekMonday, toIsoDate, weekDates, weekdayIndex } from "@/shared/utils/week.utils";
-import type { WeekColumn } from "../types/muscles.types";
+import { isSameDay, isSameMonth, parseISO, startOfMonth, subDays } from "date-fns";
+import { buildMonthGrid, startOfWeekMonday, toIsoDate, weekDates, weekdayIndex } from "@/shared/utils/week.utils";
+import type { CalendarDay, ConsistencyMonth, DayState } from "../types/muscles.types";
 
-export const CONSISTENCY_WEEKS = 12;
-const MAX_ROWS = 7;
 const STREAK_LOOKBACK_DAYS = 365;
 
 interface ConsistencyOptions {
@@ -13,20 +11,43 @@ interface ConsistencyOptions {
   today: Date;
 }
 
-/** Cuántas filas tiene el calendario: los entrenos por semana del plan (al menos 1). */
-export function consistencyRows(plannedWeekdays: readonly number[]): number {
-  return Math.min(MAX_ROWS, Math.max(1, plannedWeekdays.length));
+/** Los entrenos planeados de esta semana que aún se pueden hacer (de hoy en adelante). */
+function pendingDates({ sessionDates, plannedWeekdays, today }: ConsistencyOptions): Set<string> {
+  const done = new Set(sessionDates);
+  const todayIso = toIsoDate(today);
+  const pending = weekDates(startOfWeekMonday(today))
+    .filter((date, weekday) => plannedWeekdays.includes(weekday) && toIsoDate(date) >= todayIso)
+    .map(toIsoDate)
+    .filter((date) => !done.has(date));
+  return new Set(pending);
+}
+
+interface MonthOptions extends ConsistencyOptions {
+  /** Cualquier día del mes que se quiere ver. */
+  month: Date;
 }
 
 /**
- * 12 semanas, de la más vieja a la actual. Cada celda es una sesión: hecha, pendiente (de la semana en curso,
- * según el plan) o vacía. Dos sesiones el mismo día cuentan una sola vez.
+ * Un mes de constancia, día por día: hecho (hay una sesión terminada), pendiente (planeado esta semana y aún
+ * sin hacer) o sin entreno. Dos sesiones el mismo día cuentan una sola vez.
  */
-export function buildConsistency({ sessionDates, plannedWeekdays, today }: ConsistencyOptions): WeekColumn[] {
-  const rows = consistencyRows(plannedWeekdays);
-  const currentStart = startOfWeekMonday(today);
-  const days = new Set(sessionDates);
+export function buildConsistencyMonth({ month, ...options }: MonthOptions): ConsistencyMonth {
+  const done = new Set(options.sessionDates);
+  const pending = pendingDates(options);
+  const stateOf = (date: string): DayState => {
+    if (done.has(date)) return "done";
+    return pending.has(date) ? "pending" : "none";
+  };
+  const toDay = (date: Date): CalendarDay => {
+    const iso = toIsoDate(date);
+    return { date: iso, dayOfMonth: date.getDate(), state: stateOf(iso), isToday: isSameDay(date, options.today) };
+  };
+  const rows = buildMonthGrid(month).map((week) => week.map((date) => (date ? toDay(date) : null)));
+  const doneCount = rows.flat().filter((day) => day?.state === "done").length;
+  return { rows, doneCount };
+}
 
+<<<<<<< Updated upstream
   return Array.from({ length: CONSISTENCY_WEEKS }, (_, index) => {
     const weekStart = subWeeks(currentStart, CONSISTENCY_WEEKS - 1 - index);
     const nextStart = toIsoDate(addWeeks(weekStart, 1));
@@ -43,6 +64,17 @@ export function buildConsistency({ sessionDates, plannedWeekdays, today }: Consi
     });
     return { weekStart, cells, dates };
   });
+=======
+/** El primer mes al que se puede retroceder: el de la primera sesión, o el actual si no hay ninguna. */
+export function firstConsistencyMonth(sessionDates: readonly string[], today: Date): Date {
+  const first = [...sessionDates].sort((a, b) => a.localeCompare(b))[0];
+  const firstMonth = first ? startOfMonth(parseISO(first)) : startOfMonth(today);
+  return firstMonth > today ? startOfMonth(today) : firstMonth;
+}
+
+export function isCurrentMonth(month: Date, today: Date): boolean {
+  return isSameMonth(month, today);
+>>>>>>> Stashed changes
 }
 
 /**

@@ -3,7 +3,9 @@ import { Directory, File } from "expo-file-system";
 import { db } from "@/shared/db/client";
 import { getAllSettings } from "@/shared/db/queries/settings.queries";
 import {
+  bodyWeights,
   equipmentIncrements,
+  exerciseSwaps,
   exercises,
   planDays,
   planExercises,
@@ -54,7 +56,7 @@ async function loadReferencedExercises(ids: readonly string[]): Promise<BackupEx
 }
 
 export async function collectBackupData(): Promise<BackupData> {
-  const [allSettings, increments, planRows, dayRows, planExerciseRows, sessionRows, logRows] = await Promise.all([
+  const [allSettings, increments, planRows, dayRows, planExerciseRows, sessionRows, logRows, bodyWeightRows] = await Promise.all([
     getAllSettings(),
     db.select().from(equipmentIncrements),
     db.select().from(plans),
@@ -62,6 +64,7 @@ export async function collectBackupData(): Promise<BackupData> {
     db.select().from(planExercises),
     db.select().from(sessions),
     db.select().from(setLogs),
+    db.select().from(bodyWeights),
   ]);
   const referenced = new Set([...planExerciseRows, ...logRows].map((row) => row.exerciseId));
   return {
@@ -73,6 +76,7 @@ export async function collectBackupData(): Promise<BackupData> {
     planExercises: planExerciseRows,
     sessions: sessionRows,
     setLogs: logRows,
+    bodyWeights: bodyWeightRows,
   };
 }
 
@@ -134,6 +138,7 @@ export async function restoreBackup(file: BackupFile): Promise<BackupSummary> {
     insertInBatches(toCreate, (part) =>
       tx.insert(exercises).values(part.map((item) => ({ ...item, status: "claude_draft" as const }))).run(),
     );
+    for (const table of [exerciseSwaps, setLogs, sessions, planExercises, planDays, plans]) tx.delete(table).run();
     for (const table of [setLogs, sessions, planExercises, planDays, plans]) tx.delete(table).run();
     insertInBatches(data.plans, (part) => tx.insert(plans).values(part).run());
     insertInBatches(data.planDays, (part) => tx.insert(planDays).values(part).run());
@@ -144,6 +149,11 @@ export async function restoreBackup(file: BackupFile): Promise<BackupSummary> {
     insertInBatches(data.setLogs, (part) =>
       tx.insert(setLogs).values(part.map((row) => ({ ...row, exerciseId: remap(row.exerciseId) }))).run(),
     );
+    const { bodyWeights: bodyWeightRows } = data;
+    if (bodyWeightRows) {
+      tx.delete(bodyWeights).run();
+      insertInBatches(bodyWeightRows, (part) => tx.insert(bodyWeights).values(part).run());
+    }
 
     for (const { equipment, unit, step } of data.equipmentIncrements) {
       tx.update(equipmentIncrements)

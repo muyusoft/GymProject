@@ -16,4 +16,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ## free-exercise-db
 
-Catálogo de ejercicios (`src/features/catalog/data/free-exercise-db.json`), de dominio público (yuhonas/free-exercise-db).
+Catálogo de ejercicios (`src/features/catalog/data/free-exercise-db.json`), de dominio público (yuhonas/free-exercise-db). La ficha de cada ejercicio muestra sus fotos, que se descargan del mismo repositorio y quedan en caché en el teléfono, y sus instrucciones; están traducidas al español en `src/features/catalog/data/instructions-es.json`.

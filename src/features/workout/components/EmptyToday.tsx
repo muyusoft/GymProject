@@ -11,10 +11,12 @@ export function EmptyToday({ reason }: Readonly<EmptyTodayProps>) {
   const { t } = useTranslation();
 
   return (
-    <EmptyState title={t(`today.empty.${reason}.title`)} body={t(`today.empty.${reason}.body`)}>
-      {reason === "noPlan" && (
-        <Button label={t("today.empty.noPlan.action")} onPress={() => router.push("/routines")} />
-      )}
-    </EmptyState>
+    <EmptyState
+      title={t(`today.empty.${reason}.title`)}
+      body={t(`today.empty.${reason}.body`)}
+      {...(reason === "noPlan" && {
+        action: <Button label={t("today.empty.noPlan.action")} onPress={() => router.push("/routines")} />,
+      })}
+    />
   );
 }

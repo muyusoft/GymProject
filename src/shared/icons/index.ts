@@ -1,6 +1,7 @@
 /**
- * Iconos de Overload (51). Dibujados en una grilla de 24, trazo 2, extremos redondeados.
+ * Iconos de Overload (56). Dibujados en una grilla de 24, trazo 2, extremos redondeados.
  * Usan stroke="currentColor": el color llega por la prop `color` de IconRenderer.
+ * Excepción: brand-apple y brand-google son los logotipos oficiales (relleno, y Google con sus cuatro colores).
  * Para agregar uno: crea el .svg con el mismo encabezado y regístralo en los tres lugares de este archivo.
  */
 
@@ -14,6 +15,8 @@ import ArrowUpIcon from "./arrow-up.svg";
 import BarChartIcon from "./bar-chart.svg";
 import BellIcon from "./bell.svg";
 import BodyIcon from "./body.svg";
+import BrandAppleIcon from "./brand-apple.svg";
+import BrandGoogleIcon from "./brand-google.svg";
 import CalendarIcon from "./calendar.svg";
 import CheckIcon from "./check.svg";
 import ChevronDownIcon from "./chevron-down.svg";
@@ -29,6 +32,8 @@ import DumbbellIcon from "./dumbbell.svg";
 import EllipsisIcon from "./ellipsis.svg";
 import EllipsisVerticalIcon from "./ellipsis-vertical.svg";
 import ExternalLinkIcon from "./external-link.svg";
+import EyeIcon from "./eye.svg";
+import EyeOffIcon from "./eye-off.svg";
 import FilterIcon from "./filter.svg";
 import FlameIcon from "./flame.svg";
 import GlobeIcon from "./globe.svg";
@@ -37,6 +42,7 @@ import HistoryIcon from "./history.svg";
 import InfoIcon from "./info.svg";
 import KettlebellIcon from "./kettlebell.svg";
 import LightbulbIcon from "./lightbulb.svg";
+import MailIcon from "./mail.svg";
 import MinusIcon from "./minus.svg";
 import MoonIcon from "./moon.svg";
 import PauseIcon from "./pause.svg";
@@ -67,6 +73,8 @@ export {
   BarChartIcon,
   BellIcon,
   BodyIcon,
+  BrandAppleIcon,
+  BrandGoogleIcon,
   CalendarIcon,
   CheckIcon,
   ChevronDownIcon,
@@ -82,6 +90,8 @@ export {
   EllipsisIcon,
   EllipsisVerticalIcon,
   ExternalLinkIcon,
+  EyeIcon,
+  EyeOffIcon,
   FilterIcon,
   FlameIcon,
   GlobeIcon,
@@ -90,6 +100,7 @@ export {
   InfoIcon,
   KettlebellIcon,
   LightbulbIcon,
+  MailIcon,
   MinusIcon,
   MoonIcon,
   PauseIcon,
@@ -121,6 +132,8 @@ export const AVAILABLE_ICONS = [
   "bar-chart",
   "bell",
   "body",
+  "brand-apple",
+  "brand-google",
   "calendar",
   "check",
   "chevron-down",
@@ -136,6 +149,8 @@ export const AVAILABLE_ICONS = [
   "ellipsis",
   "ellipsis-vertical",
   "external-link",
+  "eye",
+  "eye-off",
   "filter",
   "flame",
   "globe",
@@ -144,6 +159,7 @@ export const AVAILABLE_ICONS = [
   "info",
   "kettlebell",
   "lightbulb",
+  "mail",
   "minus",
   "moon",
   "pause",
@@ -177,6 +193,8 @@ export const ICON_REGISTRY: Record<IconName, FC<SvgProps>> = {
   "bar-chart": BarChartIcon,
   bell: BellIcon,
   body: BodyIcon,
+  "brand-apple": BrandAppleIcon,
+  "brand-google": BrandGoogleIcon,
   calendar: CalendarIcon,
   check: CheckIcon,
   "chevron-down": ChevronDownIcon,
@@ -192,6 +210,8 @@ export const ICON_REGISTRY: Record<IconName, FC<SvgProps>> = {
   ellipsis: EllipsisIcon,
   "ellipsis-vertical": EllipsisVerticalIcon,
   "external-link": ExternalLinkIcon,
+  eye: EyeIcon,
+  "eye-off": EyeOffIcon,
   filter: FilterIcon,
   flame: FlameIcon,
   globe: GlobeIcon,
@@ -200,6 +220,7 @@ export const ICON_REGISTRY: Record<IconName, FC<SvgProps>> = {
   info: InfoIcon,
   kettlebell: KettlebellIcon,
   lightbulb: LightbulbIcon,
+  mail: MailIcon,
   minus: MinusIcon,
   moon: MoonIcon,
   pause: PauseIcon,
