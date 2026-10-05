@@ -28,6 +28,7 @@ export function ExerciseCard({
   onEditSet,
   onChangeSet,
   onAddSet,
+  onSubstitute,
 }: Readonly<ExerciseCardProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
@@ -37,20 +38,41 @@ export function ExerciseCard({
   return (
     <View style={[styles.card, { backgroundColor: c.surface }]}>
       <View style={styles.header}>
-        <Text style={[styles.name, { color: c.text }]}>{getExerciseName(exercise, i18n.language)}</Text>
-        <ExerciseInfoButton exerciseId={exercise.exerciseId} name={getExerciseName(exercise, i18n.language)} />
+        <Text style={[styles.name, { color: c.text }]}>
+          {getExerciseName(exercise, i18n.language)}
+        </Text>
+        <ExerciseInfoButton
+          exerciseId={exercise.exerciseId}
+          name={getExerciseName(exercise, i18n.language)}
+        />
         <Badge label={`${doneCount}/${exercise.sets.length}`} />
       </View>
       <Text style={[styles.template, { color: c.textSecondary }]}>
-        {t("session.template", { summary: formatTemplateSummary(exercise.template, i18n.language) })}
+        {t("session.template", {
+          summary: formatTemplateSummary(exercise.template, i18n.language),
+        })}
       </Text>
       {exercise.slot.isSubstituted && (
-        <Text style={[styles.template, { color: c.textSecondary }]}>{t("substitute.active")}</Text>
+        <Text style={[styles.template, { color: c.textSecondary }]}>
+          {t("substitute.active")}
+        </Text>
       )}
       <View style={styles.columns}>
-        <Text style={[styles.column, styles.indexColumn, { color: c.textSecondary }]}>{t("session.columns.set")}</Text>
-        <Text style={[styles.column, { color: c.textSecondary }]}>{t("session.columns.weight")}</Text>
-        <Text style={[styles.column, { color: c.textSecondary }]}>{t("session.columns.reps")}</Text>
+        <Text
+          style={[
+            styles.column,
+            styles.indexColumn,
+            { color: c.textSecondary },
+          ]}
+        >
+          {t("session.columns.set")}
+        </Text>
+        <Text style={[styles.column, { color: c.textSecondary }]}>
+          {t("session.columns.weight")}
+        </Text>
+        <Text style={[styles.column, { color: c.textSecondary }]}>
+          {t("session.columns.reps")}
+        </Text>
       </View>
       {exercise.sets.map((set) => (
         <View key={set.id} style={styles.setBlock}>
@@ -70,15 +92,35 @@ export function ExerciseCard({
           )}
         </View>
       ))}
-      <Button variant="secondary" label={t("session.addSet")} block onPress={onAddSet} />
-      <Button variant="ghost" label={t("session.substitute")} icon="arrow-right-left" block onPress={onSubstitute} />
+      <Button
+        variant="secondary"
+        label={t("session.addSet")}
+        block
+        onPress={onAddSet}
+      />
+      <Button
+        variant="ghost"
+        label={t("session.substitute")}
+        icon="arrow-right-left"
+        block
+        onPress={onSubstitute}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  card: { gap: tokens.spacing[3], padding: tokens.spacing[4], borderRadius: tokens.borderRadius.lg },
-  header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: tokens.spacing[3] },
+  card: {
+    gap: tokens.spacing[3],
+    padding: tokens.spacing[4],
+    borderRadius: tokens.borderRadius.lg,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: tokens.spacing[3],
+  },
   name: { ...getTextStyle("title"), flex: 1 },
   template: getTextStyle("bodySm"),
   columns: { flexDirection: "row", paddingHorizontal: tokens.spacing[3] },

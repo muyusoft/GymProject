@@ -16,23 +16,41 @@ import { buildTemplate } from "../utils/template.utils";
 import { listDayExercises } from "./day-exercises.service";
 import { loadHistory } from "./history.service";
 
-export async function findActiveSession(dayId: string, date: string): Promise<string | null> {
+export async function findActiveSession(
+  dayId: string,
+  date: string,
+): Promise<string | null> {
   const rows = await db
     .select({ id: sessions.id })
     .from(sessions)
-    .where(and(eq(sessions.planDayId, dayId), eq(sessions.date, date), isNull(sessions.endedAt)))
+    .where(
+      and(
+        eq(sessions.planDayId, dayId),
+        eq(sessions.date, date),
+        isNull(sessions.endedAt),
+      ),
+    )
     .limit(1);
   return rows[0]?.id ?? null;
 }
 
 /** Cuántos ejercicios de la sesión tienen todas sus series hechas. */
-export async function countCompletedExercises(sessionId: string): Promise<number> {
-  const rows = await db.select().from(setLogs).where(eq(setLogs.sessionId, sessionId));
+export async function countCompletedExercises(
+  sessionId: string,
+): Promise<number> {
+  const rows = await db
+    .select()
+    .from(setLogs)
+    .where(eq(setLogs.sessionId, sessionId));
   const byExercise = new Map<string, { completed: boolean }[]>();
   for (const row of rows) {
-    byExercise.set(row.exerciseId, [...(byExercise.get(row.exerciseId) ?? []), row]);
+    byExercise.set(row.exerciseId, [
+      ...(byExercise.get(row.exerciseId) ?? []),
+      row,
+    ]);
   }
-  return [...byExercise.values()].filter((sets) => isExerciseDone({ sets })).length;
+  return [...byExercise.values()].filter((sets) => isExerciseDone({ sets }))
+    .length;
 }
 
 interface SessionContext {
@@ -79,16 +97,26 @@ export async function loadSession({
   settings,
   now,
 }: LoadSessionOptions): Promise<SessionView | null> {
-  const [session] = await db.select().from(sessions).where(eq(sessions.id, sessionId));
+  const [session] = await db
+    .select()
+    .from(sessions)
+    .where(eq(sessions.id, sessionId));
   const day = session?.planDayId ? await findPlanDay(session.planDayId) : null;
   if (!session || !day) return null;
 
   const [details, logs, increments] = await Promise.all([
     listDayExercises(day.id, session.date),
-    db.select().from(setLogs).where(eq(setLogs.sessionId, sessionId)).orderBy(asc(setLogs.setIndex)),
+    db
+      .select()
+      .from(setLogs)
+      .where(eq(setLogs.sessionId, sessionId))
+      .orderBy(asc(setLogs.setIndex)),
     listIncrements(),
   ]);
-  const history = await loadHistory(details.map((detail) => detail.exercise.id), now.getTime());
+  const history = await loadHistory(
+    details.map((detail) => detail.exercise.id),
+    now.getTime(),
+  );
   const context = { settings, now, increments, history };
 
   return {
@@ -111,6 +139,7 @@ export async function loadSession({
             loadType: log.loadType,
             completed: log.completed,
             isPR: log.isPR,
+            rpe: log.rpe,
           })),
         context,
       ),

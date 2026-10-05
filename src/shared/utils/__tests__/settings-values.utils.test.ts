@@ -8,7 +8,7 @@ describe("parseSettings", () => {
       weightUnit: "per_exercise",
       theme: "auto",
       progressionSuggestions: true,
-      trackRpe: false,
+      trackRpe: true,
       autoDeload: true,
       reminderEnabled: false,
       reminderHour: 18,
@@ -24,13 +24,23 @@ describe("parseSettings", () => {
   });
 
   it("lee la estatura y la frecuencia de pesaje, e ignora las que no sirven", () => {
-    expect(parseSettings({ heightCm: "172", weighInFrequency: "weekly" }, "es")).toMatchObject({ heightCm: 172, weighInFrequency: "weekly" });
-    expect(parseSettings({ heightCm: "999", weighInFrequency: "monthly" }, "es")).toMatchObject({ heightCm: 0, weighInFrequency: "daily" });
+    expect(
+      parseSettings({ heightCm: "172", weighInFrequency: "weekly" }, "es"),
+    ).toMatchObject({ heightCm: 172, weighInFrequency: "weekly" });
+    expect(
+      parseSettings({ heightCm: "999", weighInFrequency: "monthly" }, "es"),
+    ).toMatchObject({ heightCm: 0, weighInFrequency: "daily" });
   });
 
   it("lee lo guardado", () => {
     const settings = parseSettings(
-      { language: "en", weightUnit: "kg", theme: "light", trackRpe: "true", autoDeload: "false" },
+      {
+        language: "en",
+        weightUnit: "kg",
+        theme: "light",
+        trackRpe: "true",
+        autoDeload: "false",
+      },
       "es",
     );
     expect(settings).toMatchObject({
@@ -43,19 +53,37 @@ describe("parseSettings", () => {
   });
 
   it("lee el recordatorio guardado", () => {
-    const settings = parseSettings({ reminderEnabled: "true", reminderHour: "7", reminderMinute: "45" }, "es");
-    expect(settings).toMatchObject({ reminderEnabled: true, reminderHour: 7, reminderMinute: 45 });
+    const settings = parseSettings(
+      { reminderEnabled: "true", reminderHour: "7", reminderMinute: "45" },
+      "es",
+    );
+    expect(settings).toMatchObject({
+      reminderEnabled: true,
+      reminderHour: 7,
+      reminderMinute: 45,
+    });
   });
 
   it("ignora una hora o un minuto fuera de rango o con texto", () => {
-    expect(parseSettings({ reminderHour: "24", reminderMinute: "60" }, "es")).toMatchObject({ reminderHour: 18, reminderMinute: 0 });
-    expect(parseSettings({ reminderHour: "tarde", reminderMinute: "-5" }, "es")).toMatchObject({ reminderHour: 18, reminderMinute: 0 });
+    expect(
+      parseSettings({ reminderHour: "24", reminderMinute: "60" }, "es"),
+    ).toMatchObject({ reminderHour: 18, reminderMinute: 0 });
+    expect(
+      parseSettings({ reminderHour: "tarde", reminderMinute: "-5" }, "es"),
+    ).toMatchObject({ reminderHour: 18, reminderMinute: 0 });
     expect(parseSettings({ reminderHour: "7.5" }, "es").reminderHour).toBe(18);
   });
 
   it("ignora valores corruptos en vez de fallar", () => {
-    const settings = parseSettings({ language: "fr", weightUnit: "stone", theme: "pink" }, "en");
-    expect(settings).toMatchObject({ language: "en", weightUnit: "per_exercise", theme: "auto" });
+    const settings = parseSettings(
+      { language: "fr", weightUnit: "stone", theme: "pink" },
+      "en",
+    );
+    expect(settings).toMatchObject({
+      language: "en",
+      weightUnit: "per_exercise",
+      theme: "auto",
+    });
   });
 });
 

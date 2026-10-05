@@ -1,5 +1,11 @@
 import type { setLogs } from "@/shared/db/schema";
-import type { ExerciseInsight, ExerciseTemplate, SessionSet } from "../types/workout.types";
+import type { SessionResult } from "@/shared/types/history.types";
+import type {
+  ExerciseInsight,
+  ExerciseTemplate,
+  SessionSet,
+} from "../types/workout.types";
+import { goalReps } from "./rep-goal.utils";
 
 export type NewSetLog = typeof setLogs.$inferInsert;
 
@@ -9,11 +15,13 @@ interface InitialSetsOptions {
   template: ExerciseTemplate;
   insight: ExerciseInsight;
   createId: () => string;
+  /** La última sesión terminada del ejercicio; con rango de reps decide con cuántas arranca hoy. */
+  latest?: SessionResult | undefined;
 }
 
 /**
  * Series de la sesión para un ejercicio, todas pendientes. Si la regla de subir peso se cumple,
- * la sesión (no el plan) arranca con el peso sugerido.
+ * la sesión (no el plan) arranca con el peso sugerido. Con rango de reps, arranca con la meta de hoy.
  */
 export function buildInitialSets({
   sessionId,
@@ -21,8 +29,10 @@ export function buildInitialSets({
   template,
   insight,
   createId,
+  latest,
 }: InitialSetsOptions): NewSetLog[] {
   const weight = insight.increase ?? template.targetWeight;
+  const reps = goalReps({ template, startWeight: weight, latest });
   return Array.from({ length: template.sets }, (_, setIndex) => ({
     id: createId(),
     sessionId,
@@ -31,7 +41,7 @@ export function buildInitialSets({
     weight,
     unit: template.unit,
     loadType: template.loadType,
-    reps: template.reps,
+    reps,
     seconds: template.seconds,
     completed: false,
     isPR: false,

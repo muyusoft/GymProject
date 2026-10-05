@@ -13,7 +13,11 @@ interface AsyncStateViewProps {
 }
 
 /** Estados de carga y error compartidos; el vacío lo decide cada pantalla. */
-export function AsyncStateView({ status, onRetry, children }: Readonly<AsyncStateViewProps>) {
+export function AsyncStateView({
+  status,
+  onRetry,
+  children,
+}: Readonly<AsyncStateViewProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
 
@@ -28,9 +32,15 @@ export function AsyncStateView({ status, onRetry, children }: Readonly<AsyncStat
         />
       ) : (
         <>
-          <Text style={[styles.message, { color: c.text }]}>{t("common.error")}</Text>
+          <Text style={[styles.message, { color: c.text }]}>
+            {t("common.error")}
+          </Text>
           <View style={styles.action}>
-            <Button variant="secondary" label={t("common.retry")} onPress={onRetry} />
+            <Button
+              variant="secondary"
+              label={t("common.retry")}
+              onPress={onRetry}
+            />
           </View>
         </>
       )}
@@ -48,5 +58,9 @@ const styles = StyleSheet.create({
   },
   message: getTextStyle("body"),
   // Button fija alignSelf: en fila, el centrado horizontal lo decide este contenedor.
-  action: { alignSelf: "stretch", flexDirection: "row", justifyContent: "center" },
+  action: {
+    alignSelf: "stretch",
+    flexDirection: "row",
+    justifyContent: "center",
+  },
 });

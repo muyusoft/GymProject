@@ -1,9 +1,16 @@
 import type { SessionResult } from "@/shared/types/history.types";
-import { previewIncrease, suggestIncrease } from "@/shared/utils/progression.utils";
+import {
+  previewIncrease,
+  suggestIncrease,
+} from "@/shared/utils/progression.utils";
 import type { ExerciseInsight, ExerciseTemplate } from "../types/workout.types";
 import { suggestDeload } from "./deload.utils";
 
-export const NO_INSIGHT: ExerciseInsight = { increase: null, preview: null, deload: null };
+export const NO_INSIGHT: ExerciseInsight = {
+  increase: null,
+  preview: null,
+  deload: null,
+};
 
 export interface InsightSettings {
   progressionSuggestions: boolean;
@@ -19,13 +26,28 @@ interface InsightOptions {
 }
 
 /** Solo los ejercicios con peso y reps tienen sugerencias; por tiempo o peso corporal no. */
-export function buildInsight({ history, template, settings, today }: InsightOptions): ExerciseInsight {
+export function buildInsight({
+  history,
+  template,
+  settings,
+  today,
+}: InsightOptions): ExerciseInsight {
   const { reps, sets, weightStep } = template;
   if (reps === null || template.targetWeight === null) return NO_INSIGHT;
-  const options = { history, target: { sets, reps }, step: weightStep, trackRpe: settings.trackRpe };
+  const options = {
+    history,
+    target: { sets, reps },
+    step: weightStep,
+    trackRpe: settings.trackRpe,
+  };
+  // Hacen falta los dos interruptores: el general de Ajustes y el del ejercicio en el plan.
+  const canSuggest =
+    settings.progressionSuggestions && template.isProgressionEnabled;
   return {
-    increase: settings.progressionSuggestions ? suggestIncrease(options) : null,
-    preview: settings.progressionSuggestions ? previewIncrease(options) : null,
-    deload: settings.autoDeload ? suggestDeload({ history, today, step: weightStep }) : null,
+    increase: canSuggest ? suggestIncrease(options) : null,
+    preview: canSuggest ? previewIncrease(options) : null,
+    deload: settings.autoDeload
+      ? suggestDeload({ history, today, step: weightStep })
+      : null,
   };
 }

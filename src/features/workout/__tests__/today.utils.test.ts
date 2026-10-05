@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import type { ExerciseTemplate } from "../types/workout.types";
-import { formatSetsAndWeight, formatTemplateSummary } from "../utils/template.utils";
+import {
+  formatSetsAndWeight,
+  formatTemplateSummary,
+} from "../utils/template.utils";
 import { buildWeekStrip } from "../utils/week-strip.utils";
 
 describe("buildWeekStrip", () => {
@@ -36,7 +39,9 @@ describe("buildWeekStrip", () => {
   });
 
   it("marca solo el día de hoy aunque tenga hora", () => {
-    expect(strip.filter((day) => day.isToday).map((day) => day.weekday)).toEqual([4]);
+    expect(
+      strip.filter((day) => day.isToday).map((day) => day.weekday),
+    ).toEqual([4]);
   });
 });
 
@@ -50,19 +55,36 @@ describe("template formatting", () => {
     unit: "lb",
     loadType: "total",
     weightStep: 5,
+    repsMin: null,
+    isProgressionEnabled: true,
   };
 
   it("resume peso, series y descanso", () => {
     expect(formatTemplateSummary(template, "es")).toBe("88 lb · 4 × 12 · 1:30");
   });
 
+  it("muestra el rango de repeticiones cuando lo hay", () => {
+    expect(formatTemplateSummary({ ...template, repsMin: 8 }, "es")).toBe(
+      "88 lb · 4 × 8–12 · 1:30",
+    );
+  });
+
   it("resume series y peso para las listas", () => {
     expect(formatSetsAndWeight(template, "es")).toBe("4 × 12 · 88 lb");
-    expect(formatSetsAndWeight({ ...template, targetWeight: 27.5 }, "es")).toBe("4 × 12 · 27,5 lb");
+    expect(formatSetsAndWeight({ ...template, targetWeight: 27.5 }, "es")).toBe(
+      "4 × 12 · 27,5 lb",
+    );
   });
 
   it("omite el peso y muestra el tiempo en ejercicios por tiempo", () => {
-    const plank = { ...template, reps: null, seconds: 90, targetWeight: null, sets: 3, restSec: 120 };
+    const plank = {
+      ...template,
+      reps: null,
+      seconds: 90,
+      targetWeight: null,
+      sets: 3,
+      restSec: 120,
+    };
     expect(formatTemplateSummary(plank, "es")).toBe("3 × 1:30 · 2:00");
     expect(formatSetsAndWeight(plank, "es")).toBe("3 × 1:30");
   });

@@ -1,6 +1,9 @@
 import type { Language, WeighInFrequency } from "@/shared/types/settings.types";
 import { LANGUAGES, WEIGH_IN_FREQUENCIES } from "@/shared/types/settings.types";
-import { UNIT_PREFERENCES, type UnitPreference } from "@/shared/types/training.types";
+import {
+  UNIT_PREFERENCES,
+  type UnitPreference,
+} from "@/shared/types/training.types";
 import { isOneOf } from "@/shared/utils/guard.utils";
 import type { ThemePreference } from "./color-mode.utils";
 
@@ -40,15 +43,25 @@ export const MIN_HEIGHT_CM = 120;
 export const MAX_HEIGHT_CM = 230;
 export const HEIGHT_NOT_SET = 0;
 
-export const serializeSetting: (value: string | boolean | number) => string = String;
+export const serializeSetting: (value: string | boolean | number) => string =
+  String;
 
 function parseBoolean(raw: string | undefined, fallback: boolean): boolean {
   return raw === undefined ? fallback : raw === TRUE_VALUE;
 }
 
-function parseBoundedInt(raw: string | undefined, max: number, fallback: number): number {
+function parseBoundedInt(
+  raw: string | undefined,
+  max: number,
+  fallback: number,
+): number {
   const value = Number(raw);
-  return raw !== undefined && Number.isInteger(value) && value >= 0 && value <= max ? value : fallback;
+  return raw !== undefined &&
+    Number.isInteger(value) &&
+    value >= 0 &&
+    value <= max
+    ? value
+    : fallback;
 }
 
 function parseChoice<T extends string>(
@@ -69,16 +82,32 @@ export function parseSettings(
     weightUnit: parseChoice(UNIT_PREFERENCES, raw.weightUnit, "per_exercise"),
     theme: parseChoice(THEMES, raw.theme, "auto"),
     progressionSuggestions: parseBoolean(raw.progressionSuggestions, true),
-    trackRpe: parseBoolean(raw.trackRpe, false),
+    trackRpe: parseBoolean(raw.trackRpe, true),
     autoDeload: parseBoolean(raw.autoDeload, true),
     reminderEnabled: parseBoolean(raw.reminderEnabled, false),
-    reminderHour: parseBoundedInt(raw.reminderHour, MAX_HOUR, DEFAULT_REMINDER_HOUR),
+    reminderHour: parseBoundedInt(
+      raw.reminderHour,
+      MAX_HOUR,
+      DEFAULT_REMINDER_HOUR,
+    ),
     reminderMinute: parseBoundedInt(raw.reminderMinute, MAX_MINUTE, 0),
     heightCm: parseBoundedInt(raw.heightCm, MAX_HEIGHT_CM, HEIGHT_NOT_SET),
-    weighInFrequency: parseChoice(WEIGH_IN_FREQUENCIES, raw.weighInFrequency, "daily"),
+    weighInFrequency: parseChoice(
+      WEIGH_IN_FREQUENCIES,
+      raw.weighInFrequency,
+      "daily",
+    ),
     weighInReminderEnabled: parseBoolean(raw.weighInReminderEnabled, false),
-    weighInReminderHour: parseBoundedInt(raw.weighInReminderHour, MAX_HOUR, DEFAULT_WEIGH_IN_HOUR),
-    weighInReminderMinute: parseBoundedInt(raw.weighInReminderMinute, MAX_MINUTE, 0),
+    weighInReminderHour: parseBoundedInt(
+      raw.weighInReminderHour,
+      MAX_HOUR,
+      DEFAULT_WEIGH_IN_HOUR,
+    ),
+    weighInReminderMinute: parseBoundedInt(
+      raw.weighInReminderMinute,
+      MAX_MINUTE,
+      0,
+    ),
     weighInWeekday: parseBoundedInt(raw.weighInWeekday, MAX_WEEKDAY, 0),
     onboardingDone: parseBoolean(raw.onboardingDone, false),
   };

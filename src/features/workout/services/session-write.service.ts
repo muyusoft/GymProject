@@ -7,7 +7,11 @@ import { generateId } from "@/shared/utils/id.utils";
 import { toIsoDate } from "@/shared/utils/week.utils";
 import type { SessionSet } from "../types/workout.types";
 import { buildInsight, type InsightSettings } from "../utils/insight.utils";
-import { buildInitialSets, nextSetValues, type NewSetLog } from "../utils/session-plan.utils";
+import {
+  buildInitialSets,
+  nextSetValues,
+  type NewSetLog,
+} from "../utils/session-plan.utils";
 import { buildTemplate } from "../utils/template.utils";
 import { listDayExercises } from "./day-exercises.service";
 import { loadHistory } from "./history.service";
@@ -21,17 +25,27 @@ interface StartSessionOptions {
   settings: InsightSettings;
 }
 
-async function buildSessionSets(sessionId: string, { dayId, now, settings }: StartSessionOptions) {
-  const [details, increments] = await Promise.all([listDayExercises(dayId, toIsoDate(now)), listIncrements()]);
-  const history = await loadHistory(details.map((detail) => detail.exercise.id), now.getTime());
+async function buildSessionSets(
+  sessionId: string,
+  { dayId, now, settings }: StartSessionOptions,
+) {
+  const [details, increments] = await Promise.all([
+    listDayExercises(dayId, toIsoDate(now)),
+    listIncrements(),
+  ]);
+  const history = await loadHistory(
+    details.map((detail) => detail.exercise.id),
+    now.getTime(),
+  );
   return details.flatMap((detail): NewSetLog[] => {
     const template = buildTemplate({
       planExercise: detail.planExercise,
       equipment: detail.exercise.equipment,
       increments,
     });
+    const exerciseHistory = history.get(detail.exercise.id) ?? [];
     const insight = buildInsight({
-      history: history.get(detail.exercise.id) ?? [],
+      history: exerciseHistory,
       template,
       settings,
       today: now,
@@ -42,12 +56,15 @@ async function buildSessionSets(sessionId: string, { dayId, now, settings }: Sta
       template,
       insight,
       createId: generateId,
+      latest: exerciseHistory[0],
     });
   });
 }
 
 /** Crea la sesión de hoy con todas sus series pendientes; si ya hay una abierta, la reanuda. */
-export async function startSession(options: StartSessionOptions): Promise<string> {
+export async function startSession(
+  options: StartSessionOptions,
+): Promise<string> {
   const date = toIsoDate(options.now);
   const existing = await findActiveSession(options.dayId, date);
   if (existing) return existing;
@@ -57,14 +74,23 @@ export async function startSession(options: StartSessionOptions): Promise<string
   // Transacción síncrona (expo-sqlite): sin await adentro, cada sentencia con .run().
   db.transaction((tx) => {
     tx.insert(sessions)
-      .values({ id: sessionId, planDayId: options.dayId, date, startedAt: options.now.getTime(), origin: "app" })
+      .values({
+        id: sessionId,
+        planDayId: options.dayId,
+        date,
+        startedAt: options.now.getTime(),
+        origin: "app",
+      })
       .run();
-    for (const part of chunk(rows, INSERT_BATCH_SIZE)) tx.insert(setLogs).values(part).run();
+    for (const part of chunk(rows, INSERT_BATCH_SIZE))
+      tx.insert(setLogs).values(part).run();
   });
   return sessionId;
 }
 
-export type SetPatch = Partial<Pick<SessionSet, "weight" | "reps" | "seconds" | "completed" | "isPR">>;
+export type SetPatch = Partial<
+  Pick<SessionSet, "weight" | "reps" | "seconds" | "completed" | "isPR" | "rpe">
+>;
 
 export async function updateSet(id: string, patch: SetPatch): Promise<void> {
   await db.update(setLogs).set(patch).where(eq(setLogs.id, id));
@@ -77,16 +103,33 @@ interface AddSetOptions {
   template: Parameters<typeof nextSetValues>[1];
 }
 
-export async function addSet({ sessionId, exerciseId, last, template }: AddSetOptions): Promise<SessionSet> {
+export async function addSet({
+  sessionId,
+  exerciseId,
+  last,
+  template,
+}: AddSetOptions): Promise<SessionSet> {
   const values = nextSetValues(last, template);
   const index = (last?.index ?? -1) + 1;
   const id = generateId();
-  await db
-    .insert(setLogs)
-    .values({ id, sessionId, exerciseId, setIndex: index, completed: false, isPR: false, ...values });
-  return { id, index, completed: false, isPR: false, ...values };
+  await db.insert(setLogs).values({
+    id,
+    sessionId,
+    exerciseId,
+    setIndex: index,
+    completed: false,
+    isPR: false,
+    ...values,
+  });
+  return { id, index, completed: false, isPR: false, rpe: null, ...values };
 }
 
-export async function finishSession(sessionId: string, now: Date): Promise<void> {
-  await db.update(sessions).set({ endedAt: now.getTime() }).where(eq(sessions.id, sessionId));
+export async function finishSession(
+  sessionId: string,
+  now: Date,
+): Promise<void> {
+  await db
+    .update(sessions)
+    .set({ endedAt: now.getTime() })
+    .where(eq(sessions.id, sessionId));
 }

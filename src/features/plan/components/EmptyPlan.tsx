@@ -8,7 +8,11 @@ interface EmptyPlanProps {
   onCreate: () => void;
 }
 
-export function EmptyPlan({ isCreating, hasError, onCreate }: Readonly<EmptyPlanProps>) {
+export function EmptyPlan({
+  isCreating,
+  hasError,
+  onCreate,
+}: Readonly<EmptyPlanProps>) {
   const { t } = useTranslation();
 
   return (
@@ -16,7 +20,13 @@ export function EmptyPlan({ isCreating, hasError, onCreate }: Readonly<EmptyPlan
       <EmptyState
         title={t("plan.empty.title")}
         body={t("plan.empty.body")}
-        action={<Button label={t("plan.empty.create")} loading={isCreating} onPress={onCreate} />}
+        action={
+          <Button
+            label={t("plan.empty.create")}
+            loading={isCreating}
+            onPress={onCreate}
+          />
+        }
       >
         {hasError && <InlineError message={t("common.saveError")} />}
       </EmptyState>

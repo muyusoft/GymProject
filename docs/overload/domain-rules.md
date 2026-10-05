@@ -10,8 +10,18 @@ Funciones puras, sin React ni base de datos, en la carpeta `utils/` del feature 
 
 ## Subir peso (`features/workout/utils/progression.utils.ts`) — regla de producto
 
-- Si en las 2 últimas sesiones de ese ejercicio se completaron todas las series con las reps objetivo, sugerir: peso actual + salto mínimo del equipo, en la misma unidad.
-- Si el usuario registra RPE (opcional), no sugerir subir si el RPE medio de la última sesión fue 9 o más.
+- Una sesión está completa si se hicieron todas las series planeadas con las reps objetivo. La sugerencia es siempre: peso actual + salto mínimo del equipo, en la misma unidad.
+- **Pregunta de esfuerzo** (`src/shared/utils/effort.utils.ts`, ajuste `trackRpe`, activado por defecto): al terminar todas las series de un ejercicio con repeticiones, la sesión pregunta cuántas quedaban en reserva. Es opcional, de un toque y se guarda como RPE en las series del ejercicio: "me sobraron 3 o más" = 7, "me sobraron 1 o 2" = 8.5, "llegué al límite" = 10.
+- Con respuesta en la última sesión: al límite (RPE medio 9 o más) no se sugiere subir; con repeticiones en reserva basta esa sola sesión completa.
+- Sin respuesta, o con la pregunta apagada: hacen falta las 2 últimas sesiones completas al mismo peso.
+- El interruptor "Sugerirme subir peso" de cada ejercicio (en `progressionRule`) apaga la sugerencia solo para ese ejercicio; el de Ajustes la apaga para todos.
+
+## Rango de repeticiones (`features/workout/utils/rep-goal.utils.ts`) — regla de producto
+
+- Cada ejercicio con repeticiones puede tener un rango (por ejemplo 8–12): `reps` es el tope y `progressionRule.repsMin` el mínimo. Sin `repsMin`, o si no queda por debajo de `reps`, el objetivo es fijo.
+- Una sesión solo cuenta como completa para subir peso si todas las series llegan al tope.
+- Con rango, las series de una sesión nueva arrancan con la meta de hoy: al subir de peso, el mínimo; al mismo peso que la última vez, una repetición más que su peor serie (entre el mínimo y el tope). Sin historial o con menos peso, el tope.
+- El rango se muestra como `4 × 8–12` en el plan, en Hoy y en la sesión.
 - La sugerencia es descartable y nunca cambia el plan sin confirmación.
 
 ## Deload (`features/workout/utils/deload.utils.ts`) — regla de producto

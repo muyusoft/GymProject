@@ -15,7 +15,12 @@ export function EmptyToday({ reason }: Readonly<EmptyTodayProps>) {
       title={t(`today.empty.${reason}.title`)}
       body={t(`today.empty.${reason}.body`)}
       {...(reason === "noPlan" && {
-        action: <Button label={t("today.empty.noPlan.action")} onPress={() => router.push("/routines")} />,
+        action: (
+          <Button
+            label={t("today.empty.noPlan.action")}
+            onPress={() => router.push("/routines")}
+          />
+        ),
       })}
     />
   );

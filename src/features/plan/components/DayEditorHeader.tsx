@@ -16,11 +16,16 @@ interface DayEditorHeaderProps {
   draft: ReturnType<typeof useDayDraft>;
 }
 
-export function DayEditorHeader({ detail, draft }: Readonly<DayEditorHeaderProps>) {
+export function DayEditorHeader({
+  detail,
+  draft,
+}: Readonly<DayEditorHeaderProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
   const suggestedName = useDayNameSuggestion(detail.nameSuggestion);
-  const minutes = estimateDurationMinutes(detail.exercises.map((entry) => entry.planExercise));
+  const minutes = estimateDurationMinutes(
+    detail.exercises.map((entry) => entry.planExercise),
+  );
   const eyebrow = t("plan.day.eyebrow", {
     weekday: t(`weekday.long.${detail.day.weekday}`),
     plan: detail.planName,
@@ -43,13 +48,18 @@ export function DayEditorHeader({ detail, draft }: Readonly<DayEditorHeaderProps
         />
       )}
       {draft.defaults && (
-        <DayDefaultsPanel defaults={draft.defaults} onChange={draft.setDefaults} />
+        <DayDefaultsPanel
+          defaults={draft.defaults}
+          onChange={draft.setDefaults}
+        />
       )}
       <View style={styles.meta}>
         <Text style={[styles.label, { color: c.textSecondary }]}>
           {t("plan.day.meta", { count: detail.exercises.length, minutes })}
         </Text>
-        <Text style={[styles.label, { color: c.textSecondary }]}>{t("plan.day.reorderHint")}</Text>
+        <Text style={[styles.label, { color: c.textSecondary }]}>
+          {t("plan.day.reorderHint")}
+        </Text>
       </View>
     </View>
   );
@@ -57,6 +67,10 @@ export function DayEditorHeader({ detail, draft }: Readonly<DayEditorHeaderProps
 
 const styles = StyleSheet.create({
   header: { gap: tokens.spacing[3], paddingBottom: tokens.spacing[3] },
-  meta: { flexDirection: "row", justifyContent: "space-between", gap: tokens.spacing[3] },
+  meta: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: tokens.spacing[3],
+  },
   label: { ...getTextStyle("bodySm"), flexShrink: 1 },
 });
