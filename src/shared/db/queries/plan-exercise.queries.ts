@@ -2,6 +2,7 @@ import { asc, eq } from "drizzle-orm";
 import { generateId } from "@/shared/utils/id.utils";
 import { db } from "../client";
 import { exercises, planDays, planExercises } from "../schema";
+import { recordDeletions } from "./deletion.queries";
 import type {
   NewPlanExercise,
   PlanExercisePatch,
@@ -62,7 +63,9 @@ export async function findPlanExercise(
   return rows[0] ?? null;
 }
 
-export async function insertPlanExercise(values: NewPlanExercise): Promise<void> {
+export async function insertPlanExercise(
+  values: NewPlanExercise,
+): Promise<void> {
   await db.insert(planExercises).values({ id: generateId(), ...values });
 }
 
@@ -74,7 +77,10 @@ export async function updatePlanExercise(
 }
 
 export async function deletePlanExercise(id: string): Promise<void> {
-  await db.delete(planExercises).where(eq(planExercises.id, id));
+  db.transaction((tx) => {
+    recordDeletions(tx, "plan_exercises", [id]);
+    tx.delete(planExercises).where(eq(planExercises.id, id)).run();
+  });
 }
 
 export async function setPlanExerciseOrders(
@@ -83,7 +89,10 @@ export async function setPlanExerciseOrders(
   // Transacción síncrona (expo-sqlite): sin await adentro, cada sentencia con .run().
   db.transaction((tx) => {
     for (const { id, order } of orders) {
-      tx.update(planExercises).set({ order }).where(eq(planExercises.id, id)).run();
+      tx.update(planExercises)
+        .set({ order })
+        .where(eq(planExercises.id, id))
+        .run();
     }
   });
 }

@@ -16,6 +16,8 @@ export const SETTING_KEYS = {
   weighInReminderMinute: "weighInReminderMinute",
   weighInWeekday: "weighInWeekday",
   onboardingDone: "onboardingDone",
+  /** Versión de la preparación para sincronizar (ids estables) ya aplicada a esta instalación. */
+  syncPrep: "syncPrep",
 } as const;
 
 export type SettingKey = (typeof SETTING_KEYS)[keyof typeof SETTING_KEYS];

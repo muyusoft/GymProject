@@ -18,12 +18,25 @@ const INPUT: SeedInput = {
   },
   patterns: { horizontal_push: PUSH },
   freeExercises: [
-    { id: "Bench", name: "Bench Press", equipment: "barbell", instructions: ["Lie down.", "Press."] },
+    {
+      id: "Bench",
+      name: "Bench Press",
+      equipment: "barbell",
+      instructions: ["Lie down.", "Press."],
+    },
     { id: "Crunch", name: "Crunch", equipment: "body only", instructions: [] },
   ],
   commonExercises: [
-    { nameEs: "Press banca", freeExerciseDbName: "Bench Press", pattern: "horizontal_push" },
-    { nameEs: "Dead bug", freeExerciseDbName: null, pattern: "horizontal_push" },
+    {
+      nameEs: "Press banca",
+      freeExerciseDbName: "Bench Press",
+      pattern: "horizontal_push",
+    },
+    {
+      nameEs: "Dead bug",
+      freeExerciseDbName: null,
+      pattern: "horizontal_push",
+    },
   ],
 };
 
@@ -33,15 +46,40 @@ const createId = () => `id-${++counter}`;
 describe("buildSeedPlan", () => {
   it("une el catálogo con los ejercicios comunes y crea los que no están", () => {
     const plan = buildSeedPlan(INPUT, createId);
-    expect(plan.exercises.map((e) => e.nameEn)).toEqual(["Bench Press", "Crunch", "Dead bug"]);
+    expect(plan.exercises.map((e) => e.nameEn)).toEqual([
+      "Bench Press",
+      "Crunch",
+      "Dead bug",
+    ]);
     expect(plan.exercises[0]?.nameEs).toBe("Press banca");
     expect(plan.exercises[1]?.nameEs).toBe("Crunch");
+  });
+
+  it("da a cada ejercicio y a cada salto un id estable, igual en cualquier instalación", () => {
+    const first = buildSeedPlan(INPUT);
+    const second = buildSeedPlan(INPUT);
+    expect(first.exercises.map((e) => e.id)).toEqual([
+      "fedb:Bench",
+      "fedb:Crunch",
+      "common:dead-bug",
+    ]);
+    expect(second.exercises.map((e) => e.id)).toEqual(
+      first.exercises.map((e) => e.id),
+    );
+    expect(first.increments.map((i) => i.id)).toContain("dumbbell:lb");
+    expect(
+      first.muscles.every((m) =>
+        first.exercises.some((e) => e.id === m.exerciseId),
+      ),
+    ).toBe(true);
   });
 
   it("genera músculos solo para ejercicios con patrón", () => {
     const plan = buildSeedPlan(INPUT, createId);
     const crunch = plan.exercises[1];
-    expect(plan.muscles.filter((m) => m.exerciseId === crunch?.id)).toHaveLength(0);
+    expect(
+      plan.muscles.filter((m) => m.exerciseId === crunch?.id),
+    ).toHaveLength(0);
     expect(plan.muscles).toHaveLength(4);
     expect(crunch?.status).toBe("claude_draft");
   });
@@ -59,7 +97,12 @@ describe("buildSeedPlan", () => {
   });
 
   it("falla si un ejercicio usa un patrón desconocido", () => {
-    const bad = { ...INPUT, commonExercises: [{ nameEs: "X", freeExerciseDbName: null, pattern: "nope" }] };
+    const bad = {
+      ...INPUT,
+      commonExercises: [
+        { nameEs: "X", freeExerciseDbName: null, pattern: "nope" },
+      ],
+    };
     expect(() => buildSeedPlan(bad, createId)).toThrow("Unknown pattern");
   });
 });
@@ -67,21 +110,30 @@ describe("buildSeedPlan", () => {
 describe("resolveMuscles", () => {
   it("reemplaza los músculos del patrón con replace", () => {
     const muscles = resolveMuscles(PUSH, {
-      replace: [{ group: "abs", role: "primary", basis: "measured", view: "front" }],
+      replace: [
+        { group: "abs", role: "primary", basis: "measured", view: "front" },
+      ],
     });
     expect(muscles.map((m) => m.group)).toEqual(["abs"]);
   });
 
   it("agrega con add y sustituye el grupo repetido", () => {
     const muscles = resolveMuscles(PUSH, {
-      add: [{ group: "triceps", role: "primary", basis: "measured", view: "both" }],
+      add: [
+        { group: "triceps", role: "primary", basis: "measured", view: "both" },
+      ],
     });
     expect(muscles.find((m) => m.group === "triceps")?.role).toBe("primary");
     expect(muscles).toHaveLength(2);
   });
 
   it("rechaza un grupo muscular que no existe", () => {
-    const bad = { ...PUSH, muscles: [{ group: "wings", role: "primary", basis: "measured", view: "both" }] };
+    const bad = {
+      ...PUSH,
+      muscles: [
+        { group: "wings", role: "primary", basis: "measured", view: "both" },
+      ],
+    };
     expect(() => resolveMuscles(bad)).toThrow("Invalid muscle group");
   });
 });
