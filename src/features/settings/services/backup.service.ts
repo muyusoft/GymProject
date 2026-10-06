@@ -1,6 +1,11 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { Directory, File } from "expo-file-system";
 import { db } from "@/shared/db/client";
+import {
+  clearRestoredDeletions,
+  recordAllDeletions,
+  SYNCED_TABLES,
+} from "@/shared/db/queries/deletion.queries";
 import { getAllSettings } from "@/shared/db/queries/settings.queries";
 import {
   bodyWeights,
@@ -19,6 +24,7 @@ import { useSettingsStore } from "@/shared/store";
 import { SETTING_KEYS } from "@/shared/types/settings.types";
 import { chunk } from "@/shared/utils/chunk.utils";
 import { isOneOf } from "@/shared/utils/guard.utils";
+import { bodyWeightId } from "@/shared/utils/stable-id.utils";
 import type {
   BackupData,
   BackupExercise,
@@ -37,7 +43,11 @@ import {
 const BATCH_SIZE = 50;
 const ID_BATCH_SIZE = 500;
 const KNOWN_SETTING_KEYS = Object.values(SETTING_KEYS).filter(
-  (key) => key !== SETTING_KEYS.seeded,
+  (key) => key !== SETTING_KEYS.seeded && key !== SETTING_KEYS.syncPrep,
+);
+/** Tablas que el respaldo reemplaza siempre; el peso corporal solo si el respaldo lo trae. */
+const REPLACED_TABLES = SYNCED_TABLES.filter(
+  (table) => table !== "body_weights",
 );
 
 const exerciseColumns = {
@@ -178,6 +188,7 @@ export async function restoreBackup(file: BackupFile): Promise<BackupSummary> {
         )
         .run(),
     );
+    for (const table of REPLACED_TABLES) recordAllDeletions(tx, table);
     for (const table of [
       exerciseSwaps,
       setLogs,
@@ -199,8 +210,17 @@ export async function restoreBackup(file: BackupFile): Promise<BackupSummary> {
         )
         .run(),
     );
+    // Con claves foráneas, una sesión no puede apuntar a un día del plan que el respaldo no trae.
+    const dayIds = new Set(data.planDays.map((day) => day.id));
+    const keepDay = (id: string | null) =>
+      id !== null && dayIds.has(id) ? id : null;
     insertInBatches(data.sessions, (part) =>
-      tx.insert(sessions).values(part).run(),
+      tx
+        .insert(sessions)
+        .values(
+          part.map((row) => ({ ...row, planDayId: keepDay(row.planDayId) })),
+        )
+        .run(),
     );
     insertInBatches(data.setLogs, (part) =>
       tx
@@ -212,11 +232,16 @@ export async function restoreBackup(file: BackupFile): Promise<BackupSummary> {
     );
     const { bodyWeights: bodyWeightRows } = data;
     if (bodyWeightRows) {
+      recordAllDeletions(tx, "body_weights");
       tx.delete(bodyWeights).run();
       insertInBatches(bodyWeightRows, (part) =>
-        tx.insert(bodyWeights).values(part).run(),
+        tx
+          .insert(bodyWeights)
+          .values(part.map((row) => ({ ...row, id: bodyWeightId(row.date) })))
+          .run(),
       );
     }
+    for (const table of SYNCED_TABLES) clearRestoredDeletions(tx, table);
 
     for (const { equipment, unit, step } of data.equipmentIncrements) {
       tx.update(equipmentIncrements)

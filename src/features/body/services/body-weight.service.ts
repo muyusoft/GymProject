@@ -1,8 +1,12 @@
 import { asc, eq } from "drizzle-orm";
 import { db } from "@/shared/db/client";
+import {
+  clearDeletion,
+  recordDeletions,
+} from "@/shared/db/queries/deletion.queries";
 import { bodyWeights } from "@/shared/db/schema";
 import type { WeightUnit } from "@/shared/types/training.types";
-import { generateId } from "@/shared/utils/id.utils";
+import { bodyWeightId } from "@/shared/utils/stable-id.utils";
 import type { BodyWeightEntry } from "../types/body.types";
 
 const entryColumns = {
@@ -14,7 +18,10 @@ const entryColumns = {
 
 /** Todos los registros, del más viejo al más nuevo. */
 export async function listBodyWeights(): Promise<BodyWeightEntry[]> {
-  return db.select(entryColumns).from(bodyWeights).orderBy(asc(bodyWeights.date));
+  return db
+    .select(entryColumns)
+    .from(bodyWeights)
+    .orderBy(asc(bodyWeights.date));
 }
 
 interface SaveBodyWeightOptions {
@@ -24,13 +31,24 @@ interface SaveBodyWeightOptions {
 }
 
 /** Un registro por día: volver a guardar el mismo día corrige el anterior. */
-export async function saveBodyWeight({ date, weight, unit }: SaveBodyWeightOptions): Promise<void> {
-  await db
-    .insert(bodyWeights)
-    .values({ id: generateId(), date, weight, unit })
-    .onConflictDoUpdate({ target: bodyWeights.date, set: { weight, unit } });
+export async function saveBodyWeight({
+  date,
+  weight,
+  unit,
+}: SaveBodyWeightOptions): Promise<void> {
+  const id = bodyWeightId(date);
+  db.transaction((tx) => {
+    clearDeletion(tx, "body_weights", id);
+    tx.insert(bodyWeights)
+      .values({ id, date, weight, unit })
+      .onConflictDoUpdate({ target: bodyWeights.date, set: { weight, unit } })
+      .run();
+  });
 }
 
 export async function deleteBodyWeight(id: string): Promise<void> {
-  await db.delete(bodyWeights).where(eq(bodyWeights.id, id));
+  db.transaction((tx) => {
+    recordDeletions(tx, "body_weights", [id]);
+    tx.delete(bodyWeights).where(eq(bodyWeights.id, id)).run();
+  });
 }

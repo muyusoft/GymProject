@@ -8,7 +8,14 @@ const plan = buildSeedPlan(catalogSeedData);
 describe("catalogSeedData", () => {
   it("construye el plan del seed con los datos reales sin errores", () => {
     expect(plan.exercises.length).toBeGreaterThan(800);
-    expect(plan.sources).toHaveLength(Object.keys(catalogSeedData.sources).length);
+    expect(plan.sources).toHaveLength(
+      Object.keys(catalogSeedData.sources).length,
+    );
+  });
+
+  it("ningún id del catálogo se repite", () => {
+    const ids = plan.exercises.map((e) => e.id);
+    expect(new Set(ids).size).toBe(ids.length);
   });
 
   it("incluye los 94 ejercicios comunes con su nombre en español", () => {
@@ -29,6 +36,8 @@ describe("catalogSeedData", () => {
     const withoutPattern = new Set(
       plan.exercises.filter((e) => e.pattern === null).map((e) => e.id),
     );
-    expect(plan.muscles.some((m) => withoutPattern.has(m.exerciseId))).toBe(false);
+    expect(plan.muscles.some((m) => withoutPattern.has(m.exerciseId))).toBe(
+      false,
+    );
   });
 });

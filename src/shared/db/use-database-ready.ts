@@ -4,6 +4,7 @@ import { logger } from "@/config/logger";
 import { db } from "./client";
 import migrations from "./migrations/migrations";
 import { runSeed } from "./seed";
+import { runSyncPrep } from "./sync-prep";
 import type { SeedInput } from "./seed/seed.types";
 
 interface DatabaseState {
@@ -11,7 +12,7 @@ interface DatabaseState {
   error: Error | null;
 }
 
-/** Aplica las migraciones y luego corre el seed (una sola vez). */
+/** Aplica las migraciones, corre el seed (una sola vez) y deja los ids estables para sincronizar. */
 export function useDatabaseReady(seedInput: SeedInput): DatabaseState {
   const { success, error: migrationError } = useMigrations(db, migrations);
   const [isSeeded, setIsSeeded] = useState(false);
@@ -20,6 +21,7 @@ export function useDatabaseReady(seedInput: SeedInput): DatabaseState {
   useEffect(() => {
     if (!success) return;
     runSeed(db, seedInput)
+      .then(() => runSyncPrep(db, seedInput))
       .then(() => setIsSeeded(true))
       .catch((error: unknown) => {
         logger.error("Database seed failed", { error });
@@ -32,7 +34,7 @@ export function useDatabaseReady(seedInput: SeedInput): DatabaseState {
         setSeedError(
           typeof error === "string"
             ? new Error(error)
-            : new Error("Unknown database seed error")
+            : new Error("Unknown database seed error"),
         );
       });
   }, [success, seedInput]);

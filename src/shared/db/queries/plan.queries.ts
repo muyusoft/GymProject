@@ -2,10 +2,15 @@ import { asc, eq } from "drizzle-orm";
 import { generateId } from "@/shared/utils/id.utils";
 import { db } from "../client";
 import { planDays, plans } from "../schema";
+import { recordDeletions } from "./deletion.queries";
 import type { NewPlanDay, PlanDayPatch, PlanDayRow, PlanRow } from "../types";
 
 export async function findActivePlan(): Promise<PlanRow | null> {
-  const rows = await db.select().from(plans).orderBy(asc(plans.updatedAt)).limit(1);
+  const rows = await db
+    .select()
+    .from(plans)
+    .orderBy(asc(plans.updatedAt))
+    .limit(1);
   return rows[0] ?? null;
 }
 
@@ -45,10 +50,16 @@ export async function insertPlanDay(values: NewPlanDay): Promise<PlanDayRow> {
   return created;
 }
 
-export async function updatePlanDay(id: string, patch: PlanDayPatch): Promise<void> {
+export async function updatePlanDay(
+  id: string,
+  patch: PlanDayPatch,
+): Promise<void> {
   await db.update(planDays).set(patch).where(eq(planDays.id, id));
 }
 
 export async function deletePlanDay(id: string): Promise<void> {
-  await db.delete(planDays).where(eq(planDays.id, id));
+  db.transaction((tx) => {
+    recordDeletions(tx, "plan_days", [id]);
+    tx.delete(planDays).where(eq(planDays.id, id)).run();
+  });
 }

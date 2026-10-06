@@ -9,6 +9,7 @@ export default defineConfig({
     "./src/shared/db/schema/training.ts",
     "./src/shared/db/schema/settings.ts",
     "./src/shared/db/schema/body.ts",
+    "./src/shared/db/schema/sync.ts",
   ],
   out: "./src/shared/db/migrations",
 });

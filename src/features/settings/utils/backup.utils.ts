@@ -12,15 +12,27 @@ import {
 } from "../types/backup.types";
 import { isBackupData } from "./backup-validation.utils";
 
-const EXCLUDED_SETTINGS: readonly string[] = [SETTING_KEYS.seeded];
+const EXCLUDED_SETTINGS: readonly string[] = [
+  SETTING_KEYS.seeded,
+  SETTING_KEYS.syncPrep,
+];
 
-/** El catálogo sembrado y la marca "seeded" no se respaldan: se vuelven a crear solos en cada instalación. */
-export function pickUserSettings(all: Readonly<Record<string, string>>): Record<string, string> {
-  return Object.fromEntries(Object.entries(all).filter(([key]) => !EXCLUDED_SETTINGS.includes(key)));
+/** El catálogo sembrado y las marcas de instalación ("seeded", "syncPrep") no se respaldan: se vuelven a crear solos en cada instalación. */
+export function pickUserSettings(
+  all: Readonly<Record<string, string>>,
+): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(all).filter(([key]) => !EXCLUDED_SETTINGS.includes(key)),
+  );
 }
 
 export function buildBackup(data: BackupData, now: Date): BackupFile {
-  return { app: BACKUP_APP, version: BACKUP_VERSION, exportedAt: now.toISOString(), data };
+  return {
+    app: BACKUP_APP,
+    version: BACKUP_VERSION,
+    exportedAt: now.toISOString(),
+    data,
+  };
 }
 
 /** Texto → respaldo válido, o un BackupError con el motivo (no es JSON, no es de Overload, versión nueva, datos dañados). */
@@ -31,12 +43,20 @@ export function parseBackup(raw: string): BackupFile {
   } catch {
     throw new BackupError("not_json");
   }
-  if (typeof parsed !== "object" || parsed === null) throw new BackupError("wrong_app");
+  if (typeof parsed !== "object" || parsed === null)
+    throw new BackupError("wrong_app");
   const file = parsed as Record<string, unknown>;
   if (file.app !== BACKUP_APP) throw new BackupError("wrong_app");
-  if (file.version !== BACKUP_VERSION) throw new BackupError("unsupported_version");
-  if (typeof file.exportedAt !== "string" || !isBackupData(file.data)) throw new BackupError("invalid_data");
-  return { app: BACKUP_APP, version: BACKUP_VERSION, exportedAt: file.exportedAt, data: file.data };
+  if (file.version !== BACKUP_VERSION)
+    throw new BackupError("unsupported_version");
+  if (typeof file.exportedAt !== "string" || !isBackupData(file.data))
+    throw new BackupError("invalid_data");
+  return {
+    app: BACKUP_APP,
+    version: BACKUP_VERSION,
+    exportedAt: file.exportedAt,
+    data: file.data,
+  };
 }
 
 export function summarizeBackup({ data }: BackupFile): BackupSummary {
@@ -75,14 +95,22 @@ export function resolveExercises(
   known: readonly KnownExercise[],
   createId: () => string = generateId,
 ): ExerciseResolution {
-  const bySource = new Map(known.flatMap((item) => (item.sourceId ? [[item.sourceId, item.id] as const] : [])));
-  const byName = new Map(known.map((item) => [nameKey(item), item.id] as const));
+  const bySource = new Map(
+    known.flatMap((item) =>
+      item.sourceId ? [[item.sourceId, item.id] as const] : [],
+    ),
+  );
+  const byName = new Map(
+    known.map((item) => [nameKey(item), item.id] as const),
+  );
   const takenIds = new Set(known.map((item) => item.id));
   const idMap = new Map<string, string>();
   const toCreate: BackupExercise[] = [];
 
   for (const exercise of backed) {
-    const existing = (exercise.sourceId ? bySource.get(exercise.sourceId) : undefined) ?? byName.get(nameKey(exercise));
+    const existing =
+      (exercise.sourceId ? bySource.get(exercise.sourceId) : undefined) ??
+      byName.get(nameKey(exercise));
     if (existing) {
       idMap.set(exercise.id, existing);
       continue;
