@@ -9,7 +9,12 @@ import { IconRenderer } from "@/shared/icons/icon-renderer";
 import { useAccountAction } from "../hooks/use-account-action";
 import { useStartApp } from "../hooks/use-start-app";
 import { signUp } from "../services/account.service";
-import { canSignUp, checkPassword, shouldFlagEmail } from "../utils/account-validation.utils";
+import type { SignUpResult } from "../types/account.types";
+import {
+  canSignUp,
+  checkPassword,
+  shouldFlagEmail,
+} from "../utils/account-validation.utils";
 import { AccountLink } from "./AccountLink";
 import { AccountNotice } from "./AccountNotice";
 import { AccountTextField } from "./AccountTextField";
@@ -29,9 +34,21 @@ export function SignUpScreen() {
   const app = useStartApp();
 
   const submit = () => {
-    void account.run(() => signUp({ name: name.trim(), email: email.trim(), password })).then((isCreated) => {
-      if (isCreated) app.start();
-    });
+    const address = email.trim();
+    let result: SignUpResult | null = null;
+    void account
+      .run(async () => {
+        result = await signUp({ name: name.trim(), email: address, password });
+      })
+      .then(() => {
+        if (result === "signedIn") app.start();
+        if (result === "confirmEmail") {
+          router.replace({
+            pathname: "/account/check-email",
+            params: { email: address, kind: "confirm" },
+          });
+        }
+      });
   };
 
   return (
@@ -47,18 +64,34 @@ export function SignUpScreen() {
       }
     >
       {account.errorCode !== null && <AccountNotice code={account.errorCode} />}
-      <AccountTextField kind="name" label={t("account.fields.name")} value={name} onChange={setName} />
+      <AccountTextField
+        kind="name"
+        label={t("account.fields.name")}
+        value={name}
+        onChange={setName}
+      />
       <AccountTextField
         kind="email"
         label={t("account.fields.email")}
         value={email}
         onChange={setEmail}
         placeholder={t("account.fields.emailPlaceholder")}
-        {...(shouldFlagEmail(email) && { error: t("account.fields.emailInvalid") })}
+        {...(shouldFlagEmail(email) && {
+          error: t("account.fields.emailInvalid"),
+        })}
       />
-      <AccountTextField kind="newPassword" label={t("account.fields.password")} value={password} onChange={setPassword} />
+      <AccountTextField
+        kind="newPassword"
+        label={t("account.fields.password")}
+        value={password}
+        onChange={setPassword}
+      />
       <PasswordRules checks={checkPassword(password)} />
-      <Toggle value={hasAcceptedTerms} onChange={setHasAcceptedTerms} label={t("account.signUp.terms")} />
+      <Toggle
+        value={hasAcceptedTerms}
+        onChange={setHasAcceptedTerms}
+        label={t("account.signUp.terms")}
+      />
       <Button
         label={t("account.signUp.submit")}
         block
@@ -68,7 +101,9 @@ export function SignUpScreen() {
       />
       <View style={styles.note}>
         <IconRenderer name="info" size={ICON_SIZE} color={c.info} />
-        <Text style={[styles.noteText, { color: c.textSecondary }]}>{t("account.signUp.uploadNote")}</Text>
+        <Text style={[styles.noteText, { color: c.textSecondary }]}>
+          {t("account.signUp.uploadNote")}
+        </Text>
       </View>
     </AuthScreen>
   );

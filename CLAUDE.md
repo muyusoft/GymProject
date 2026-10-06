@@ -25,7 +25,7 @@ App de gimnasio personal de Muyusoft, construida sobre muyusoft-template. Reempl
 | `body`         | Peso corporal, media de 7 días, cambio semanal, IMC                                              | `src/app/body.tsx`                                                                 |
 | `settings`     | Idioma, unidad, saltos de peso, interruptores                                                    | `src/app/(tabs)/settings.tsx`                                                      |
 | `onboarding`   | Introducción de primera apertura (cinco tarjetas)                                                | `src/app/intro.tsx`                                                                |
-| `account`      | Bienvenida y pantallas de cuenta, solo interfaz (sin backend)                                    | `src/app/welcome.tsx`, `src/app/account/**`                                        |
+| `account`      | Bienvenida y cuenta con Supabase Auth (correo y contraseña)                                      | `src/app/welcome.tsx`, `src/app/account/**`                                        |
 
 ## Documentación del proyecto (léela según la tarea, no toda a la vez)
 

@@ -235,7 +235,8 @@
       "progression": "Progression",
       "appearance": "Appearance",
       "reminders": "Reminders",
-      "data": "Your data"
+      "data": "Your data",
+      "account": "Account"
     },
     "weightUnit": {
       "title": "Weight unit",
@@ -289,6 +290,19 @@
         "unsupported_version": "That backup comes from a newer version of Overset. Update the app and try again.",
         "invalid_data": "The backup is damaged or incomplete, so nothing was changed.",
         "generic": "Something went wrong and nothing was changed. Try again."
+      }
+    },
+    "account": {
+      "signedOutHint": "Create an account to save your progress to the cloud and use it on another phone.",
+      "signIn": "Create account or sign in",
+      "signedIn": "Signed in",
+      "signedInAs": "Signed in as {{email}}",
+      "syncPending": "Your data is still saved on this phone. Cloud backup will be turned on in an upcoming version.",
+      "signOut": "Sign out",
+      "signOutError": "Couldn't sign out. Try again.",
+      "signOutConfirm": {
+        "title": "Sign out?",
+        "message": "Your data stays on this phone."
       }
     }
   },
@@ -789,8 +803,8 @@
     },
     "errors": {
       "unavailable": {
-        "title": "Accounts aren't available yet",
-        "message": "For now Overset keeps everything on this phone. You can use the app without an account."
+        "title": "Not available yet",
+        "message": "For now, sign in with your email. Apple and Google are coming soon."
       },
       "invalid_credentials": {
         "title": "We couldn't sign you in",
@@ -799,6 +813,26 @@
       "unknown": {
         "title": "Something went wrong",
         "message": "That couldn't be completed. Try again in a moment."
+      },
+      "email_not_confirmed": {
+        "title": "Confirm your email",
+        "message": "Open the link we sent when you created the account, then sign in again."
+      },
+      "email_taken": {
+        "title": "That email already has an account",
+        "message": "Sign in, or reset your password if you don't remember it."
+      },
+      "weak_password": {
+        "title": "Password too weak",
+        "message": "Use a longer one, with letters and numbers."
+      },
+      "rate_limited": {
+        "title": "Too many attempts",
+        "message": "Wait a few minutes before trying again."
+      },
+      "network": {
+        "title": "No connection",
+        "message": "We couldn't reach the server. Check your connection and try again."
       }
     },
     "fields": {
@@ -863,14 +897,21 @@
       "backToSignIn": "Back to sign in"
     },
     "checkEmail": {
-      "title": "Check your email",
-      "body": "We sent the link to {{email}}. Open it on this phone to create your new password.",
       "tipSpam": "Not there? Check your spam or promotions folder.",
       "tipTypo": "If you mistyped your email, go back and fix it.",
       "openMail": "Open mail app",
       "openMailError": "Couldn't open the mail app.",
       "resend": "Resend link",
-      "resendIn": "Resend in {{time}}"
+      "resendIn": "Resend in {{time}}",
+      "reset": {
+        "title": "Check your email",
+        "body": "We sent the link to {{email}}. Open it to create your new password."
+      },
+      "confirm": {
+        "title": "Confirm your email",
+        "body": "We sent a link to {{email}}. Open it to activate your account, then sign in."
+      },
+      "confirmed": "I confirmed it, sign in"
     }
   }
 }

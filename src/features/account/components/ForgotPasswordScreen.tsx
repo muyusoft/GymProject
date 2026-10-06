@@ -4,7 +4,10 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/shared/components";
 import { useAccountAction } from "../hooks/use-account-action";
 import { requestPasswordReset } from "../services/account.service";
-import { isEmailValid, shouldFlagEmail } from "../utils/account-validation.utils";
+import {
+  isEmailValid,
+  shouldFlagEmail,
+} from "../utils/account-validation.utils";
 import { AccountLink } from "./AccountLink";
 import { AccountNotice } from "./AccountNotice";
 import { AccountTextField } from "./AccountTextField";
@@ -17,9 +20,15 @@ export function ForgotPasswordScreen() {
 
   const submit = () => {
     const address = email.trim();
-    void account.run(() => requestPasswordReset(address)).then((isSent) => {
-      if (isSent) router.push({ pathname: "/account/check-email", params: { email: address } });
-    });
+    void account
+      .run(() => requestPasswordReset(address))
+      .then((isSent) => {
+        if (isSent)
+          router.push({
+            pathname: "/account/check-email",
+            params: { email: address, kind: "reset" },
+          });
+      });
   };
 
   return (
@@ -41,7 +50,9 @@ export function ForgotPasswordScreen() {
         value={email}
         onChange={setEmail}
         placeholder={t("account.fields.emailPlaceholder")}
-        {...(shouldFlagEmail(email) && { error: t("account.fields.emailInvalid") })}
+        {...(shouldFlagEmail(email) && {
+          error: t("account.fields.emailInvalid"),
+        })}
       />
       <Button
         label={t("account.forgot.submit")}

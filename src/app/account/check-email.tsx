@@ -3,11 +3,17 @@ import { CheckEmailScreen } from "@/features/account";
 import { AppLayout } from "@/shared/layouts";
 
 export default function CheckEmailRoute() {
-  const { email } = useLocalSearchParams<{ email?: string }>();
+  const { email, kind } = useLocalSearchParams<{
+    email?: string;
+    kind?: string;
+  }>();
 
   return (
     <AppLayout>
-      <CheckEmailScreen email={email ?? ""} />
+      <CheckEmailScreen
+        email={email ?? ""}
+        kind={kind === "confirm" ? "confirm" : "reset"}
+      />
     </AppLayout>
   );
 }
