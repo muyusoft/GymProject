@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { Linking, StyleSheet, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { getTextStyle, tokens } from "@/design/tokens";
@@ -8,7 +9,11 @@ import { IconRenderer } from "@/shared/icons/icon-renderer";
 import { formatClock } from "@/shared/utils/duration.utils";
 import { useAccountAction } from "../hooks/use-account-action";
 import { useCountdown } from "../hooks/use-countdown";
-import { requestPasswordReset } from "../services/account.service";
+import {
+  requestPasswordReset,
+  resendConfirmation,
+} from "../services/account.service";
+import type { CheckEmailKind } from "../types/account.types";
 import { AccountNotice } from "./AccountNotice";
 import { AuthScreen } from "./AuthScreen";
 
@@ -16,13 +21,22 @@ const RESEND_SECONDS = 45;
 const MAIL_APP_URL = "mailto:";
 const MAIL_ICON_SIZE = 32;
 const TIPS = ["tipSpam", "tipTypo"] as const;
+const RESEND_BY_KIND = {
+  reset: requestPasswordReset,
+  confirm: resendConfirmation,
+} as const;
 
 interface CheckEmailScreenProps {
   email: string;
+  /** Qué correo se envió: el enlace para recuperar la contraseña o el de confirmar la cuenta nueva. */
+  kind: CheckEmailKind;
 }
 
-/** Tras pedir el enlace de recuperación: dónde buscarlo, abrir el correo y reenviarlo tras una espera. */
-export function CheckEmailScreen({ email }: Readonly<CheckEmailScreenProps>) {
+/** Tras enviar un correo: dónde buscarlo, abrir el correo y reenviarlo tras una espera. */
+export function CheckEmailScreen({
+  email,
+  kind,
+}: Readonly<CheckEmailScreenProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
   const mailApp = useActionRunner();
@@ -30,11 +44,14 @@ export function CheckEmailScreen({ email }: Readonly<CheckEmailScreenProps>) {
   const countdown = useCountdown(RESEND_SECONDS);
 
   const resend = () => {
-    void account.run(() => requestPasswordReset(email)).then(countdown.restart);
+    void account.run(() => RESEND_BY_KIND[kind](email)).then(countdown.restart);
   };
 
   return (
-    <AuthScreen title={t("account.checkEmail.title")} subtitle={t("account.checkEmail.body", { email })}>
+    <AuthScreen
+      title={t(`account.checkEmail.${kind}.title`)}
+      subtitle={t(`account.checkEmail.${kind}.body`, { email })}
+    >
       <View style={[styles.icon, { backgroundColor: c.surfaceAlt }]}>
         <IconRenderer name="mail" size={MAIL_ICON_SIZE} color={c.text} />
       </View>
@@ -51,7 +68,17 @@ export function CheckEmailScreen({ email }: Readonly<CheckEmailScreenProps>) {
         block
         onPress={() => void mailApp.run(() => Linking.openURL(MAIL_APP_URL))}
       />
-      {mailApp.hasError && <InlineError message={t("account.checkEmail.openMailError")} />}
+      {mailApp.hasError && (
+        <InlineError message={t("account.checkEmail.openMailError")} />
+      )}
+      {kind === "confirm" && (
+        <Button
+          variant="secondary"
+          block
+          label={t("account.checkEmail.confirmed")}
+          onPress={() => router.replace("/account/sign-in")}
+        />
+      )}
       <Button
         variant="ghost"
         block
@@ -60,7 +87,9 @@ export function CheckEmailScreen({ email }: Readonly<CheckEmailScreenProps>) {
         label={
           countdown.isDone
             ? t("account.checkEmail.resend")
-            : t("account.checkEmail.resendIn", { time: formatClock(countdown.secondsLeft) })
+            : t("account.checkEmail.resendIn", {
+                time: formatClock(countdown.secondsLeft),
+              })
         }
         onPress={resend}
       />
@@ -77,6 +106,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  tips: { gap: tokens.spacing[2], padding: tokens.spacing[4], borderRadius: tokens.borderRadius.lg },
+  tips: {
+    gap: tokens.spacing[2],
+    padding: tokens.spacing[4],
+    borderRadius: tokens.borderRadius.lg,
+  },
   tip: getTextStyle("bodySm"),
 });

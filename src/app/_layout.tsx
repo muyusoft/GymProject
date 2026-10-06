@@ -8,6 +8,7 @@ import { catalogSeedData } from "@/features/catalog";
 import { BootError, ErrorBoundary } from "@/shared/components";
 import { useAppBootstrap } from "@/shared/hooks/use-app-bootstrap";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
+import { useSessionWatcher } from "@/shared/hooks/use-session-watcher";
 
 void SplashScreen.preventAutoHideAsync();
 
@@ -17,6 +18,7 @@ logger.info("App initialized");
 export default function RootLayout() {
   const { mode } = useOverloadTheme();
   const { isReady, error } = useAppBootstrap(catalogSeedData);
+  useSessionWatcher();
 
   useEffect(() => {
     if (isReady || error) void SplashScreen.hideAsync();
@@ -29,7 +31,10 @@ export default function RootLayout() {
     <ErrorBoundary>
       <ThemeProvider value={mode === "dark" ? DarkTheme : DefaultTheme}>
         <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="exercise/configure" options={{ presentation: "modal" }} />
+          <Stack.Screen
+            name="exercise/configure"
+            options={{ presentation: "modal" }}
+          />
           <Stack.Screen
             name="playground"
             options={{ title: "🎮 Playground", headerShown: true }}

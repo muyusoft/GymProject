@@ -2,6 +2,7 @@ import { ScrollView, StyleSheet, Text } from "react-native";
 import { useTranslation } from "react-i18next";
 import { getTextStyle, tokens } from "@/design/tokens";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
+import { AccountSection } from "./AccountSection";
 import { AppearanceSection } from "./AppearanceSection";
 import { DataSection } from "./DataSection";
 import { ProgressionSection } from "./ProgressionSection";
@@ -14,7 +15,10 @@ export function SettingsScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.content}>
-      <Text style={[styles.title, { color: c.text }]}>{t("settings.title")}</Text>
+      <Text style={[styles.title, { color: c.text }]}>
+        {t("settings.title")}
+      </Text>
+      <AccountSection />
       <UnitsSection />
       <ProgressionSection />
       <ReminderSection />

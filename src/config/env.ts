@@ -4,6 +4,9 @@ interface EnvVars {
   API_URL: string;
   API_TIMEOUT: number;
   ENVIRONMENT: "development" | "preview" | "production";
+  SUPABASE_URL: string;
+  /** Clave pública (publishable): está pensada para ir dentro de la app. La service_role nunca va aquí. */
+  SUPABASE_PUBLISHABLE_KEY: string;
 }
 
 const env: EnvVars = {
@@ -11,6 +14,9 @@ const env: EnvVars = {
   API_TIMEOUT: Constants.expoConfig?.extra?.API_TIMEOUT || 30000,
   ENVIRONMENT: (Constants.expoConfig?.extra?.ENVIRONMENT ||
     "development") as EnvVars["ENVIRONMENT"],
+  SUPABASE_URL: Constants.expoConfig?.extra?.SUPABASE_URL ?? "",
+  SUPABASE_PUBLISHABLE_KEY:
+    Constants.expoConfig?.extra?.SUPABASE_PUBLISHABLE_KEY ?? "",
 };
 
 export default env;

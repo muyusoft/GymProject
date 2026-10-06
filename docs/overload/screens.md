@@ -4,33 +4,33 @@ Mockups de referencia: canvas "Overload — Mockups". Al construir una pantalla,
 
 Las rutas de `src/app/` son delgadas, como pide el template: envuelven la pantalla en `AppLayout` (o `ModalLayout` para modales), leen parámetros y renderizan un componente de pantalla exportado por el feature (por ejemplo `TodayScreen` desde `@/features/workout`). La lógica vive en hooks del feature.
 
-| Pantalla | Ruta | Feature y componente | Layout | Fase | Notas |
-| --- | --- | --- | --- | --- | --- |
-| Hoy | `src/app/(tabs)/index.tsx` | workout → `TodayScreen` | AppLayout | 3 | WeekStrip, tarjeta del entreno del día, sugerencia, lista de ejercicios |
-| Sesión en vivo | `src/app/session/[id].tsx` | workout → `SessionScreen` | AppLayout | 3 | Progreso de la sesión, ExerciseCard con SetRows, siguiente ejercicio, RestTimer |
-| Rutina semanal | `src/app/(tabs)/routines.tsx` | plan → `WeeklyPlanScreen` | AppLayout | 2 | Días del plan con estado de la semana |
-| Editar plan semanal | `src/app/plan/edit.tsx` | plan → `PlanEditorScreen` | AppLayout | 2 | Nombre, "Repetir cada semana", días, importar notas |
-| Editar día | `src/app/plan/day/[id].tsx` | plan → `DayEditorScreen` | AppLayout | 2 | Valores por defecto (4 × 12, 1:30), lista reordenable, + Ejercicio |
-| Configurar ejercicio | `src/app/exercise/configure.tsx` | plan → `ExerciseConfigSheet` | ModalLayout | 2 | Tipo de carga, unidad, peso, series, reps, descanso, regla de subir peso |
-| Biblioteca | `src/app/library.tsx` | catalog → `LibraryScreen` | AppLayout | 2 | Búsqueda es/en, filtros de músculo y equipo, "En tu plan" primero |
-| Importar desde notas | `src/app/import.tsx` | notes-import → `ImportScreen` | AppLayout | 4 | Pegar, revisar detectados, confirmar dudosos |
-| Progreso | `src/app/(tabs)/progress.tsx` | progress → `ProgressScreen` | AppLayout | 5 | 1RM, volumen, sesiones, récords, medidas |
-| Historial de ejercicio | `src/app/exercise/[id].tsx` | progress → `ExerciseHistoryScreen` | AppLayout | 5 | 1RM, mejor serie, gráfica, sesiones |
-| Mapa muscular y constancia | `src/app/progress/muscles.tsx` | muscles → `MuscleVolumeScreen` | AppLayout | 6 | Series por músculo (1 y 0.5) con una línea que lo explica, calendario de constancia por mes |
-| Recuperación muscular | `src/app/recovery.tsx` | muscles → `RecoveryScreen` | AppLayout | 6 | BodyMap en modo recuperación + lista por estado |
-| Músculos por ejercicio | `src/app/muscles.tsx` | muscles → `ExerciseMusclesScreen` | AppLayout | 6 | Chips de ejercicios, BodyMap en modo ejercicio, fuente visible |
-| Perfil y ajustes | `src/app/(tabs)/settings.tsx` | settings → `SettingsScreen` | AppLayout | 2 | Idioma, unidad, saltos de peso, interruptores, recordatorios, exportar |
-| Introducción | `src/app/intro.tsx` | onboarding → `IntroScreen` | AppLayout | extra | Cinco tarjetas deslizables (plan, registro, progreso, músculos, constancia y peso) con "Saltar"; termina en la bienvenida |
-| Bienvenida | `src/app/welcome.tsx` | account → `WelcomeScreen` | AppLayout | extra | "Empezar" sin cuenta como acción principal; Apple, Google y correo como opción |
-| Iniciar sesión | `src/app/account/sign-in.tsx` | account → `SignInScreen` | AppLayout | extra | Apple, Google, correo y contraseña; aviso de error arriba del formulario |
-| Crear cuenta | `src/app/account/sign-up.tsx` | account → `SignUpScreen` | AppLayout | extra | Nombre, correo, contraseña con sus requisitos, aceptar términos |
-| Recuperar contraseña | `src/app/account/forgot-password.tsx` | account → `ForgotPasswordScreen` | AppLayout | extra | Pide el correo y lleva a "Revisa tu correo" |
-| Revisa tu correo | `src/app/account/check-email.tsx` | account → `CheckEmailScreen` | AppLayout | extra | Abrir la app de correo y reenviar tras 45 s |
+| Pantalla                   | Ruta                                  | Feature y componente               | Layout      | Fase  | Notas                                                                                                                     |
+| -------------------------- | ------------------------------------- | ---------------------------------- | ----------- | ----- | ------------------------------------------------------------------------------------------------------------------------- |
+| Hoy                        | `src/app/(tabs)/index.tsx`            | workout → `TodayScreen`            | AppLayout   | 3     | WeekStrip, tarjeta del entreno del día, sugerencia, lista de ejercicios                                                   |
+| Sesión en vivo             | `src/app/session/[id].tsx`            | workout → `SessionScreen`          | AppLayout   | 3     | Progreso de la sesión, ExerciseCard con SetRows, siguiente ejercicio, RestTimer                                           |
+| Rutina semanal             | `src/app/(tabs)/routines.tsx`         | plan → `WeeklyPlanScreen`          | AppLayout   | 2     | Días del plan con estado de la semana                                                                                     |
+| Editar plan semanal        | `src/app/plan/edit.tsx`               | plan → `PlanEditorScreen`          | AppLayout   | 2     | Nombre, "Repetir cada semana", días, importar notas                                                                       |
+| Editar día                 | `src/app/plan/day/[id].tsx`           | plan → `DayEditorScreen`           | AppLayout   | 2     | Valores por defecto (4 × 12, 1:30), lista reordenable, + Ejercicio                                                        |
+| Configurar ejercicio       | `src/app/exercise/configure.tsx`      | plan → `ExerciseConfigSheet`       | ModalLayout | 2     | Tipo de carga, unidad, peso, series, reps, descanso, regla de subir peso                                                  |
+| Biblioteca                 | `src/app/library.tsx`                 | catalog → `LibraryScreen`          | AppLayout   | 2     | Búsqueda es/en, filtros de músculo y equipo, "En tu plan" primero                                                         |
+| Importar desde notas       | `src/app/import.tsx`                  | notes-import → `ImportScreen`      | AppLayout   | 4     | Pegar, revisar detectados, confirmar dudosos                                                                              |
+| Progreso                   | `src/app/(tabs)/progress.tsx`         | progress → `ProgressScreen`        | AppLayout   | 5     | 1RM, volumen, sesiones, récords, medidas                                                                                  |
+| Historial de ejercicio     | `src/app/exercise/[id].tsx`           | progress → `ExerciseHistoryScreen` | AppLayout   | 5     | 1RM, mejor serie, gráfica, sesiones                                                                                       |
+| Mapa muscular y constancia | `src/app/progress/muscles.tsx`        | muscles → `MuscleVolumeScreen`     | AppLayout   | 6     | Series por músculo (1 y 0.5) con una línea que lo explica, calendario de constancia por mes                               |
+| Recuperación muscular      | `src/app/recovery.tsx`                | muscles → `RecoveryScreen`         | AppLayout   | 6     | BodyMap en modo recuperación + lista por estado                                                                           |
+| Músculos por ejercicio     | `src/app/muscles.tsx`                 | muscles → `ExerciseMusclesScreen`  | AppLayout   | 6     | Chips de ejercicios, BodyMap en modo ejercicio, fuente visible                                                            |
+| Perfil y ajustes           | `src/app/(tabs)/settings.tsx`         | settings → `SettingsScreen`        | AppLayout   | 2     | Idioma, unidad, saltos de peso, interruptores, recordatorios, exportar                                                    |
+| Introducción               | `src/app/intro.tsx`                   | onboarding → `IntroScreen`         | AppLayout   | extra | Cinco tarjetas deslizables (plan, registro, progreso, músculos, constancia y peso) con "Saltar"; termina en la bienvenida |
+| Bienvenida                 | `src/app/welcome.tsx`                 | account → `WelcomeScreen`          | AppLayout   | extra | "Empezar" sin cuenta como acción principal; Apple, Google y correo como opción                                            |
+| Iniciar sesión             | `src/app/account/sign-in.tsx`         | account → `SignInScreen`           | AppLayout   | extra | Apple, Google, correo y contraseña; aviso de error arriba del formulario                                                  |
+| Crear cuenta               | `src/app/account/sign-up.tsx`         | account → `SignUpScreen`           | AppLayout   | extra | Nombre, correo, contraseña con sus requisitos, aceptar términos                                                           |
+| Recuperar contraseña       | `src/app/account/forgot-password.tsx` | account → `ForgotPasswordScreen`   | AppLayout   | extra | Pide el correo y lleva a "Revisa tu correo"                                                                               |
+| Revisa tu correo           | `src/app/account/check-email.tsx`     | account → `CheckEmailScreen`       | AppLayout   | extra | Tras pedir recuperar la contraseña o crear la cuenta (`kind`): abrir la app de correo y reenviar tras 45 s                |
 
 ## Navegación
 
 - **Primera apertura.** Mientras el ajuste `onboardingDone` sea falso, `src/app/(tabs)/_layout.tsx` redirige a `/intro`. La introducción termina en `/welcome`, y "Empezar" guarda `onboardingDone` y entra a Hoy; no vuelve a mostrarse.
-- **Cuentas sin backend.** Las pantallas de `account` son solo interfaz: `src/features/account/services/account.service.ts` rechaza toda acción con `unavailable` y la pantalla muestra "Las cuentas aún no están disponibles". Al tener servidor, solo cambia ese servicio.
+- **Cuentas.** Supabase Auth con correo y contraseña (`src/config/supabase.ts`, `src/features/account/services/account.service.ts`). La sesión se guarda cifrada en expo-secure-store y `useSessionStore` dice quién tiene sesión; Perfil muestra la sección Cuenta con el correo y "Cerrar sesión". Crear cuenta lleva a "Revisa tu correo" si el proyecto pide confirmarlo. Apple y Google siguen respondiendo "aún no disponible". Tener sesión todavía no sincroniza nada.
 
 - `src/app/(tabs)/_layout.tsx` define cuatro tabs con `TabBar`: Hoy, Rutinas, Progreso, Perfil (la ruta es `settings`; la etiqueta sale de `tabs.profile`).
 - `src/app/_layout.tsx` (template) carga i18n, fuentes y la base de datos (migraciones) antes de ocultar el splash, y registra el `Stack` con `(tabs)` y las rutas de arriba.

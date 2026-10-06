@@ -46,7 +46,9 @@
     "extra": {
       "API_URL": "http://localhost:3000",
       "API_TIMEOUT": "30000",
-      "ENVIRONMENT": "development"
+      "ENVIRONMENT": "development",
+      "SUPABASE_URL": "https://rtjktotewbjhdrzboiij.supabase.co",
+      "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_2roP4edzrKASBpCPGcRjNQ_3YGLITEv"
     }
   }
 }

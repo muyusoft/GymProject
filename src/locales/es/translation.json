@@ -235,7 +235,8 @@
       "progression": "Progresión",
       "appearance": "Apariencia",
       "reminders": "Recordatorios",
-      "data": "Tus datos"
+      "data": "Tus datos",
+      "account": "Cuenta"
     },
     "weightUnit": {
       "title": "Unidad de peso",
@@ -289,6 +290,19 @@
         "unsupported_version": "Esa copia viene de una versión más nueva de Overset. Actualiza la app e inténtalo de nuevo.",
         "invalid_data": "La copia está dañada o incompleta, así que no se cambió nada.",
         "generic": "Algo salió mal y no se cambió nada. Inténtalo de nuevo."
+      }
+    },
+    "account": {
+      "signedOutHint": "Crea una cuenta para guardar tu progreso en la nube y usarlo en otro teléfono.",
+      "signIn": "Crear cuenta o iniciar sesión",
+      "signedIn": "Sesión iniciada",
+      "signedInAs": "Sesión iniciada como {{email}}",
+      "syncPending": "Tus datos siguen guardados en este teléfono. La copia en la nube se activará en una próxima versión.",
+      "signOut": "Cerrar sesión",
+      "signOutError": "No se pudo cerrar la sesión. Inténtalo de nuevo.",
+      "signOutConfirm": {
+        "title": "¿Cerrar sesión?",
+        "message": "Tus datos se quedan en este teléfono."
       }
     }
   },
@@ -789,8 +803,8 @@
     },
     "errors": {
       "unavailable": {
-        "title": "Las cuentas aún no están disponibles",
-        "message": "Por ahora Overset guarda todo en este teléfono. Puedes usar la app sin cuenta."
+        "title": "Aún no disponible",
+        "message": "Por ahora entra con tu correo. Apple y Google llegarán pronto."
       },
       "invalid_credentials": {
         "title": "No pudimos entrar",
@@ -799,6 +813,26 @@
       "unknown": {
         "title": "Algo salió mal",
         "message": "No se pudo completar. Inténtalo de nuevo en un momento."
+      },
+      "email_not_confirmed": {
+        "title": "Confirma tu correo",
+        "message": "Abre el enlace que te enviamos al crear la cuenta y vuelve a entrar."
+      },
+      "email_taken": {
+        "title": "Ese correo ya tiene cuenta",
+        "message": "Inicia sesión, o recupera tu contraseña si no la recuerdas."
+      },
+      "weak_password": {
+        "title": "Contraseña muy débil",
+        "message": "Usa una más larga, con letras y números."
+      },
+      "rate_limited": {
+        "title": "Demasiados intentos",
+        "message": "Espera unos minutos antes de volver a intentarlo."
+      },
+      "network": {
+        "title": "Sin conexión",
+        "message": "No pudimos llegar al servidor. Revisa tu conexión e inténtalo de nuevo."
       }
     },
     "fields": {
@@ -863,14 +897,21 @@
       "backToSignIn": "Volver a entrar"
     },
     "checkEmail": {
-      "title": "Revisa tu correo",
-      "body": "Enviamos el enlace a {{email}}. Ábrelo en este teléfono para crear tu nueva contraseña.",
       "tipSpam": "¿No llega? Revisa la carpeta de spam o promociones.",
       "tipTypo": "Si escribiste mal el correo, vuelve y corrígelo.",
       "openMail": "Abrir app de correo",
       "openMailError": "No se pudo abrir la app de correo.",
       "resend": "Reenviar enlace",
-      "resendIn": "Reenviar en {{time}}"
+      "resendIn": "Reenviar en {{time}}",
+      "reset": {
+        "title": "Revisa tu correo",
+        "body": "Enviamos el enlace a {{email}}. Ábrelo para crear tu nueva contraseña."
+      },
+      "confirm": {
+        "title": "Confirma tu correo",
+        "body": "Enviamos un enlace a {{email}}. Ábrelo para activar tu cuenta y luego inicia sesión."
+      },
+      "confirmed": "Ya confirmé, iniciar sesión"
     }
   }
 }
