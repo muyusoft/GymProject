@@ -3,6 +3,7 @@ import type {
   LoadType,
   WeightUnit,
 } from "@/shared/types/training.types";
+import type { LastPerformance } from "../utils/last-performance.utils";
 
 export interface SessionSet {
   id: string;
@@ -76,6 +77,8 @@ export interface SessionExercise {
   template: ExerciseTemplate;
   sets: SessionSet[];
   insight: ExerciseInsight;
+  /** Lo que se hizo la última vez; null sin historial. */
+  last: LastPerformance | null;
 }
 
 export interface SessionView {
@@ -124,6 +127,8 @@ export interface TodayView {
   weekStrip: WeekStripDay[];
   day: { id: string; name: string } | null;
   exercises: TodayExercise[];
+  /** Con el entreno terminado: lo que se hizo, en el orden en que se hizo. */
+  doneExercises: TodayExercise[] | null;
   durationMinutes: number;
   totalSets: number;
   completedExercises: number;

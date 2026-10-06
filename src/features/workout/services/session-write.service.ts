@@ -6,7 +6,10 @@ import { chunk } from "@/shared/utils/chunk.utils";
 import { generateId } from "@/shared/utils/id.utils";
 import { toIsoDate } from "@/shared/utils/week.utils";
 import type { SessionSet } from "../types/workout.types";
-import { buildInsight, type InsightSettings } from "../utils/insight.utils";
+import {
+  lastPerformance,
+  withLastWeight,
+} from "../utils/last-performance.utils";
 import {
   buildInitialSets,
   nextSetValues,
@@ -22,12 +25,11 @@ const INSERT_BATCH_SIZE = 50;
 interface StartSessionOptions {
   dayId: string;
   now: Date;
-  settings: InsightSettings;
 }
 
 async function buildSessionSets(
   sessionId: string,
-  { dayId, now, settings }: StartSessionOptions,
+  { dayId, now }: StartSessionOptions,
 ) {
   const [details, increments] = await Promise.all([
     listDayExercises(dayId, toIsoDate(now)),
@@ -38,23 +40,19 @@ async function buildSessionSets(
     now.getTime(),
   );
   return details.flatMap((detail): NewSetLog[] => {
-    const template = buildTemplate({
-      planExercise: detail.planExercise,
-      equipment: detail.exercise.equipment,
-      increments,
-    });
     const exerciseHistory = history.get(detail.exercise.id) ?? [];
-    const insight = buildInsight({
-      history: exerciseHistory,
-      template,
-      settings,
-      today: now,
-    });
+    const template = withLastWeight(
+      buildTemplate({
+        planExercise: detail.planExercise,
+        equipment: detail.exercise.equipment,
+        increments,
+      }),
+      lastPerformance(exerciseHistory[0]),
+    );
     return buildInitialSets({
       sessionId,
       exerciseId: detail.exercise.id,
       template,
-      insight,
       createId: generateId,
       latest: exerciseHistory[0],
     });

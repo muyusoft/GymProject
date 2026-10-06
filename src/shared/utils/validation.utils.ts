@@ -53,6 +53,6 @@ export const validationUtils = {
    * Valida que sea número
    */
   isNumber(value: any): boolean {
-    return !isNaN(parseFloat(value)) && isFinite(value);
+    return !Number.isNaN(Number.parseFloat(value)) && Number.isFinite(value);
   },
 };

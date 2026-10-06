@@ -12,7 +12,8 @@ export function countTotalSets(exercises: readonly WithSets[]): number {
 
 export function countDoneSets(exercises: readonly WithSets[]): number {
   return exercises.reduce(
-    (sum, exercise) => sum + exercise.sets.filter((set) => set.completed).length,
+    (sum, exercise) =>
+      sum + exercise.sets.filter((set) => set.completed).length,
     0,
   );
 }
@@ -24,7 +25,15 @@ export function sessionProgress(exercises: readonly WithSets[]): number {
 }
 
 export function isExerciseDone(exercise: WithSets): boolean {
-  return exercise.sets.length > 0 && exercise.sets.every((set) => set.completed);
+  return (
+    exercise.sets.length > 0 && exercise.sets.every((set) => set.completed)
+  );
+}
+
+/** Dónde retomar una sesión: el primer ejercicio con series por hacer; con todo hecho, el último. */
+export function firstPendingIndex(exercises: readonly WithSets[]): number {
+  const pending = exercises.findIndex((exercise) => !isExerciseDone(exercise));
+  return pending === -1 ? Math.max(exercises.length - 1, 0) : pending;
 }
 
 export type SetStatus = "pending" | "active" | "done";
@@ -34,7 +43,9 @@ interface IdentifiedSet extends WithCompletion {
 }
 
 /** La serie activa es la primera pendiente; las demás pendientes esperan su turno. */
-export function getSetStatuses(sets: readonly IdentifiedSet[]): Map<string, SetStatus> {
+export function getSetStatuses(
+  sets: readonly IdentifiedSet[],
+): Map<string, SetStatus> {
   const activeId = sets.find((set) => !set.completed)?.id;
   return new Map(
     sets.map((set): [string, SetStatus] => {

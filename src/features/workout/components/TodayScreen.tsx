@@ -21,7 +21,16 @@ const EMPTY_EXERCISES: readonly TodayExercise[] = [];
 export function TodayScreen() {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
-  const { status, today, reload, hints, dismissHint, start, isStarting, hasError } = useToday();
+  const {
+    status,
+    today,
+    reload,
+    hints,
+    dismissHint,
+    start,
+    isStarting,
+    hasError,
+  } = useToday();
 
   const substitution = useSubstitution({
     date: toIsoDate(today?.today ?? new Date()),
@@ -31,12 +40,25 @@ export function TodayScreen() {
   });
 
   const openDay = useCallback(
-    (day: Date) => router.push({ pathname: "/day/[date]", params: { date: toIsoDate(day) } }),
+    (day: Date) =>
+      router.push({
+        pathname: "/day/[date]",
+        params: { date: toIsoDate(day) },
+      }),
     [],
   );
 
+  // Con el entreno terminado la lista muestra lo que se hizo; si no se hizo nada, sigue mostrando el plan.
+  const doneExercises = today?.doneExercises?.length
+    ? today.doneExercises
+    : null;
+
   const date = today
-    ? new Intl.DateTimeFormat(i18n.language, { weekday: "long", day: "numeric", month: "short" }).format(today.today)
+    ? new Intl.DateTimeFormat(i18n.language, {
+        weekday: "long",
+        day: "numeric",
+        month: "short",
+      }).format(today.today)
     : "";
 
   return (
@@ -44,27 +66,54 @@ export function TodayScreen() {
       {today && (
         <ScrollView contentContainerStyle={styles.content}>
           <View>
-            <Text style={[styles.eyebrow, { color: c.textSecondary }]}>{date}</Text>
-            <Text style={[styles.greeting, { color: c.text }]}>{t("today.greeting")}</Text>
+            <Text style={[styles.eyebrow, { color: c.textSecondary }]}>
+              {date}
+            </Text>
+            <Text style={[styles.greeting, { color: c.text }]}>
+              {t("today.greeting")}
+            </Text>
           </View>
-          <WeekPager today={today.today} currentWeek={today.weekStrip} onSelectDay={openDay} />
+          <WeekPager
+            today={today.today}
+            currentWeek={today.weekStrip}
+            onSelectDay={openDay}
+          />
           {today.day ? (
             <>
-              <TodayCard dayName={today.day.name} today={today} isStarting={isStarting} onStart={() => void start()} />
+              <TodayCard
+                dayName={today.day.name}
+                today={today}
+                isStarting={isStarting}
+                onStart={() => void start()}
+              />
               {hasError && <InlineError message={t("common.saveError")} />}
               <TodayHints hints={hints} onDismiss={dismissHint} />
-              <TodayExerciseList exercises={today.exercises} onSubstitute={today.isDoneToday ? undefined : substitution.open} />
+              <TodayExerciseList
+                title={t(
+                  doneExercises ? "today.doneTitle" : "today.exercisesTitle",
+                )}
+                exercises={doneExercises ?? today.exercises}
+                onSubstitute={today.isDoneToday ? undefined : substitution.open}
+              />
             </>
           ) : (
             <EmptyToday reason={today.hasPlan ? "rest" : "noPlan"} />
           )}
-          <Button variant="secondary" label={t("today.recovery")} icon="body" block onPress={() => router.push("/recovery")} />
+          <Button
+            variant="secondary"
+            label={t("today.recovery")}
+            icon="body"
+            block
+            onPress={() => router.push("/recovery")}
+          />
           <SubstituteSheet
             target={substitution.target}
             excludedIds={substitution.excludedIds}
             isApplying={substitution.isApplying}
             hasError={substitution.hasError}
-            onApply={(substituteId, scope) => void substitution.apply(substituteId, scope)}
+            onApply={(substituteId, scope) =>
+              void substitution.apply(substituteId, scope)
+            }
             onClose={substitution.close}
           />
         </ScrollView>

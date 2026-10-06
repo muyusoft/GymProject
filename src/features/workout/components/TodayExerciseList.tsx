@@ -13,12 +13,14 @@ const PREVIEW_COUNT = 3;
 const ICON_SIZE = 20;
 
 interface TodayExerciseListProps {
+  title: string;
   exercises: readonly TodayExercise[];
   /** Sin esto la lista es de solo lectura (por ejemplo, con el entreno ya terminado). */
   onSubstitute?: ((exercise: TodayExercise) => void) | undefined;
 }
 
 export function TodayExerciseList({
+  title,
   exercises,
   onSubstitute,
 }: Readonly<TodayExerciseListProps>) {
@@ -30,9 +32,7 @@ export function TodayExerciseList({
 
   return (
     <View style={styles.section}>
-      <Text style={[styles.title, { color: c.textSecondary }]}>
-        {t("today.exercisesTitle")}
-      </Text>
+      <Text style={[styles.title, { color: c.textSecondary }]}>{title}</Text>
       <View style={[styles.card, { backgroundColor: c.surface }]}>
         {visible.map((exercise) => {
           const name = getExerciseName(exercise, i18n.language);

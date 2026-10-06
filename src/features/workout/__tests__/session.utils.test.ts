@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type {
-  ExerciseInsight,
-  ExerciseTemplate,
-  SessionSet,
-} from "../types/workout.types";
+import type { ExerciseTemplate, SessionSet } from "../types/workout.types";
 import {
   adjustRest,
   formatElapsed,
@@ -97,11 +93,6 @@ const TEMPLATE: ExerciseTemplate = {
   repsMin: null,
   isProgressionEnabled: true,
 };
-const NO_INSIGHT: ExerciseInsight = {
-  increase: null,
-  preview: null,
-  deload: null,
-};
 
 describe("buildInitialSets", () => {
   let counter = 0;
@@ -114,7 +105,7 @@ describe("buildInitialSets", () => {
   };
 
   it("crea todas las series pendientes con los valores de la plantilla", () => {
-    const rows = buildInitialSets({ ...base, insight: NO_INSIGHT });
+    const rows = buildInitialSets(base);
     expect(rows).toHaveLength(3);
     expect(rows.map((row) => row.setIndex)).toEqual([0, 1, 2]);
     expect(
@@ -125,13 +116,27 @@ describe("buildInitialSets", () => {
     ).toBe(true);
   });
 
-  it("arranca con el peso sugerido sin tocar la plantilla", () => {
+  it("con rango de reps arranca con la meta de hoy", () => {
+    const latest = {
+      date: "2026-10-01",
+      sets: [
+        {
+          weight: 88,
+          unit: "lb" as const,
+          reps: 9,
+          rpe: null,
+          completed: true,
+        },
+      ],
+    };
     const rows = buildInitialSets({
       ...base,
-      insight: { ...NO_INSIGHT, increase: 93 },
+      template: { ...TEMPLATE, repsMin: 8 },
+      latest,
     });
-    expect(rows.every((row) => row.weight === 93)).toBe(true);
-    expect(TEMPLATE.targetWeight).toBe(88);
+    expect(rows.every((row) => row.weight === 88 && row.reps === 10)).toBe(
+      true,
+    );
   });
 
   it("usa segundos y no reps en un ejercicio por tiempo", () => {
@@ -145,7 +150,6 @@ describe("buildInitialSets", () => {
     const [first] = buildInitialSets({
       ...base,
       template: timed,
-      insight: NO_INSIGHT,
     });
     expect(first).toMatchObject({ reps: null, seconds: 90, weight: null });
   });

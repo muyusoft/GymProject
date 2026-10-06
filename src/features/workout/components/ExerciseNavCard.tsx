@@ -8,31 +8,53 @@ import type { SessionExercise } from "../types/workout.types";
 
 const CHEVRON_SIZE = 20;
 
-interface NextExerciseCardProps {
+interface ExerciseNavCardProps {
+  direction: "next" | "previous";
   exercise: SessionExercise;
   onPress: () => void;
 }
 
-export function NextExerciseCard({ exercise, onPress }: Readonly<NextExerciseCardProps>) {
+/** Salto al ejercicio siguiente o al anterior de la sesión. */
+export function ExerciseNavCard({
+  direction,
+  exercise,
+  onPress,
+}: Readonly<ExerciseNavCardProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
   const { template } = exercise;
   const work = template.reps ?? template.seconds ?? 0;
+  const label = t(direction === "next" ? "session.next" : "session.previous");
+  const name = getExerciseName(exercise, i18n.language);
+  const isNext = direction === "next";
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`${t("session.next")}: ${getExerciseName(exercise, i18n.language)}`}
+      accessibilityLabel={`${label}: ${name}`}
       onPress={onPress}
       style={[styles.card, { backgroundColor: c.surface }]}
     >
+      {!isNext && (
+        <IconRenderer
+          name="chevron-left"
+          size={CHEVRON_SIZE}
+          color={c.textSecondary}
+        />
+      )}
       <View style={styles.texts}>
-        <Text style={[styles.label, { color: c.textSecondary }]}>{t("session.next")}</Text>
-        <Text style={[styles.name, { color: c.text }]}>
-          {`${getExerciseName(exercise, i18n.language)} · ${template.sets} × ${work}`}
-        </Text>
+        <Text style={[styles.label, { color: c.textSecondary }]}>{label}</Text>
+        <Text
+          style={[styles.name, { color: c.text }]}
+        >{`${name} · ${template.sets} × ${work}`}</Text>
       </View>
-      <IconRenderer name="chevron-right" size={CHEVRON_SIZE} color={c.textSecondary} />
+      {isNext && (
+        <IconRenderer
+          name="chevron-right"
+          size={CHEVRON_SIZE}
+          color={c.textSecondary}
+        />
+      )}
     </Pressable>
   );
 }

@@ -79,7 +79,8 @@
       "close": "Close calendar",
       "day": "{{date}}, {{status}}",
       "legend": "The dot marks days with a workout. Tap a day to go to its week."
-    }
+    },
+    "doneTitle": "What you did"
   },
   "session": {
     "finish": "Finish",
@@ -127,7 +128,9 @@
         "solid": "If you completed every rep, we'll suggest adding weight next time.",
         "limit": "Next time, repeat this weight before going up."
       }
-    }
+    },
+    "previous": "Previous",
+    "finishWorkout": "Finish workout"
   },
   "recovery": {
     "worked": "Just trained",
@@ -151,7 +154,6 @@
     "primary": "Primary",
     "secondary": "Secondary",
     "idle": "Not worked",
-    "source": "Source",
     "group": {
       "chest": "Chest",
       "triceps": "Triceps",
@@ -210,6 +212,14 @@
         "pending": "workout pending",
         "none": "no workout"
       }
+    },
+    "sources": {
+      "button_one": "Source ({{count}})",
+      "button_other": "Sources ({{count}})",
+      "title": "Sources",
+      "hint": "Studies behind which muscles this exercise works. Tap one to open it.",
+      "open": "Open the source {{citation}}",
+      "close": "Close"
     }
   },
   "stepper": {
@@ -457,7 +467,10 @@
     "dismiss": "Dismiss tip",
     "increase": "{{name}}: you completed {{sets}} × {{reps}} with {{current}}. Today try {{next}}.",
     "preview": "If you complete {{sets}} × {{reps}} today, next time we'll suggest {{next}}.",
-    "deload": "{{name}}: no progress in 3 weeks. Try a lighter week at {{next}}."
+    "deload": "{{name}}: no progress in 3 weeks. Try a lighter week at {{next}}.",
+    "acceptIncrease": "Go up to {{weight}}",
+    "acceptDeload": "Use {{weight}}",
+    "notNow": "Not now"
   },
   "import": {
     "eyebrow": "Import from notes",

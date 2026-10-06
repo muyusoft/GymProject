@@ -24,6 +24,14 @@ Funciones puras, sin React ni base de datos, en la carpeta `utils/` del feature 
 - El rango se muestra como `4 × 8–12` en el plan, en Hoy y en la sesión.
 - La sugerencia es descartable y nunca cambia el plan sin confirmación.
 
+## Peso con el que arranca una sesión (`features/workout/utils/last-performance.utils.ts`) — regla de producto
+
+- Con historial del ejercicio, la sesión arranca con el peso más alto de la última sesión terminada, no con el del plan. El peso del plan solo es el punto de partida la primera vez.
+- Una sugerencia de subir peso o de descarga no se aplica sola: el aviso del ejercicio en la sesión ofrece aceptarla ("Subir a 82.5 kg") o dejarla ("Ahora no"). Al aceptar cambia el peso de las series pendientes de ese ejercicio (con rango de reps, también las baja al mínimo); las ya hechas no se tocan. Si no se acepta, vuelve a ofrecerse la próxima sesión mientras se cumpla la regla. En Hoy el aviso solo informa.
+- No aplica a ejercicios sin peso, ni si la unidad del plan cambió desde la última sesión (entonces vale el plan).
+- Hoy, la sesión y los avisos muestran ese mismo peso. La tarjeta del ejercicio en la sesión muestra "Último: peso × reps" (reps de la peor serie con ese peso).
+- Cambiar el peso en el plan no afecta a un ejercicio que ya tiene historial: se cambia en la sesión.
+
 ## Deload (`features/workout/utils/deload.utils.ts`) — regla de producto
 
 Si un ejercicio no mejora peso ni reps durante 3 semanas, sugerir una semana al 60% del peso.
