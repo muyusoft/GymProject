@@ -1,6 +1,6 @@
 import { asc, eq } from "drizzle-orm";
 import { generateId } from "@/shared/utils/id.utils";
-import { db } from "../client";
+import { db, transact } from "../client";
 import { planDays, plans } from "../schema";
 import { recordDeletions } from "./deletion.queries";
 import type { NewPlanDay, PlanDayPatch, PlanDayRow, PlanRow } from "../types";
@@ -57,8 +57,8 @@ export async function updatePlanDay(
   await db.update(planDays).set(patch).where(eq(planDays.id, id));
 }
 
-export async function deletePlanDay(id: string): Promise<void> {
-  db.transaction((tx) => {
+export function deletePlanDay(id: string): Promise<void> {
+  return transact((tx) => {
     recordDeletions(tx, "plan_days", [id]);
     tx.delete(planDays).where(eq(planDays.id, id)).run();
   });

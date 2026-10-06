@@ -1,6 +1,6 @@
 import { asc, eq } from "drizzle-orm";
 import { generateId } from "@/shared/utils/id.utils";
-import { db } from "../client";
+import { db, transact } from "../client";
 import { exercises, planDays, planExercises } from "../schema";
 import { recordDeletions } from "./deletion.queries";
 import type {
@@ -76,18 +76,18 @@ export async function updatePlanExercise(
   await db.update(planExercises).set(patch).where(eq(planExercises.id, id));
 }
 
-export async function deletePlanExercise(id: string): Promise<void> {
-  db.transaction((tx) => {
+export function deletePlanExercise(id: string): Promise<void> {
+  return transact((tx) => {
     recordDeletions(tx, "plan_exercises", [id]);
     tx.delete(planExercises).where(eq(planExercises.id, id)).run();
   });
 }
 
-export async function setPlanExerciseOrders(
+export function setPlanExerciseOrders(
   orders: readonly { id: string; order: number }[],
 ): Promise<void> {
   // Transacción síncrona (expo-sqlite): sin await adentro, cada sentencia con .run().
-  db.transaction((tx) => {
+  return transact((tx) => {
     for (const { id, order } of orders) {
       tx.update(planExercises)
         .set({ order })

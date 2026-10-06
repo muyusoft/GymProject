@@ -3,10 +3,16 @@ import { useCallback } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { getTextStyle, tokens } from "@/design/tokens";
-import { AsyncStateView, EmptyState, InlineError, ScreenHeader } from "@/shared/components";
+import {
+  AsyncStateView,
+  EmptyState,
+  InlineError,
+  ScreenHeader,
+} from "@/shared/components";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 import { useLibrary } from "../hooks/use-library";
 import type { LibraryRow } from "../types/catalog.types";
+import { isInWeekday } from "../utils/build-library.utils";
 import { LibraryFilterBar } from "./LibraryFilterBar";
 import { LibraryListRow } from "./LibraryListRow";
 import { LibrarySearchField } from "./LibrarySearchField";
@@ -15,13 +21,14 @@ interface LibraryScreenProps {
   dayId?: string | undefined;
 }
 
-const keyOf = (row: LibraryRow) => (row.kind === "section" ? row.key : row.exercise.id);
+const keyOf = (row: LibraryRow) =>
+  row.kind === "section" ? row.key : row.exercise.id;
 
 export function LibraryScreen({ dayId }: Readonly<LibraryScreenProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
   const library = useLibrary(dayId);
-  const { canAdd, addToDay, filters } = library;
+  const { canAdd, addToDay, filters, targetWeekday } = library;
 
   const renderItem = useCallback(
     ({ item }: { item: LibraryRow }) =>
@@ -30,20 +37,28 @@ export function LibraryScreen({ dayId }: Readonly<LibraryScreenProps>) {
           {t(`library.section.${item.key}`)}
         </Text>
       ) : (
-        <LibraryListRow exercise={item.exercise} canAdd={canAdd} onAdd={(id) => void addToDay(id)} />
+        <LibraryListRow
+          exercise={item.exercise}
+          canAdd={canAdd && !isInWeekday(item.exercise, targetWeekday)}
+          onAdd={(id) => void addToDay(id)}
+        />
       ),
-    [c.textSecondary, t, canAdd, addToDay],
+    [c.textSecondary, t, canAdd, addToDay, targetWeekday],
   );
 
   const eyebrow =
     library.targetWeekday === null
       ? t("library.eyebrow")
-      : t("library.eyebrowDay", { weekday: t(`weekday.long.${library.targetWeekday}`) });
+      : t("library.eyebrowDay", {
+          weekday: t(`weekday.long.${library.targetWeekday}`),
+        });
 
   const header = (
     <View style={styles.header}>
       <ScreenHeader eyebrow={eyebrow} onBack={() => router.back()} />
-      <Text style={[styles.title, { color: c.text }]}>{t("library.title")}</Text>
+      <Text style={[styles.title, { color: c.text }]}>
+        {t("library.title")}
+      </Text>
       <LibrarySearchField value={filters.query} onChange={library.setQuery} />
       <LibraryFilterBar
         filters={filters}
@@ -55,15 +70,16 @@ export function LibraryScreen({ dayId }: Readonly<LibraryScreenProps>) {
   );
 
   return (
-    <AsyncStateView status={library.status} onRetry={() => void library.reload()}>
+    <AsyncStateView
+      status={library.status}
+      onRetry={() => void library.reload()}
+    >
       <FlatList
         data={library.rows}
         keyExtractor={keyOf}
         renderItem={renderItem}
         ListHeaderComponent={header}
-        ListEmptyComponent={
-          <EmptyState title={t("library.empty")} />
-        }
+        ListEmptyComponent={<EmptyState title={t("library.empty")} />}
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
       />

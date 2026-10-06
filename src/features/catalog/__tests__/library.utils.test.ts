@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { LibraryExercise } from "../types/catalog.types";
+import { isInWeekday } from "../utils/build-library.utils";
 import { buildLibraryRows, filterLibrary } from "../utils/library-filter.utils";
 import { categoryOf } from "@/shared/utils/muscle-category.utils";
 import { muscleLabelKey } from "@/shared/utils/muscle-label.utils";
@@ -19,30 +20,61 @@ function exercise(overrides: Partial<LibraryExercise>): LibraryExercise {
   };
 }
 
-const PRESS = exercise({ id: "1", nameEs: "Press de hombros", nameEn: "Shoulder Press", category: "shoulder" });
-const CURL = exercise({ id: "2", nameEs: "Curl de bíceps", nameEn: "Biceps Curl", category: "arms", equipment: "cable" });
+const PRESS = exercise({
+  id: "1",
+  nameEs: "Press de hombros",
+  nameEn: "Shoulder Press",
+  category: "shoulder",
+});
+const CURL = exercise({
+  id: "2",
+  nameEs: "Curl de bíceps",
+  nameEn: "Biceps Curl",
+  category: "arms",
+  equipment: "cable",
+});
 const ALL = [PRESS, CURL];
 const NO_FILTERS = { query: "", category: null, equipment: null } as const;
 
 describe("filterLibrary", () => {
   it("busca en español sin importar acentos ni mayúsculas", () => {
-    expect(filterLibrary(ALL, { ...NO_FILTERS, query: "BICEPS" })).toEqual([CURL]);
+    expect(filterLibrary(ALL, { ...NO_FILTERS, query: "BICEPS" })).toEqual([
+      CURL,
+    ]);
   });
 
   it("busca también en inglés y en los alias", () => {
-    expect(filterLibrary(ALL, { ...NO_FILTERS, query: "shoulder" })).toEqual([PRESS]);
+    expect(filterLibrary(ALL, { ...NO_FILTERS, query: "shoulder" })).toEqual([
+      PRESS,
+    ]);
     const aliased = exercise({ id: "3", aliases: ["jalón"] });
-    expect(filterLibrary([aliased], { ...NO_FILTERS, query: "jalon" })).toEqual([aliased]);
+    expect(filterLibrary([aliased], { ...NO_FILTERS, query: "jalon" })).toEqual(
+      [aliased],
+    );
   });
 
   it("combina músculo y equipo", () => {
-    expect(filterLibrary(ALL, { ...NO_FILTERS, category: "arms", equipment: "cable" })).toEqual([CURL]);
-    expect(filterLibrary(ALL, { ...NO_FILTERS, category: "arms", equipment: "dumbbell" })).toEqual([]);
+    expect(
+      filterLibrary(ALL, {
+        ...NO_FILTERS,
+        category: "arms",
+        equipment: "cable",
+      }),
+    ).toEqual([CURL]);
+    expect(
+      filterLibrary(ALL, {
+        ...NO_FILTERS,
+        category: "arms",
+        equipment: "dumbbell",
+      }),
+    ).toEqual([]);
   });
 
   it("deja fuera los ejercicios sin músculo mapeado al filtrar por músculo", () => {
     const unmapped = exercise({ id: "4", category: null });
-    expect(filterLibrary([unmapped], { ...NO_FILTERS, category: "chest" })).toEqual([]);
+    expect(
+      filterLibrary([unmapped], { ...NO_FILTERS, category: "chest" }),
+    ).toEqual([]);
   });
 
   it("devuelve todo sin filtros", () => {
@@ -52,18 +84,21 @@ describe("filterLibrary", () => {
 
 describe("buildLibraryRows", () => {
   it("pone primero 'En tu plan' y ordena cada grupo por nombre", () => {
-    const planned = { ...CURL, plan: { weekdays: [0], targetWeight: 30, unit: "kg" as const } };
+    const planned = {
+      ...CURL,
+      plan: { weekdays: [0], targetWeight: 30, unit: "kg" as const },
+    };
     const rows = buildLibraryRows([PRESS, planned], "es");
-    expect(rows.map((row) => (row.kind === "section" ? row.key : row.exercise.id))).toEqual([
-      "inPlan",
-      "2",
-      "more",
-      "1",
-    ]);
+    expect(
+      rows.map((row) => (row.kind === "section" ? row.key : row.exercise.id)),
+    ).toEqual(["inPlan", "2", "more", "1"]);
   });
 
   it("omite una sección vacía", () => {
-    expect(buildLibraryRows([PRESS], "es").map((row) => row.kind)).toEqual(["section", "exercise"]);
+    expect(buildLibraryRows([PRESS], "es").map((row) => row.kind)).toEqual([
+      "section",
+      "exercise",
+    ]);
     expect(buildLibraryRows([], "es")).toEqual([]);
   });
 });
@@ -75,7 +110,30 @@ describe("muscle helpers", () => {
   });
 
   it("nombra el deltoides por vista y el resto por grupo", () => {
-    expect(muscleLabelKey({ group: "deltoids", view: "back" })).toBe("muscles.deltoids.back");
-    expect(muscleLabelKey({ group: "chest", view: "both" })).toBe("muscles.group.chest");
+    expect(muscleLabelKey({ group: "deltoids", view: "back" })).toBe(
+      "muscles.deltoids.back",
+    );
+    expect(muscleLabelKey({ group: "chest", view: "both" })).toBe(
+      "muscles.group.chest",
+    );
+  });
+});
+
+describe("isInWeekday", () => {
+  const monday = {
+    plan: { weekdays: [0], targetWeight: 30, unit: "lb" as const },
+  };
+
+  it("un ejercicio que ya está en otro día se puede agregar al nuevo", () => {
+    expect(isInWeekday(monday, 2)).toBe(false);
+  });
+
+  it("no se ofrece agregar el que ya está en ese mismo día", () => {
+    expect(isInWeekday(monday, 0)).toBe(true);
+  });
+
+  it("fuera del plan, o sin día de destino, nunca está en el día", () => {
+    expect(isInWeekday({ plan: null }, 0)).toBe(false);
+    expect(isInWeekday(monday, null)).toBe(false);
   });
 });

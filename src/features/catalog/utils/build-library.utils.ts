@@ -1,9 +1,11 @@
-import type {
-  ExerciseSummary,
-} from "@/shared/db/queries/exercise.queries";
+import type { ExerciseSummary } from "@/shared/db/queries/exercise.queries";
 import type { PlanExerciseInWeek } from "@/shared/db/queries/plan-exercise.queries";
 import type { ExerciseMuscleRow } from "@/shared/db/types";
-import type { LibraryExercise, PlanUsage, PrimaryMuscle } from "../types/catalog.types";
+import type {
+  LibraryExercise,
+  PlanUsage,
+  PrimaryMuscle,
+} from "../types/catalog.types";
 import { categoryOf } from "@/shared/utils/muscle-category.utils";
 
 interface BuildLibraryInput {
@@ -12,7 +14,10 @@ interface BuildLibraryInput {
   inPlan: readonly PlanExerciseInWeek[];
 }
 
-function groupBy<T>(items: readonly T[], keyOf: (item: T) => string): Map<string, T[]> {
+function groupBy<T>(
+  items: readonly T[],
+  keyOf: (item: T) => string,
+): Map<string, T[]> {
   const groups = new Map<string, T[]>();
   for (const item of items) {
     const key = keyOf(item);
@@ -24,13 +29,17 @@ function groupBy<T>(items: readonly T[], keyOf: (item: T) => string): Map<string
 function parseAliases(json: string): string[] {
   try {
     const parsed: unknown = JSON.parse(json);
-    return Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === "string") : [];
+    return Array.isArray(parsed)
+      ? parsed.filter((item): item is string => typeof item === "string")
+      : [];
   } catch {
     return [];
   }
 }
 
-function toPlanUsage(entries: readonly PlanExerciseInWeek[] | undefined): PlanUsage | null {
+function toPlanUsage(
+  entries: readonly PlanExerciseInWeek[] | undefined,
+): PlanUsage | null {
   if (!entries || entries.length === 0) return null;
   const sorted = [...entries].sort((a, b) => a.weekday - b.weekday);
   const first = sorted[0]?.planExercise;
@@ -42,6 +51,16 @@ function toPlanUsage(entries: readonly PlanExerciseInWeek[] | undefined): PlanUs
   };
 }
 
+/** El ejercicio ya está en el día del plan al que se está agregando (un día por día de la semana). */
+export function isInWeekday(
+  exercise: Pick<LibraryExercise, "plan">,
+  weekday: number | null,
+): boolean {
+  return (
+    weekday !== null && (exercise.plan?.weekdays.includes(weekday) ?? false)
+  );
+}
+
 /** Une el catálogo con sus músculos principales y con dónde está cada ejercicio en el plan. */
 export function buildLibrary({
   exercises,
@@ -49,10 +68,15 @@ export function buildLibrary({
   inPlan,
 }: BuildLibraryInput): LibraryExercise[] {
   const musclesByExercise = groupBy(primaryMuscles, (row) => row.exerciseId);
-  const planByExercise = groupBy(inPlan, (entry) => entry.planExercise.exerciseId);
+  const planByExercise = groupBy(
+    inPlan,
+    (entry) => entry.planExercise.exerciseId,
+  );
 
   return exercises.map((exercise) => {
-    const primary: PrimaryMuscle[] = (musclesByExercise.get(exercise.id) ?? []).map((row) => ({
+    const primary: PrimaryMuscle[] = (
+      musclesByExercise.get(exercise.id) ?? []
+    ).map((row) => ({
       group: row.muscleGroup,
       view: row.view,
     }));

@@ -1,5 +1,5 @@
 import { asc, eq } from "drizzle-orm";
-import { db } from "@/shared/db/client";
+import { db, transact } from "@/shared/db/client";
 import {
   clearDeletion,
   recordDeletions,
@@ -31,13 +31,13 @@ interface SaveBodyWeightOptions {
 }
 
 /** Un registro por día: volver a guardar el mismo día corrige el anterior. */
-export async function saveBodyWeight({
+export function saveBodyWeight({
   date,
   weight,
   unit,
 }: SaveBodyWeightOptions): Promise<void> {
   const id = bodyWeightId(date);
-  db.transaction((tx) => {
+  return transact((tx) => {
     clearDeletion(tx, "body_weights", id);
     tx.insert(bodyWeights)
       .values({ id, date, weight, unit })
@@ -46,8 +46,8 @@ export async function saveBodyWeight({
   });
 }
 
-export async function deleteBodyWeight(id: string): Promise<void> {
-  db.transaction((tx) => {
+export function deleteBodyWeight(id: string): Promise<void> {
+  return transact((tx) => {
     recordDeletions(tx, "body_weights", [id]);
     tx.delete(bodyWeights).where(eq(bodyWeights.id, id)).run();
   });
