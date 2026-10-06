@@ -11,10 +11,10 @@ import type { SessionExercise } from "../types/workout.types";
 import { sessionProgress } from "../utils/session-stats.utils";
 import { EffortPrompt } from "./EffortPrompt";
 import { ExerciseCard } from "./ExerciseCard";
-import { NextExerciseCard } from "./NextExerciseCard";
 import { RestTimer } from "./RestTimer";
 import { SessionHeader } from "./SessionHeader";
 import { SessionHint } from "./SessionHint";
+import { SessionNav } from "./SessionNav";
 import { SubstituteSheet } from "./SubstituteSheet";
 
 const EMPTY_EXERCISES: readonly SessionExercise[] = [];
@@ -29,7 +29,6 @@ export function SessionScreen({ sessionId }: Readonly<SessionScreenProps>) {
   const session = useSession(sessionId);
   const { view, current, timer } = session;
   const exercise = view?.exercises[current];
-  const next = view?.exercises[current + 1];
   const substitution = useSubstitution({
     date: toIsoDate(new Date(view?.startedAt ?? Date.now())),
     sessionId,
@@ -67,7 +66,11 @@ export function SessionScreen({ sessionId }: Readonly<SessionScreenProps>) {
             contentContainerStyle={styles.content}
             keyboardShouldPersistTaps="handled"
           >
-            <SessionHint key={exercise.exerciseId} exercise={exercise} />
+            <SessionHint
+              key={exercise.exerciseId}
+              exercise={exercise}
+              onApply={(choice) => session.applyHint(exercise, choice)}
+            />
             <ExerciseCard
               exercise={exercise}
               editingSetId={session.editingSetId}
@@ -83,12 +86,12 @@ export function SessionScreen({ sessionId }: Readonly<SessionScreenProps>) {
               exercise={exercise}
               onRate={(level) => session.rateEffort(exercise, level)}
             />
-            {next && (
-              <NextExerciseCard
-                exercise={next}
-                onPress={() => session.goTo(current + 1)}
-              />
-            )}
+            <SessionNav
+              exercises={view.exercises}
+              current={current}
+              onGoTo={session.goTo}
+              onFinish={session.finish}
+            />
             {session.hasError && (
               <InlineError message={t("common.saveError")} />
             )}

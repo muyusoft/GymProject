@@ -79,7 +79,8 @@
       "close": "Cerrar calendario",
       "day": "{{date}}, {{status}}",
       "legend": "El punto marca los días con entreno. Toca un día para ir a su semana."
-    }
+    },
+    "doneTitle": "Lo que hiciste"
   },
   "session": {
     "finish": "Terminar",
@@ -127,7 +128,9 @@
         "solid": "Si completaste todas las repeticiones, la próxima vez te sugeriremos subir peso.",
         "limit": "La próxima vez repite este peso antes de subir."
       }
-    }
+    },
+    "previous": "Anterior",
+    "finishWorkout": "Terminar entreno"
   },
   "recovery": {
     "worked": "Recién trabajado",
@@ -151,7 +154,6 @@
     "primary": "Principal",
     "secondary": "Secundario",
     "idle": "No trabaja",
-    "source": "Fuente",
     "group": {
       "chest": "Pecho",
       "triceps": "Tríceps",
@@ -210,6 +212,14 @@
         "pending": "entreno pendiente",
         "none": "sin entreno"
       }
+    },
+    "sources": {
+      "button_one": "Fuente ({{count}})",
+      "button_other": "Fuentes ({{count}})",
+      "title": "Fuentes",
+      "hint": "Estudios de los que sale qué músculos trabaja este ejercicio. Toca uno para abrirlo.",
+      "open": "Abrir la fuente {{citation}}",
+      "close": "Cerrar"
     }
   },
   "stepper": {
@@ -457,7 +467,10 @@
     "dismiss": "Descartar sugerencia",
     "increase": "{{name}}: completaste {{sets}} × {{reps}} con {{current}}. Hoy prueba {{next}}.",
     "preview": "Si hoy completas {{sets}} × {{reps}}, la próxima vez te sugerimos {{next}}.",
-    "deload": "{{name}}: sin progreso en 3 semanas. Prueba una semana más ligera con {{next}}."
+    "deload": "{{name}}: sin progreso en 3 semanas. Prueba una semana más ligera con {{next}}.",
+    "acceptIncrease": "Subir a {{weight}}",
+    "acceptDeload": "Usar {{weight}}",
+    "notNow": "Ahora no"
   },
   "import": {
     "eyebrow": "Importar desde notas",

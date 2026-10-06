@@ -4,6 +4,7 @@ import { getTextStyle, tokens } from "@/design/tokens";
 import { Badge, Button, ExerciseInfoButton } from "@/shared/components";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 import { getExerciseName } from "@/shared/utils/exercise-name.utils";
+import { formatWeight } from "@/shared/utils/weight.utils";
 import type { SetPatch } from "../services/session-write.service";
 import type { SessionExercise, SessionSet } from "../types/workout.types";
 import { getSetStatuses } from "../utils/session-stats.utils";
@@ -52,6 +53,18 @@ export function ExerciseCard({
           summary: formatTemplateSummary(exercise.template, i18n.language),
         })}
       </Text>
+      {exercise.last && (
+        <Text style={[styles.template, { color: c.textSecondary }]}>
+          {t("session.last", {
+            weight: formatWeight({
+              value: exercise.last.weight,
+              unit: exercise.last.unit,
+              locale: i18n.language,
+            }),
+            reps: exercise.last.reps,
+          })}
+        </Text>
+      )}
       {exercise.slot.isSubstituted && (
         <Text style={[styles.template, { color: c.textSecondary }]}>
           {t("substitute.active")}

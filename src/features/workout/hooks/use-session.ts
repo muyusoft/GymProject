@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Alert } from "react-native";
 import { useTranslation } from "react-i18next";
 import { logger } from "@/config/logger";
@@ -16,7 +16,15 @@ import {
   type SetPatch,
 } from "../services/session-write.service";
 import type { SessionExercise, SessionSet } from "../types/workout.types";
-import { countDoneSets, countTotalSets } from "../utils/session-stats.utils";
+import {
+  repsAfterApply,
+  type SessionHintChoice,
+} from "../utils/session-hint.utils";
+import {
+  countDoneSets,
+  countTotalSets,
+  firstPendingIndex,
+} from "../utils/session-stats.utils";
 import { useRestTimer } from "./use-rest-timer";
 import { useSessionData } from "./use-session-data";
 
@@ -25,9 +33,16 @@ export function useSession(sessionId: string) {
   const data = useSessionData(sessionId);
   const timer = useRestTimer();
   const { run, hasError: hasFinishError } = useActionRunner();
-  const [current, setCurrent] = useState(0);
+  // null hasta que carga la sesión: entonces se fija en el ejercicio donde se quedó.
+  const [selected, setSelected] = useState<number | null>(null);
   const [editingSetId, setEditingSetId] = useState<string | null>(null);
   const { view, patchSet } = data;
+  const current = selected ?? (view ? firstPendingIndex(view.exercises) : 0);
+
+  useEffect(() => {
+    if (view && selected === null)
+      setSelected(firstPendingIndex(view.exercises));
+  }, [view, selected]);
 
   /** Marca la serie como récord si supera todo lo registrado antes; se re-evalúa al editarla ya hecha. */
   const evaluateRecord = useCallback(
@@ -81,6 +96,18 @@ export function useSession(sessionId: string) {
     [patchSet],
   );
 
+  /** Aceptar una sugerencia cambia las series que faltan; las ya hechas se quedan como se registraron. */
+  const applyHint = useCallback(
+    (exercise: SessionExercise, { weight, variant }: SessionHintChoice) => {
+      const reps = repsAfterApply(exercise, variant);
+      for (const set of exercise.sets) {
+        if (!set.completed)
+          patchSet(set.id, reps === null ? { weight } : { weight, reps });
+      }
+    },
+    [patchSet],
+  );
+
   const complete = useCallback(async () => {
     if (await run(() => finishSession(sessionId, new Date()))) {
       void successFeedback();
@@ -111,7 +138,7 @@ export function useSession(sessionId: string) {
     timer,
     current,
     goTo: (index: number) => {
-      setCurrent(index);
+      setSelected(index);
       setEditingSetId(null);
     },
     editingSetId,
@@ -119,6 +146,7 @@ export function useSession(sessionId: string) {
     toggleSet,
     changeSet,
     rateEffort,
+    applyHint,
     finish,
     hasError: data.hasError || hasFinishError,
   };

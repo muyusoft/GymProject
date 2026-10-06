@@ -1,4 +1,4 @@
-import { and, asc, eq, isNull } from "drizzle-orm";
+import { and, asc, desc, eq, isNull } from "drizzle-orm";
 import { db } from "@/shared/db/client";
 import { listIncrements } from "@/shared/db/queries/equipment.queries";
 import { findPlanDay } from "@/shared/db/queries/plan.queries";
@@ -10,6 +10,10 @@ import type {
   SessionView,
 } from "../types/workout.types";
 import { buildInsight, type InsightSettings } from "../utils/insight.utils";
+import {
+  lastPerformance,
+  withLastWeight,
+} from "../utils/last-performance.utils";
 import { isExerciseDone } from "../utils/session-stats.utils";
 import type { DayExercise } from "../utils/swap.utils";
 import { buildTemplate } from "../utils/template.utils";
@@ -32,6 +36,24 @@ export async function findActiveSession(
     )
     .limit(1);
   return rows[0]?.id ?? null;
+}
+
+/** La sesión más reciente de ese día del plan en esa fecha, abierta o terminada. */
+export async function findSessionOfDay(
+  dayId: string,
+  date: string,
+): Promise<{ id: string; endedAt: number | null } | null> {
+  const rows = await db
+    .select({ id: sessions.id, endedAt: sessions.endedAt })
+    .from(sessions)
+    .where(and(eq(sessions.planDayId, dayId), eq(sessions.date, date)))
+    .orderBy(desc(sessions.startedAt))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
+export async function listSessionLogs(sessionId: string) {
+  return db.select().from(setLogs).where(eq(setLogs.sessionId, sessionId));
 }
 
 /** Cuántos ejercicios de la sesión tienen todas sus series hechas. */
@@ -65,11 +87,16 @@ function toSessionExercise(
   sets: SessionSet[],
   { settings, now, increments, history }: SessionContext,
 ): SessionExercise {
-  const template = buildTemplate({
-    planExercise: detail.planExercise,
-    equipment: detail.exercise.equipment,
-    increments,
-  });
+  const exerciseHistory = history.get(detail.exercise.id) ?? [];
+  const last = lastPerformance(exerciseHistory[0]);
+  const template = withLastWeight(
+    buildTemplate({
+      planExercise: detail.planExercise,
+      equipment: detail.exercise.equipment,
+      increments,
+    }),
+    last,
+  );
   return {
     slot: detail.slot,
     exerciseId: detail.exercise.id,
@@ -78,11 +105,12 @@ function toSessionExercise(
     template,
     sets,
     insight: buildInsight({
-      history: history.get(detail.exercise.id) ?? [],
+      history: exerciseHistory,
       template,
       settings,
       today: now,
     }),
+    last,
   };
 }
 
