@@ -13,6 +13,7 @@ const ADD_ICON_SIZE = 20;
 
 interface LibraryListRowProps {
   exercise: LibraryExercise;
+  /** Hay un día de destino y este ejercicio aún no está en él. */
   canAdd: boolean;
   onAdd: (exerciseId: string) => void;
 }
@@ -37,26 +38,28 @@ export function LibraryListRow({
     .join(" · ");
 
   const { plan } = exercise;
-  const action = plan
-    ? plan.targetWeight !== null && (
-        <Text style={[styles.weight, { color: c.textSecondary }]}>
-          {formatWeight({
-            value: plan.targetWeight,
-            unit: plan.unit,
-            locale: i18n.language,
-          })}
-        </Text>
-      )
-    : canAdd && (
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t("library.add", { name })}
-          onPress={() => onAdd(exercise.id)}
-          style={[styles.add, { backgroundColor: c.surfaceAlt }]}
-        >
-          <IconRenderer name="plus" size={ADD_ICON_SIZE} color={c.accentText} />
-        </Pressable>
-      );
+  // Se puede agregar aunque el ejercicio ya esté en otro día; sin botón, se muestra su peso en el plan.
+  const action = canAdd ? (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={t("library.add", { name })}
+      onPress={() => onAdd(exercise.id)}
+      style={[styles.add, { backgroundColor: c.surfaceAlt }]}
+    >
+      <IconRenderer name="plus" size={ADD_ICON_SIZE} color={c.accentText} />
+    </Pressable>
+  ) : (
+    plan &&
+    plan.targetWeight !== null && (
+      <Text style={[styles.weight, { color: c.textSecondary }]}>
+        {formatWeight({
+          value: plan.targetWeight,
+          unit: plan.unit,
+          locale: i18n.language,
+        })}
+      </Text>
+    )
+  );
 
   const trailing = (
     <View style={styles.trailing}>

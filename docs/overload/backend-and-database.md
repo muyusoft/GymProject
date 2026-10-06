@@ -140,3 +140,31 @@ Todavía no hay backend, pero la base local ya está lista para tenerlo (Supabas
   - Planes, días, ejercicios del plan, sesiones y series siguen con UUID, porque los crea el usuario.
 - **Registro de borrados** (tabla `deleted_rows`, `src/shared/db/queries/deletion.queries.ts`). Los borrados siguen siendo definitivos en el teléfono; cada uno anota tabla, id y hora en la misma transacción, para poder avisar al servidor. Las filas hijas que caen por cascada no se anotan: el servidor aplicará la misma cascada. Una fila con id estable que se vuelve a crear borra su anotación.
 - **Preparación de instalaciones existentes** (`src/shared/db/sync-prep.ts`). Corre una vez, después del seed y en una sola transacción: limpia filas sueltas y cambia los ids al azar por los estables, actualizando todo lo que apuntaba a ellos. La marca `syncPrep` en `settings` guarda la versión aplicada. Si falla, se registra y la app arranca con los datos como estaban.
+
+## Supabase (copia en la nube)
+
+Supabase guarda una copia de los datos de cada usuario. La app todavía no se conecta: por ahora solo existe el esquema.
+
+### Cómo se cambia la base
+
+Todo cambio de Postgres es una migración SQL en `supabase/migrations/`, versionada en git. Nunca se crea ni se modifica nada desde el panel web, y una migración ya aplicada no se edita: se escribe otra.
+
+```bash
+npx supabase migration new <nombre>   # crea el archivo vacío con su marca de tiempo
+npx supabase db push --dry-run        # muestra qué migraciones faltan en el proyecto
+npx supabase db push                  # las aplica
+npx supabase db diff                  # detecta cambios hechos a mano en el proyecto
+```
+
+Hay un solo proyecto de Supabase, así que `db push` escribe sobre los datos reales: revisa el `--dry-run` antes. Con Docker, `npx supabase start` y `npx supabase db reset` prueban las migraciones en una base local.
+
+### Esquema (`20261006120000_initial_schema.sql`)
+
+- **Tablas:** `plans`, `plan_days`, `plan_exercises`, `sessions`, `set_logs`, `exercise_swaps`, `body_weights`, `equipment_increments`, `user_settings` y `custom_exercises`. Las columnas se llaman igual que en SQLite.
+- **El catálogo no está en el servidor.** Viene dentro de la app; solo se guardan los ejercicios que crea el usuario (`custom_exercises`). Por eso `exercise_id` es texto libre.
+- **Clave `(user_id, id)`** en todas, porque los ids estables solo son únicos por usuario.
+- **`updated_at`** (ms, lo pone el teléfono): gana la modificación más reciente; el trigger `sync_guard` descarta una escritura más vieja que la guardada.
+- **`deleted_at`** (ms): borrado lógico. El teléfono borra de verdad y avisa con lo anotado en `deleted_rows`.
+- **`synced_at`** (hora del servidor, la pone `sync_guard`): cursor para pedir "lo que cambió desde la última vez".
+- **Sin claves foráneas entre tablas**, para que el orden de llegada no importe. Las cascadas de borrado de SQLite se repiten con triggers: plan → días → ejercicios del plan → sustituciones; sesión → series; al borrar un día, sus sesiones quedan sin día.
+- **RLS** en todas: cada usuario con sesión solo ve y escribe sus filas; los visitantes anónimos no tienen permisos. Borrar la cuenta borra sus filas.
