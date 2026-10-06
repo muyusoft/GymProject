@@ -6,6 +6,7 @@ import { getTextStyle, tokens } from "@/design/tokens";
 import { AsyncStateView, Button, InlineError } from "@/shared/components";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 import { toIsoDate } from "@/shared/utils/week.utils";
+import { useSessionStore } from "@/shared/store";
 import { useSubstitution } from "../hooks/use-substitution";
 import { useToday } from "../hooks/use-today";
 import type { TodayExercise } from "../types/workout.types";
@@ -32,6 +33,8 @@ export function TodayScreen() {
     hasError,
   } = useToday();
 
+  // Con sesión iniciada el saludo lleva el nombre de la cuenta.
+  const name = useSessionStore((state) => state.user?.name ?? null);
   const substitution = useSubstitution({
     date: toIsoDate(today?.today ?? new Date()),
     sessionId: today?.activeSessionId ?? null,
@@ -70,7 +73,7 @@ export function TodayScreen() {
               {date}
             </Text>
             <Text style={[styles.greeting, { color: c.text }]}>
-              {t("today.greeting")}
+              {name ? t("today.greetingName", { name }) : t("today.greeting")}
             </Text>
           </View>
           <WeekPager

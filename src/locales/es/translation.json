@@ -80,7 +80,8 @@
       "day": "{{date}}, {{status}}",
       "legend": "El punto marca los días con entreno. Toca un día para ir a su semana."
     },
-    "doneTitle": "Lo que hiciste"
+    "doneTitle": "Lo que hiciste",
+    "greetingName": "Hola, {{name}}"
   },
   "session": {
     "finish": "Terminar",
@@ -297,13 +298,19 @@
       "signIn": "Crear cuenta o iniciar sesión",
       "signedIn": "Sesión iniciada",
       "signedInAs": "Sesión iniciada como {{email}}",
-      "syncPending": "Tus datos siguen guardados en este teléfono. La copia en la nube se activará en una próxima versión.",
       "signOut": "Cerrar sesión",
       "signOutError": "No se pudo cerrar la sesión. Inténtalo de nuevo.",
       "signOutConfirm": {
         "title": "¿Cerrar sesión?",
         "message": "Tus datos se quedan en este teléfono."
-      }
+      },
+      "syncing": "Sincronizando…",
+      "synced": "Sincronizado a las {{time}}",
+      "neverSynced": "Tus datos se guardan también en tu cuenta.",
+      "syncError": "No se pudo sincronizar. Tus datos siguen a salvo en este teléfono.",
+      "needsChoice": "Falta elegir con qué datos te quedas: los de este teléfono o los de tu cuenta.",
+      "choose": "Elegir ahora",
+      "syncNow": "Sincronizar ahora"
     }
   },
   "weekday": {
@@ -912,6 +919,15 @@
         "body": "Enviamos un enlace a {{email}}. Ábrelo para activar tu cuenta y luego inicia sesión."
       },
       "confirmed": "Ya confirmé, iniciar sesión"
+    }
+  },
+  "sync": {
+    "choice": {
+      "title": "¿Con qué datos te quedas?",
+      "message": "Este teléfono y tu cuenta tienen entrenos distintos. Elige cuáles conservar; los otros se borran.",
+      "keepPhone": "Los de este teléfono",
+      "keepAccount": "Los de mi cuenta",
+      "later": "Decidir después"
     }
   }
 }

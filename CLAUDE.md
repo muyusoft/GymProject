@@ -6,7 +6,7 @@ App de gimnasio personal de Muyusoft, construida sobre muyusoft-template. Reempl
 
 ## Lo que cambia respecto al template
 
-- **Offline primero.** La app lee y escribe solo en SQLite (expo-sqlite + drizzle-orm) en `src/shared/db/`; ninguna pantalla espera a la red. Supabase será la copia en la nube por usuario (cuentas y sincronización en segundo plano, aún sin conectar a la app). No uses `http-client`, los servicios de auth del template ni `persistedStore` para datos de Overload.
+- **Offline primero.** La app lee y escribe solo en SQLite (expo-sqlite + drizzle-orm) en `src/shared/db/`; ninguna pantalla espera a la red. Supabase es la copia en la nube por usuario: cuentas y una sincronización en segundo plano (`src/shared/services/sync/`) que sube y baja cambios sin bloquear la pantalla. No uses `http-client`, los servicios de auth del template ni `persistedStore` para datos de Overload.
 - **Postgres se cambia solo con migraciones.** Todo ajuste de Supabase (tablas, políticas, triggers, funciones) es un archivo SQL nuevo en `supabase/migrations/`, versionado en git. Nunca se cambia desde el panel web ni se edita una migración ya aplicada.
 - **Design system propio.** `src/design/tokens.*` contiene Overload, no Minga. Tema oscuro por defecto.
 - **Figura muscular** con react-native-body-highlighter, envuelta en `src/shared/components/BodyMap.tsx`.

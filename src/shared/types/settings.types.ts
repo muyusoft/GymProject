@@ -18,6 +18,10 @@ export const SETTING_KEYS = {
   onboardingDone: "onboardingDone",
   /** Versión de la preparación para sincronizar (ids estables) ya aplicada a esta instalación. */
   syncPrep: "syncPrep",
+  /** Sincronización: cuenta enlazada a este teléfono y hasta dónde se subió y se bajó. */
+  syncUserId: "syncUserId",
+  syncPushedAt: "syncPushedAt",
+  syncPulledAt: "syncPulledAt",
 } as const;
 
 export type SettingKey = (typeof SETTING_KEYS)[keyof typeof SETTING_KEYS];

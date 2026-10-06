@@ -7,6 +7,7 @@ import { useActionRunner } from "@/shared/hooks/use-action-runner";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 import { signOut } from "@/shared/services/session.service";
 import { useSessionStore } from "@/shared/store";
+import { AccountSyncStatus } from "./AccountSyncStatus";
 import { SettingsSection } from "./SettingsSection";
 
 /** Cuenta: sin sesión invita a crearla o entrar; con sesión muestra el correo y permite cerrarla. */
@@ -43,9 +44,7 @@ export function AccountSection() {
               ? t("settings.account.signedInAs", { email })
               : t("settings.account.signedIn")}
           </Text>
-          <Text style={[styles.hint, { color: c.textSecondary }]}>
-            {t("settings.account.syncPending")}
-          </Text>
+          <AccountSyncStatus />
           <Button
             variant="secondary"
             label={t("settings.account.signOut")}

@@ -30,7 +30,7 @@ Las rutas de `src/app/` son delgadas, como pide el template: envuelven la pantal
 ## Navegación
 
 - **Primera apertura.** Mientras el ajuste `onboardingDone` sea falso, `src/app/(tabs)/_layout.tsx` redirige a `/intro`. La introducción termina en `/welcome`, y "Empezar" guarda `onboardingDone` y entra a Hoy; no vuelve a mostrarse.
-- **Cuentas.** Supabase Auth con correo y contraseña (`src/config/supabase.ts`, `src/features/account/services/account.service.ts`). La sesión se guarda cifrada en expo-secure-store y `useSessionStore` dice quién tiene sesión; Perfil muestra la sección Cuenta con el correo y "Cerrar sesión". Crear cuenta lleva a "Revisa tu correo" si el proyecto pide confirmarlo. Apple y Google siguen respondiendo "aún no disponible". Tener sesión todavía no sincroniza nada.
+- **Cuentas.** Supabase Auth con correo y contraseña (`src/config/supabase.ts`, `src/features/account/services/account.service.ts`). La sesión se guarda cifrada en expo-secure-store y `useSessionStore` dice quién tiene sesión; Perfil muestra la sección Cuenta con el correo y "Cerrar sesión". Crear cuenta lleva a "Revisa tu correo" si el proyecto pide confirmarlo. Apple y Google siguen respondiendo "aún no disponible".
 
 - `src/app/(tabs)/_layout.tsx` define cuatro tabs con `TabBar`: Hoy, Rutinas, Progreso, Perfil (la ruta es `settings`; la etiqueta sale de `tabs.profile`).
 - `src/app/_layout.tsx` (template) carga i18n, fuentes y la base de datos (migraciones) antes de ocultar el splash, y registra el `Stack` con `(tabs)` y las rutas de arriba.

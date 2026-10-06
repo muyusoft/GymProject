@@ -5,6 +5,8 @@ export type SessionStatus = "loading" | "signedOut" | "signedIn";
 export interface SessionUser {
   id: string;
   email: string | null;
+  /** El nombre que dio al crear la cuenta; null si no lo hay. */
+  name: string | null;
 }
 
 interface SessionState {

@@ -80,7 +80,8 @@
       "day": "{{date}}, {{status}}",
       "legend": "The dot marks days with a workout. Tap a day to go to its week."
     },
-    "doneTitle": "What you did"
+    "doneTitle": "What you did",
+    "greetingName": "Hi, {{name}}"
   },
   "session": {
     "finish": "Finish",
@@ -297,13 +298,19 @@
       "signIn": "Create account or sign in",
       "signedIn": "Signed in",
       "signedInAs": "Signed in as {{email}}",
-      "syncPending": "Your data is still saved on this phone. Cloud backup will be turned on in an upcoming version.",
       "signOut": "Sign out",
       "signOutError": "Couldn't sign out. Try again.",
       "signOutConfirm": {
         "title": "Sign out?",
         "message": "Your data stays on this phone."
-      }
+      },
+      "syncing": "Syncing…",
+      "synced": "Synced at {{time}}",
+      "neverSynced": "Your data is also saved to your account.",
+      "syncError": "Couldn't sync. Your data is still safe on this phone.",
+      "needsChoice": "You still need to choose which data to keep: this phone's or your account's.",
+      "choose": "Choose now",
+      "syncNow": "Sync now"
     }
   },
   "weekday": {
@@ -912,6 +919,15 @@
         "body": "We sent a link to {{email}}. Open it to activate your account, then sign in."
       },
       "confirmed": "I confirmed it, sign in"
+    }
+  },
+  "sync": {
+    "choice": {
+      "title": "Which data do you keep?",
+      "message": "This phone and your account have different workouts. Choose which to keep; the other set is deleted.",
+      "keepPhone": "This phone's",
+      "keepAccount": "My account's",
+      "later": "Decide later"
     }
   }
 }
