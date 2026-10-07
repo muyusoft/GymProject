@@ -20,6 +20,10 @@ import {
   settings,
 } from "@/shared/db/schema";
 import { syncReminders } from "@/shared/services/reminders.service";
+import {
+  markAllForPush,
+  requestSync,
+} from "@/shared/services/sync/sync.service";
 import { useSettingsStore } from "@/shared/store";
 import { SETTING_KEYS } from "@/shared/types/settings.types";
 import { chunk } from "@/shared/utils/chunk.utils";
@@ -42,8 +46,16 @@ import {
 
 const BATCH_SIZE = 50;
 const ID_BATCH_SIZE = 500;
+/** Marcas de esta instalación: un respaldo nunca las trae ni las pisa. */
+const INSTALL_KEYS: readonly string[] = [
+  SETTING_KEYS.seeded,
+  SETTING_KEYS.syncPrep,
+  SETTING_KEYS.syncUserId,
+  SETTING_KEYS.syncPushedAt,
+  SETTING_KEYS.syncPulledAt,
+];
 const KNOWN_SETTING_KEYS = Object.values(SETTING_KEYS).filter(
-  (key) => key !== SETTING_KEYS.seeded && key !== SETTING_KEYS.syncPrep,
+  (key) => !INSTALL_KEYS.includes(key),
 );
 /** Tablas que el respaldo reemplaza siempre; el peso corporal solo si el respaldo lo trae. */
 const REPLACED_TABLES = SYNCED_TABLES.filter(
@@ -263,6 +275,9 @@ export async function restoreBackup(file: BackupFile): Promise<BackupSummary> {
     }
   });
 
+  // Restaurar es volver a un estado anterior a propósito: con cuenta, lo restaurado manda sobre la nube.
+  markAllForPush();
+  void requestSync();
   await useSettingsStore.getState().hydrate();
   void syncReminders();
   return summarizeBackup(file);

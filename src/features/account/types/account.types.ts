@@ -6,6 +6,8 @@ export const ACCOUNT_ERROR_CODES = [
   "weak_password",
   "rate_limited",
   "network",
+  /** La persona cerró la ventana del proveedor: no es un fallo y no se muestra ningún aviso. */
+  "cancelled",
   "unknown",
 ] as const;
 export type AccountErrorCode = (typeof ACCOUNT_ERROR_CODES)[number];
@@ -20,6 +22,12 @@ export class AccountError extends Error {
 
 export const SOCIAL_PROVIDERS = ["apple", "google"] as const;
 export type SocialProvider = (typeof SOCIAL_PROVIDERS)[number];
+
+/**
+ * Proveedores que la app ofrece hoy. Apple exige una cuenta del Apple Developer Program; cuando exista, se
+ * agrega aquí. Antes de publicar en el App Store hará falta: Apple lo exige si se ofrece Google.
+ */
+export const AVAILABLE_PROVIDERS: readonly SocialProvider[] = ["google"];
 
 export interface Credentials {
   email: string;

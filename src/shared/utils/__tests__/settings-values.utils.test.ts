@@ -20,6 +20,7 @@ describe("parseSettings", () => {
       weighInReminderMinute: 0,
       weighInWeekday: 0,
       onboardingDone: false,
+      introSeen: false,
     });
   });
 

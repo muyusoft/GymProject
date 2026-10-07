@@ -28,6 +28,8 @@ export interface AppSettings {
   weighInWeekday: number;
   /** La introducción y la bienvenida ya se mostraron; no vuelven a salir. */
   onboardingDone: boolean;
+  /** La introducción ya se vio alguna vez: al quedar sin sesión se abre en la bienvenida, no en ella. */
+  introSeen: boolean;
 }
 
 export type AppSettingKey = keyof AppSettings;
@@ -110,5 +112,6 @@ export function parseSettings(
     ),
     weighInWeekday: parseBoundedInt(raw.weighInWeekday, MAX_WEEKDAY, 0),
     onboardingDone: parseBoolean(raw.onboardingDone, false),
+    introSeen: parseBoolean(raw.introSeen, false),
   };
 }

@@ -22,6 +22,8 @@ export function useAccountAction(): AccountAction {
       return true;
     } catch (error) {
       const code = toAccountErrorCode(error);
+      // Cerrar la ventana del proveedor no merece un aviso: la pantalla sigue como estaba.
+      if (code === "cancelled") return false;
       if (code === "unknown") logger.error("Account action failed", { error });
       else logger.info("Account action rejected", { code });
       setErrorCode(code);

@@ -5,6 +5,7 @@ import { getTextStyle, tokens } from "@/design/tokens";
 import { AsyncStateView, InlineError } from "@/shared/components";
 import { toIsoDate } from "@/shared/utils/week.utils";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
+import { useCancelSession } from "../hooks/use-cancel-session";
 import { useSession } from "../hooks/use-session";
 import { useSubstitution } from "../hooks/use-substitution";
 import type { SessionExercise } from "../types/workout.types";
@@ -27,6 +28,7 @@ export function SessionScreen({ sessionId }: Readonly<SessionScreenProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
   const session = useSession(sessionId);
+  const cancellation = useCancelSession(sessionId, session.view);
   const { view, current, timer } = session;
   const exercise = view?.exercises[current];
   const substitution = useSubstitution({
@@ -91,8 +93,9 @@ export function SessionScreen({ sessionId }: Readonly<SessionScreenProps>) {
               current={current}
               onGoTo={session.goTo}
               onFinish={session.finish}
+              onCancel={cancellation.cancel}
             />
-            {session.hasError && (
+            {(session.hasError || cancellation.hasError) && (
               <InlineError message={t("common.saveError")} />
             )}
           </ScrollView>

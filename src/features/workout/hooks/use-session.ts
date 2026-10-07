@@ -8,6 +8,7 @@ import {
   successFeedback,
   tapFeedback,
 } from "@/shared/services/haptics.service";
+import { requestSync } from "@/shared/services/sync/sync.service";
 import { effortToRpe, type EffortLevel } from "@/shared/utils/effort.utils";
 import { toValidSet } from "@/shared/utils/one-rep-max.utils";
 import { isNewRecord } from "../services/record.service";
@@ -111,6 +112,8 @@ export function useSession(sessionId: string) {
   const complete = useCallback(async () => {
     if (await run(() => finishSession(sessionId, new Date()))) {
       void successFeedback();
+      // Un entreno terminado es el mejor momento para subirlo; sin sesión o sin red no hace nada.
+      void requestSync();
       router.replace("/");
     }
   }, [run, sessionId]);

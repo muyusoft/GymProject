@@ -1,3 +1,5 @@
+import * as Linking from "expo-linking";
+import * as WebBrowser from "expo-web-browser";
 import { supabase } from "@/config/supabase";
 import {
   AccountError,
@@ -10,6 +12,10 @@ import {
   authFailureCode,
   type AuthFailure,
 } from "../utils/account-error.utils";
+import { readOAuthCallback } from "../utils/oauth-callback.utils";
+
+/** Ruta a la que vuelve el navegador; existe como pantalla (`src/app/auth-callback.tsx`) por si el sistema la abre. */
+const OAUTH_CALLBACK_PATH = "auth-callback";
 
 /** Toda acción de cuenta falla con un AccountError, cuyo motivo la pantalla sabe explicar. */
 function fail(error: AuthFailure): never {
@@ -52,7 +58,33 @@ export async function requestPasswordReset(email: string): Promise<void> {
   if (error) fail(error);
 }
 
-/** Apple y Google necesitan un development build y sus credenciales; llegan después del correo. */
-export function signInWithProvider(_provider: SocialProvider): Promise<void> {
-  return Promise.reject(new AccountError("unavailable"));
+/** Abre el navegador con la página del proveedor y devuelve la dirección con la que volvió a la app. */
+async function authorizeInBrowser(provider: SocialProvider): Promise<string> {
+  // En Expo Go es exp://…/--/auth-callback; en la app instalada, overset://auth-callback.
+  // Supabase rechaza direcciones cuyo host es una IP que no sea local (y manda a su Site URL): en Expo Go
+  // hay que arrancar con --tunnel, que da un nombre de host, para probar este flujo.
+  const redirectTo = Linking.createURL(OAUTH_CALLBACK_PATH);
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider,
+    options: { redirectTo, skipBrowserRedirect: true },
+  });
+  if (error) fail(error);
+  const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
+  // Cerrar la ventana sin terminar no es un error: la pantalla se queda como estaba.
+  if (result.type !== "success") throw new AccountError("cancelled");
+  return result.url;
+}
+
+/**
+ * Inicio de sesión con un proveedor por el navegador (OAuth de Supabase con PKCE): la app recibe un código
+ * de un solo uso y lo canjea por la sesión. Funciona en Expo Go y en la app instalada.
+ */
+export async function signInWithProvider(
+  provider: SocialProvider,
+): Promise<void> {
+  const callback = readOAuthCallback(await authorizeInBrowser(provider));
+  if (callback.kind === "denied") throw new AccountError("cancelled");
+  if (callback.kind === "empty") throw new AccountError("unknown");
+  const { error } = await supabase.auth.exchangeCodeForSession(callback.code);
+  if (error) fail(error);
 }

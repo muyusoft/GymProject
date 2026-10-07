@@ -143,7 +143,7 @@ Todavía no hay backend, pero la base local ya está lista para tenerlo (Supabas
 
 ## Supabase (copia en la nube)
 
-Supabase guarda una copia de los datos de cada usuario. La app todavía no se conecta: por ahora solo existe el esquema.
+Supabase guarda una copia de los datos de cada usuario; la app la mantiene al día con la sincronización descrita más abajo.
 
 ### Cómo se cambia la base
 
@@ -168,3 +168,32 @@ Hay un solo proyecto de Supabase, así que `db push` escribe sobre los datos rea
 - **`synced_at`** (hora del servidor, la pone `sync_guard`): cursor para pedir "lo que cambió desde la última vez".
 - **Sin claves foráneas entre tablas**, para que el orden de llegada no importe. Las cascadas de borrado de SQLite se repiten con triggers: plan → días → ejercicios del plan → sustituciones; sesión → series; al borrar un día, sus sesiones quedan sin día.
 - **RLS** en todas: cada usuario con sesión solo ve y escribe sus filas; los visitantes anónimos no tienen permisos. Borrar la cuenta borra sus filas.
+
+### Sincronización (`src/shared/services/sync/`)
+
+La app sigue leyendo y escribiendo solo en SQLite. Con sesión iniciada, `requestSync()` corre en segundo plano:
+
+1. **Sube** las filas con `updated_at` posterior a la última subida y avisa de los borrados anotados en `deleted_rows`.
+2. **Baja** lo que cambió en el servidor desde la última bajada (cursor `synced_at`, con 10 s de margen) y lo aplica de padres a hijos.
+
+- **Cuándo:** al iniciar sesión, al arrancar con sesión, al volver a primer plano, al terminar un entreno, tras restaurar un respaldo y con "Sincronizar ahora" en Perfil.
+- **Conflictos:** gana la fila con el `updated_at` más reciente, en el teléfono (`decideRemoteChange`) y en el servidor (`sync_guard`).
+- **Qué se sincroniza:** las tablas de `sync-tables.ts`. De `exercises` solo los ejercicios que no son del catálogo. Los ajustes todavía no.
+- **Cursores:** en `settings` (`syncUserId`, `syncPushedAt`, `syncPulledAt`); no entran en los respaldos.
+- **Primera vez con una cuenta:** si el teléfono y la cuenta tienen datos, se pregunta con cuáles quedarse. "Los de este teléfono" marca como borrado lo de la cuenta y sube lo local como lo más reciente; "Los de mi cuenta" borra los datos locales y baja lo de la cuenta. Si solo un lado tiene datos, se enlaza sin preguntar.
+- **Fallos:** se registran y dejan `useSyncStore` en `error`; nunca bloquean ni rompen una pantalla.
+- **Al aplicar filas bajadas** se usa `INSERT ... ON CONFLICT DO UPDATE`, nunca `REPLACE`, que borraría la fila y dispararía las cascadas sobre sus hijas.
+
+### Funciones de servidor (`supabase/functions/`)
+
+Código de Deno, versionado junto a las migraciones y fuera del `tsc` y el lint de la app. Se despliega con `npx supabase functions deploy <nombre>`.
+
+- **`delete-account`**: elimina la cuenta de quien llama. Existe porque borrar un usuario necesita la clave `service_role`, que nunca va dentro de la app. Identifica al usuario por su token verificado y borra el usuario; sus filas caen por `ON DELETE CASCADE`. La app (`deleteAccount` en `session.service.ts`) borra después los datos del teléfono y cierra la sesión; si el servidor falla, no borra nada.
+
+### Inicio de sesión con Google
+
+OAuth de Supabase por el navegador, con PKCE. Configuración que vive en los paneles, no en el repositorio:
+
+- **Google Cloud:** un cliente OAuth de tipo "Aplicación web" cuya URI de redirección autorizada es `https://<proyecto>.supabase.co/auth/v1/callback`.
+- **Supabase → Authentication → Providers → Google:** el ID de cliente y el secreto de ese cliente.
+- **Supabase → Authentication → URL Configuration → Redirect URLs:** `overset://**` (app instalada) y `exp://**` (Expo Go en desarrollo).

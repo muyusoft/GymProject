@@ -7,7 +7,10 @@ import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 import { useAccountAction } from "../hooks/use-account-action";
 import { useStartApp } from "../hooks/use-start-app";
 import { signInWithProvider } from "../services/account.service";
-import { SOCIAL_PROVIDERS } from "../types/account.types";
+import {
+  AVAILABLE_PROVIDERS,
+  type SocialProvider,
+} from "../types/account.types";
 import { AccountLink } from "./AccountLink";
 import { AccountNotice } from "./AccountNotice";
 import { LabeledDivider } from "./LabeledDivider";
@@ -20,22 +23,40 @@ export function WelcomeActions() {
   const app = useStartApp();
   const account = useAccountAction();
 
+  const signInWith = (provider: SocialProvider) => {
+    void account
+      .run(() => signInWithProvider(provider))
+      .then((isSignedIn) => {
+        if (isSignedIn) app.start();
+      });
+  };
+
   return (
     <View style={styles.actions}>
-      <Button label={t("account.welcome.start")} block loading={app.isStarting} onPress={app.start} />
+      <Button
+        label={t("account.welcome.start")}
+        block
+        loading={app.isStarting}
+        onPress={app.start}
+      />
       {app.hasError && <InlineError message={t("common.saveError")} />}
       <LabeledDivider label={t("account.welcome.orCloud")} />
       {account.errorCode !== null && <AccountNotice code={account.errorCode} />}
-      {SOCIAL_PROVIDERS.map((provider) => (
+      {AVAILABLE_PROVIDERS.map((provider) => (
         <SocialButton
           key={provider}
           provider={provider}
           disabled={account.isRunning}
-          onPress={() => void account.run(() => signInWithProvider(provider))}
+          onPress={() => signInWith(provider)}
         />
       ))}
-      <AccountLink label={t("account.welcome.withEmail")} onPress={() => router.push("/account/sign-up")} />
-      <Text style={[styles.legal, { color: c.textSecondary }]}>{t("account.welcome.legal")}</Text>
+      <AccountLink
+        label={t("account.welcome.withEmail")}
+        onPress={() => router.push("/account/sign-up")}
+      />
+      <Text style={[styles.legal, { color: c.textSecondary }]}>
+        {t("account.welcome.legal")}
+      </Text>
     </View>
   );
 }

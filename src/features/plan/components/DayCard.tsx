@@ -18,7 +18,7 @@ interface DayCardProps {
 export function DayCard({ day, dayNumber, onPress }: Readonly<DayCardProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
-  const weekdayLabel = t("weekday.long." + day.weekday);
+  const weekdayLabel = t(`weekday.long.${day.weekday}`);
 
   return (
     <Pressable
@@ -34,7 +34,12 @@ export function DayCard({ day, dayNumber, onPress }: Readonly<DayCardProps>) {
       ]}
     >
       <View style={styles.date}>
-        <Text style={[styles.weekday, { color: day.isToday ? c.accentText : c.textSecondary }]}>
+        <Text
+          style={[
+            styles.weekday,
+            { color: day.isToday ? c.accentText : c.textSecondary },
+          ]}
+        >
           {t(`weekday.short.${day.weekday}`)}
         </Text>
         <Text style={[styles.number, { color: c.text }]}>{dayNumber}</Text>
@@ -42,7 +47,10 @@ export function DayCard({ day, dayNumber, onPress }: Readonly<DayCardProps>) {
       <View style={styles.texts}>
         <Text style={[styles.name, { color: c.text }]}>{day.name}</Text>
         <Text style={[styles.subtitle, { color: c.textSecondary }]}>
-          {t("plan.daySubtitle", { count: day.exerciseCount, minutes: day.durationMinutes })}
+          {t("plan.daySubtitle", {
+            count: day.exerciseCount,
+            minutes: day.durationMinutes,
+          })}
         </Text>
       </View>
       {day.isDone && (
@@ -50,7 +58,11 @@ export function DayCard({ day, dayNumber, onPress }: Readonly<DayCardProps>) {
           accessibilityLabel={t("plan.done")}
           style={[styles.check, { backgroundColor: c.accent }]}
         >
-          <IconRenderer name="check" size={CHECK_ICON_SIZE} color={c.onAccent} />
+          <IconRenderer
+            name="check"
+            size={CHECK_ICON_SIZE}
+            color={c.onAccent}
+          />
         </View>
       )}
       {day.isToday && !day.isDone && <Badge label={t("plan.today")} />}

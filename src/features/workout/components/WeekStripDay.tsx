@@ -18,8 +18,8 @@ export function WeekStripDay({ day, onPress }: Readonly<WeekStripDayProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
   const textColor = day.isToday ? c.onAccent : c.text;
-  const weekdayLabel = t("weekday.long." + day.weekday);
-  const statusLabel = t("today.status." + day.status);
+  const weekdayLabel = t(`weekday.long.${day.weekday}`);
+  const statusLabel = t(`today.status.${day.status}`);
   const accessibilityLabel = `${weekdayLabel} ${day.date.getDate()}, ${statusLabel}`;
 
   return (
@@ -31,15 +31,26 @@ export function WeekStripDay({ day, onPress }: Readonly<WeekStripDayProps>) {
       onPress={onPress}
       style={[styles.day, day.isToday && { backgroundColor: c.accent }]}
     >
-      <Text style={[styles.weekday, { color: day.isToday ? c.onAccent : c.textSecondary }]}>
+      <Text
+        style={[
+          styles.weekday,
+          { color: day.isToday ? c.onAccent : c.textSecondary },
+        ]}
+      >
         {t(`weekday.short.${day.weekday}`)}
       </Text>
-      <Text style={[styles.number, { color: textColor }]}>{day.date.getDate()}</Text>
+      <Text style={[styles.number, { color: textColor }]}>
+        {day.date.getDate()}
+      </Text>
       <View
         style={[
           styles.dot,
-          day.status === "done" && { backgroundColor: day.isToday ? c.onAccent : c.accentText },
-          day.status === "planned" && { borderColor: day.isToday ? c.onAccent : c.textSecondary },
+          day.status === "done" && {
+            backgroundColor: day.isToday ? c.onAccent : c.accentText,
+          },
+          day.status === "planned" && {
+            borderColor: day.isToday ? c.onAccent : c.textSecondary,
+          },
         ]}
       />
     </Pressable>

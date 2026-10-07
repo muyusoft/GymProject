@@ -18,6 +18,8 @@ export const supabase = createClient(
       persistSession: true,
       // En una app nativa no hay URL de la que leer la sesión.
       detectSessionInUrl: false,
+      // Con Google la app recibe un código de un solo uso y lo canjea: el token nunca viaja en la dirección.
+      flowType: "pkce",
     },
   },
 );

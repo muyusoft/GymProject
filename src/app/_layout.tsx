@@ -9,6 +9,7 @@ import { BootError, ErrorBoundary } from "@/shared/components";
 import { useAppBootstrap } from "@/shared/hooks/use-app-bootstrap";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 import { useSessionWatcher } from "@/shared/hooks/use-session-watcher";
+import { useSyncTriggers } from "@/shared/hooks/use-sync-triggers";
 
 void SplashScreen.preventAutoHideAsync();
 
@@ -19,6 +20,7 @@ export default function RootLayout() {
   const { mode } = useOverloadTheme();
   const { isReady, error } = useAppBootstrap(catalogSeedData);
   useSessionWatcher();
+  useSyncTriggers(isReady);
 
   useEffect(() => {
     if (isReady || error) void SplashScreen.hideAsync();

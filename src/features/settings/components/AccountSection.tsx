@@ -1,36 +1,22 @@
 import { router } from "expo-router";
-import { Alert, StyleSheet, Text } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { useTranslation } from "react-i18next";
 import { getTextStyle } from "@/design/tokens";
-import { Button, InlineError } from "@/shared/components";
-import { useActionRunner } from "@/shared/hooks/use-action-runner";
+import { Button } from "@/shared/components";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
-import { signOut } from "@/shared/services/session.service";
 import { useSessionStore } from "@/shared/store";
+import { AccountSyncStatus } from "./AccountSyncStatus";
 import { SettingsSection } from "./SettingsSection";
 
-/** Cuenta: sin sesión invita a crearla o entrar; con sesión muestra el correo y permite cerrarla. */
+/**
+ * Cuenta, al inicio de Perfil: sin sesión invita a crearla o entrar; con sesión muestra quién eres y el
+ * estado de la copia en la nube. Cerrar sesión va aparte, al final de la pantalla (`SignOutButton`).
+ */
 export function AccountSection() {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
   const status = useSessionStore((state) => state.status);
   const email = useSessionStore((state) => state.user?.email ?? null);
-  const { run, isRunning, hasError } = useActionRunner();
-
-  const confirmSignOut = () => {
-    Alert.alert(
-      t("settings.account.signOutConfirm.title"),
-      t("settings.account.signOutConfirm.message"),
-      [
-        { text: t("common.cancel"), style: "cancel" },
-        {
-          text: t("settings.account.signOut"),
-          style: "destructive",
-          onPress: () => void run(signOut),
-        },
-      ],
-    );
-  };
 
   if (status === "loading") return null;
 
@@ -43,19 +29,7 @@ export function AccountSection() {
               ? t("settings.account.signedInAs", { email })
               : t("settings.account.signedIn")}
           </Text>
-          <Text style={[styles.hint, { color: c.textSecondary }]}>
-            {t("settings.account.syncPending")}
-          </Text>
-          <Button
-            variant="secondary"
-            label={t("settings.account.signOut")}
-            block
-            loading={isRunning}
-            onPress={confirmSignOut}
-          />
-          {hasError && (
-            <InlineError message={t("settings.account.signOutError")} />
-          )}
+          <AccountSyncStatus />
         </>
       ) : (
         <>
@@ -76,6 +50,6 @@ export function AccountSection() {
 }
 
 const styles = StyleSheet.create({
-  title: { ...getTextStyle("body") },
+  title: getTextStyle("body"),
   hint: getTextStyle("bodySm"),
 });
