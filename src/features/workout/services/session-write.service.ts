@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm";
-import { db } from "@/shared/db/client";
+import { db, transact } from "@/shared/db/client";
+import { recordDeletions } from "@/shared/db/queries/deletion.queries";
 import { listIncrements } from "@/shared/db/queries/equipment.queries";
 import { sessions, setLogs } from "@/shared/db/schema";
 import { chunk } from "@/shared/utils/chunk.utils";
@@ -120,6 +121,14 @@ export async function addSet({
     ...values,
   });
   return { id, index, completed: false, isPR: false, rpe: null, ...values };
+}
+
+/** Descarta una sesión empezada por error: se borra con todas sus series (cascada) y el borrado queda anotado. */
+export function cancelSession(sessionId: string): Promise<void> {
+  return transact((tx) => {
+    recordDeletions(tx, "sessions", [sessionId]);
+    tx.delete(sessions).where(eq(sessions.id, sessionId)).run();
+  });
 }
 
 export async function finishSession(

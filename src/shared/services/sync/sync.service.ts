@@ -55,19 +55,46 @@ async function pushChanges(since: number): Promise<void> {
   await savePushedAt(startedAt - 1);
 }
 
+/** Baja lo nuevo de la cuenta y avisa a las pantallas si llegó algo, para que no muestren datos viejos. */
 async function pullChanges(cursor: string | null): Promise<void> {
   const since = withOverlap(cursor, PULL_OVERLAP_MS);
   let latest = cursor;
+  let received = 0;
   for (const table of SYNC_TABLES) {
     const rows = await pullRows(table, since);
-    applyRemoteRows(table, rows);
+    received += applyRemoteRows(table, rows);
     latest = latestSyncedAt(latest, rows);
   }
   await savePulledAt(latest);
+  if (received > 0) useSyncStore.getState().markDataChanged();
 }
 
-/** Primera vez con esta cuenta: si los dos lados tienen datos hay que preguntar; si no, se enlaza sin más. */
-async function linkIfNeeded(userId: string): Promise<"linked" | "needsChoice"> {
+/** Tope de la pantalla de carga: si la red se cuelga, las pantallas vuelven a mostrarse solas. */
+const RESTORE_TIMEOUT_MS = 20_000;
+
+/**
+ * Mientras se bajan los datos de la cuenta a un teléfono vacío, las pantallas muestran "cargando" en vez
+ * de un estado vacío que duraría un par de segundos.
+ */
+async function whileRestoring<T>(work: () => Promise<T>): Promise<T> {
+  const { setRestoring } = useSyncStore.getState();
+  setRestoring(true);
+  const timeout = setTimeout(() => setRestoring(false), RESTORE_TIMEOUT_MS);
+  try {
+    return await work();
+  } finally {
+    clearTimeout(timeout);
+    setRestoring(false);
+  }
+}
+
+type LinkResult = "linked" | "restoring" | "needsChoice";
+
+/**
+ * Primera vez con esta cuenta: si los dos lados tienen datos hay que preguntar; si no, se enlaza sin más.
+ * "restoring" = el teléfono no tenía datos y va a recibir los de la cuenta.
+ */
+async function linkIfNeeded(userId: string): Promise<LinkResult> {
   const { userId: linkedUserId } = await readCursors();
   if (linkedUserId === userId) return "linked";
   const hasLocal = hasLocalData();
@@ -75,17 +102,22 @@ async function linkIfNeeded(userId: string): Promise<"linked" | "needsChoice"> {
   // Un teléfono sin datos propios recibe lo de la cuenta tal cual.
   if (!hasLocal) wipeLocalData();
   await linkToUser(userId);
-  return "linked";
+  return hasLocal ? "linked" : "restoring";
+}
+
+async function pushAndPull(): Promise<SyncResult> {
+  const cursors = await readCursors();
+  await pushChanges(cursors.pushedAt);
+  await pullChanges(cursors.pulledAt);
+  return "synced";
 }
 
 async function runSync(): Promise<SyncResult> {
   const user = useSessionStore.getState().user;
   if (!user) return "skipped";
-  if ((await linkIfNeeded(user.id)) === "needsChoice") return "needsChoice";
-  const cursors = await readCursors();
-  await pushChanges(cursors.pushedAt);
-  await pullChanges(cursors.pulledAt);
-  return "synced";
+  const link = await linkIfNeeded(user.id);
+  if (link === "needsChoice") return "needsChoice";
+  return link === "restoring" ? whileRestoring(pushAndPull) : pushAndPull();
 }
 
 let running: Promise<void> | null = null;
@@ -115,6 +147,12 @@ export function requestSync(): Promise<void> {
   return start(runSync);
 }
 
+/** Sincroniza y dice si todo quedó subido: false si falló o si aún falta elegir con qué datos quedarse. */
+export async function flushSync(): Promise<boolean> {
+  await requestSync();
+  return useSyncStore.getState().status === "idle";
+}
+
 /**
  * Resuelve el choque entre los datos del teléfono y los de la cuenta.
  * - "phone": lo del teléfono pasa a ser lo más reciente y lo que la cuenta tenía queda borrado.
@@ -126,6 +164,10 @@ export function resolveSyncChoice(keep: KeepChoice): Promise<void> {
     if (!user) return "skipped";
     if (keep === "account") {
       wipeLocalData();
+      // Aunque la cuenta no devuelva nada, lo que había en pantalla ya no existe.
+      useSyncStore.getState().markDataChanged();
+      await linkToUser(user.id);
+      return whileRestoring(runSync);
     } else {
       const now = Date.now();
       // Un instante antes: así las filas del teléfono, marcadas con `now`, ganan y vuelven a quedar vivas.

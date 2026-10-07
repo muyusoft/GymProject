@@ -11,17 +11,20 @@ interface SessionNavProps {
   current: number;
   onGoTo: (index: number) => void;
   onFinish: () => void;
+  onCancel: () => void;
 }
 
 /**
- * Bajo el ejercicio actual: "Terminar entreno" cuando ya no queda nada por hacer (o se completó el
- * último ejercicio), y los saltos al siguiente y al anterior.
+ * Bajo el ejercicio actual, en el orden del entreno: el salto al anterior, el salto al siguiente y, cuando
+ * ya no queda nada por hacer (o se completó el último ejercicio), "Terminar entreno". Al final, siempre,
+ * "Cancelar entreno" para una sesión empezada por error.
  */
 export function SessionNav({
   exercises,
   current,
   onGoTo,
   onFinish,
+  onCancel,
 }: Readonly<SessionNavProps>) {
   const { t } = useTranslation();
   const exercise = exercises[current];
@@ -33,12 +36,11 @@ export function SessionNav({
 
   return (
     <>
-      {canFinish && (
-        <Button
-          label={t("session.finishWorkout")}
-          icon="check"
-          block
-          onPress={onFinish}
+      {previous && (
+        <ExerciseNavCard
+          direction="previous"
+          exercise={previous}
+          onPress={() => onGoTo(current - 1)}
         />
       )}
       {next && (
@@ -48,13 +50,21 @@ export function SessionNav({
           onPress={() => onGoTo(current + 1)}
         />
       )}
-      {previous && (
-        <ExerciseNavCard
-          direction="previous"
-          exercise={previous}
-          onPress={() => onGoTo(current - 1)}
+      {canFinish && (
+        <Button
+          label={t("session.finishWorkout")}
+          icon="check"
+          block
+          onPress={onFinish}
         />
       )}
+      <Button
+        variant="danger"
+        label={t("session.cancel")}
+        icon="x"
+        block
+        onPress={onCancel}
+      />
     </>
   );
 }

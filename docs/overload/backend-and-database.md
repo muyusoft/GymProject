@@ -183,3 +183,17 @@ La app sigue leyendo y escribiendo solo en SQLite. Con sesión iniciada, `reques
 - **Primera vez con una cuenta:** si el teléfono y la cuenta tienen datos, se pregunta con cuáles quedarse. "Los de este teléfono" marca como borrado lo de la cuenta y sube lo local como lo más reciente; "Los de mi cuenta" borra los datos locales y baja lo de la cuenta. Si solo un lado tiene datos, se enlaza sin preguntar.
 - **Fallos:** se registran y dejan `useSyncStore` en `error`; nunca bloquean ni rompen una pantalla.
 - **Al aplicar filas bajadas** se usa `INSERT ... ON CONFLICT DO UPDATE`, nunca `REPLACE`, que borraría la fila y dispararía las cascadas sobre sus hijas.
+
+### Funciones de servidor (`supabase/functions/`)
+
+Código de Deno, versionado junto a las migraciones y fuera del `tsc` y el lint de la app. Se despliega con `npx supabase functions deploy <nombre>`.
+
+- **`delete-account`**: elimina la cuenta de quien llama. Existe porque borrar un usuario necesita la clave `service_role`, que nunca va dentro de la app. Identifica al usuario por su token verificado y borra el usuario; sus filas caen por `ON DELETE CASCADE`. La app (`deleteAccount` en `session.service.ts`) borra después los datos del teléfono y cierra la sesión; si el servidor falla, no borra nada.
+
+### Inicio de sesión con Google
+
+OAuth de Supabase por el navegador, con PKCE. Configuración que vive en los paneles, no en el repositorio:
+
+- **Google Cloud:** un cliente OAuth de tipo "Aplicación web" cuya URI de redirección autorizada es `https://<proyecto>.supabase.co/auth/v1/callback`.
+- **Supabase → Authentication → Providers → Google:** el ID de cliente y el secreto de ese cliente.
+- **Supabase → Authentication → URL Configuration → Redirect URLs:** `overset://**` (app instalada) y `exp://**` (Expo Go en desarrollo).

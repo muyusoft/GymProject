@@ -13,14 +13,18 @@ interface EditorDayRowProps {
   onLongPress: () => void;
 }
 
-export function EditorDayRow({ day, onPress, onLongPress }: Readonly<EditorDayRowProps>) {
+export function EditorDayRow({
+  day,
+  onPress,
+  onLongPress,
+}: Readonly<EditorDayRowProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`${t("weekday.long." + day.weekday)}, ${day.name}`}
+      accessibilityLabel={`${t(`weekday.long.${day.weekday}`)}, ${day.name}`}
       accessibilityHint={t("plan.editor.longPressHint")}
       onPress={onPress}
       onLongPress={onLongPress}
@@ -32,10 +36,17 @@ export function EditorDayRow({ day, onPress, onLongPress }: Readonly<EditorDayRo
       <View style={styles.texts}>
         <Text style={[styles.name, { color: c.text }]}>{day.name}</Text>
         <Text style={[styles.subtitle, { color: c.textSecondary }]}>
-          {t("plan.daySubtitle", { count: day.exerciseCount, minutes: day.durationMinutes })}
+          {t("plan.daySubtitle", {
+            count: day.exerciseCount,
+            minutes: day.durationMinutes,
+          })}
         </Text>
       </View>
-      <IconRenderer name="chevron-right" size={CHEVRON_SIZE} color={c.textSecondary} />
+      <IconRenderer
+        name="chevron-right"
+        size={CHEVRON_SIZE}
+        color={c.textSecondary}
+      />
     </Pressable>
   );
 }

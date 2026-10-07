@@ -32,8 +32,11 @@ const renderTabBar = (props: TabBarProps) => <TabBar {...props} />;
 export default function TabsLayout() {
   const { t } = useTranslation();
   const isOnboardingDone = useSettingsStore((state) => state.onboardingDone);
+  const hasSeenIntro = useSettingsStore((state) => state.introSeen);
 
-  if (!isOnboardingDone) return <Redirect href="/intro" />;
+  // Sin empezar (primera vez, o tras cerrar sesión): la introducción solo la primera vez, luego la bienvenida.
+  if (!isOnboardingDone)
+    return <Redirect href={hasSeenIntro ? "/welcome" : "/intro"} />;
 
   return (
     <Tabs screenOptions={{ headerShown: false }} tabBar={renderTabBar}>

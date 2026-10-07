@@ -16,6 +16,7 @@ export const SETTING_KEYS = {
   weighInReminderMinute: "weighInReminderMinute",
   weighInWeekday: "weighInWeekday",
   onboardingDone: "onboardingDone",
+  introSeen: "introSeen",
   /** Versión de la preparación para sincronizar (ids estables) ya aplicada a esta instalación. */
   syncPrep: "syncPrep",
   /** Sincronización: cuenta enlazada a este teléfono y hasta dónde se subió y se bajó. */

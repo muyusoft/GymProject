@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import * as WebBrowser from "expo-web-browser";
 import { supabase } from "@/config/supabase";
 import {
   requestPasswordReset,
@@ -9,6 +10,11 @@ import {
 } from "../services/account.service";
 import { authFailureCode } from "../utils/account-error.utils";
 
+vi.mock("expo-linking", () => ({
+  createURL: (route: string) => `overset://${route}`,
+}));
+vi.mock("expo-web-browser", () => ({ openAuthSessionAsync: vi.fn() }));
+
 vi.mock("@/config/supabase", () => ({
   supabase: {
     auth: {
@@ -16,6 +22,8 @@ vi.mock("@/config/supabase", () => ({
       signUp: vi.fn(),
       resend: vi.fn(),
       resetPasswordForEmail: vi.fn(),
+      signInWithOAuth: vi.fn(),
+      exchangeCodeForSession: vi.fn(),
     },
   },
 }));
@@ -102,9 +110,63 @@ describe("correos", () => {
 });
 
 describe("signInWithProvider", () => {
-  it("Apple y Google todavía no están disponibles", async () => {
-    await expect(signInWithProvider("apple")).rejects.toMatchObject({
-      code: "unavailable",
+  const openBrowser = vi.mocked(WebBrowser.openAuthSessionAsync);
+  const authorized = {
+    data: { url: "https://accounts.example/authorize" },
+    error: null,
+  } as never;
+
+  it("abre el navegador y canjea el código de vuelta por la sesión", async () => {
+    auth.signInWithOAuth.mockResolvedValue(authorized);
+    openBrowser.mockResolvedValue({
+      type: "success",
+      url: "overset://auth-callback?code=abc",
+    });
+    auth.exchangeCodeForSession.mockResolvedValue(ok);
+
+    await expect(signInWithProvider("google")).resolves.toBeUndefined();
+    expect(auth.signInWithOAuth).toHaveBeenCalledWith({
+      provider: "google",
+      options: {
+        redirectTo: "overset://auth-callback",
+        skipBrowserRedirect: true,
+      },
+    });
+    expect(openBrowser).toHaveBeenCalledWith(
+      "https://accounts.example/authorize",
+      "overset://auth-callback",
+    );
+    expect(auth.exchangeCodeForSession).toHaveBeenCalledWith("abc");
+  });
+
+  it("cerrar la ventana o negar el permiso cuenta como cancelado, sin canjear nada", async () => {
+    auth.signInWithOAuth.mockResolvedValue(authorized);
+    openBrowser.mockResolvedValue({ type: "cancel" } as never);
+    await expect(signInWithProvider("google")).rejects.toMatchObject({
+      code: "cancelled",
+    });
+
+    openBrowser.mockResolvedValue({
+      type: "success",
+      url: "overset://auth-callback?error=access_denied",
+    });
+    await expect(signInWithProvider("google")).rejects.toMatchObject({
+      code: "cancelled",
+    });
+    expect(auth.exchangeCodeForSession).not.toHaveBeenCalled();
+  });
+
+  it("propaga el fallo si el código no se puede canjear", async () => {
+    auth.signInWithOAuth.mockResolvedValue(authorized);
+    openBrowser.mockResolvedValue({
+      type: "success",
+      url: "overset://auth-callback?code=abc",
+    });
+    auth.exchangeCodeForSession.mockResolvedValue(
+      failure("invalid_credentials"),
+    );
+    await expect(signInWithProvider("google")).rejects.toMatchObject({
+      code: "invalid_credentials",
     });
   });
 });

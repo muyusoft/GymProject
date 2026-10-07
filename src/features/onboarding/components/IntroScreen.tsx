@@ -1,6 +1,13 @@
 import { router } from "expo-router";
 import { useCallback } from "react";
-import { FlatList, StyleSheet, useWindowDimensions, View, type ListRenderItem } from "react-native";
+import {
+  FlatList,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+  type ListRenderItem,
+} from "react-native";
+import { useSettingsStore } from "@/shared/store";
 import { useIntroPager } from "../hooks/use-intro-pager";
 import { INTRO_STEPS, type IntroStep } from "../types/intro.types";
 import { IntroPage } from "./IntroPage";
@@ -8,9 +15,13 @@ import { IntroPanel } from "./IntroPanel";
 import { IntroTopBar } from "./IntroTopBar";
 
 const keyOfStep = (step: IntroStep) => step;
-const renderPage: ListRenderItem<IntroStep> = ({ item }) => <IntroPage step={item} />;
+const renderPage: ListRenderItem<IntroStep> = ({ item }) => (
+  <IntroPage step={item} />
+);
 
 function finishIntro() {
+  // Queda anotado que ya se vio: si luego se cierra sesión, la app abre en la bienvenida.
+  void useSettingsStore.getState().update("introSeen", true);
   router.replace("/welcome");
 }
 
@@ -19,7 +30,11 @@ export function IntroScreen() {
   const { width } = useWindowDimensions();
   const pager = useIntroPager(width);
   const getItemLayout = useCallback(
-    (_data: unknown, index: number) => ({ length: width, offset: width * index, index }),
+    (_data: unknown, index: number) => ({
+      length: width,
+      offset: width * index,
+      index,
+    }),
     [width],
   );
 
@@ -38,7 +53,11 @@ export function IntroScreen() {
         onMomentumScrollEnd={pager.handleScrollEnd}
         style={styles.pages}
       />
-      <IntroPanel index={pager.index} onBack={pager.goBack} onNext={pager.isLast ? finishIntro : pager.goNext} />
+      <IntroPanel
+        index={pager.index}
+        onBack={pager.goBack}
+        onNext={pager.isLast ? finishIntro : pager.goNext}
+      />
     </View>
   );
 }

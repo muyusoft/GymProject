@@ -131,7 +131,15 @@
       }
     },
     "previous": "Anterior",
-    "finishWorkout": "Terminar entreno"
+    "finishWorkout": "Terminar entreno",
+    "cancel": "Cancelar entreno",
+    "cancelConfirm": {
+      "title": "¿Cancelar el entreno?",
+      "messageEmpty": "Se descarta esta sesión. Tu plan no cambia y puedes empezarla de nuevo cuando quieras.",
+      "messageDone_one": "Se borrará {{count}} serie que ya registraste en esta sesión. Tu plan no cambia.",
+      "messageDone_other": "Se borrarán {{count}} series que ya registraste en esta sesión. Tu plan no cambia.",
+      "keep": "Seguir entrenando"
+    }
   },
   "recovery": {
     "worked": "Recién trabajado",
@@ -302,7 +310,7 @@
       "signOutError": "No se pudo cerrar la sesión. Inténtalo de nuevo.",
       "signOutConfirm": {
         "title": "¿Cerrar sesión?",
-        "message": "Tus datos se quedan en este teléfono."
+        "message": "Tus entrenos están guardados en tu cuenta. Se quitan de este teléfono y vuelven al iniciar sesión."
       },
       "syncing": "Sincronizando…",
       "synced": "Sincronizado a las {{time}}",
@@ -310,7 +318,22 @@
       "syncError": "No se pudo sincronizar. Tus datos siguen a salvo en este teléfono.",
       "needsChoice": "Falta elegir con qué datos te quedas: los de este teléfono o los de tu cuenta.",
       "choose": "Elegir ahora",
-      "syncNow": "Sincronizar ahora"
+      "syncNow": "Sincronizar ahora",
+      "delete": "Eliminar cuenta",
+      "deleteError": "No se pudo eliminar la cuenta. No se borró nada; inténtalo de nuevo con conexión.",
+      "deleteConfirm": {
+        "title": "¿Eliminar tu cuenta?",
+        "message": "Se borran tu cuenta, tu copia en la nube y también el plan y el historial de este teléfono.",
+        "continue": "Continuar",
+        "lastTitle": "No se puede deshacer",
+        "lastMessage": "Si quieres conservar tus entrenos, cancela y exporta un respaldo desde \"Tus datos\" antes de eliminar.",
+        "confirm": "Eliminar todo"
+      },
+      "unsynced": {
+        "title": "Hay cambios sin subir",
+        "message": "No se pudieron guardar tus últimos cambios en la cuenta (¿sin conexión?). Si cierras sesión ahora, se pierden.",
+        "confirm": "Cerrar sesión de todos modos"
+      }
     }
   },
   "weekday": {
@@ -928,6 +951,7 @@
       "keepPhone": "Los de este teléfono",
       "keepAccount": "Los de mi cuenta",
       "later": "Decidir después"
-    }
+    },
+    "restoring": "Cargando tus datos…"
   }
 }

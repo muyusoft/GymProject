@@ -131,7 +131,15 @@
       }
     },
     "previous": "Previous",
-    "finishWorkout": "Finish workout"
+    "finishWorkout": "Finish workout",
+    "cancel": "Cancel workout",
+    "cancelConfirm": {
+      "title": "Cancel the workout?",
+      "messageEmpty": "This session is discarded. Your plan does not change and you can start it again anytime.",
+      "messageDone_one": "{{count}} set you already logged in this session will be deleted. Your plan does not change.",
+      "messageDone_other": "{{count}} sets you already logged in this session will be deleted. Your plan does not change.",
+      "keep": "Keep training"
+    }
   },
   "recovery": {
     "worked": "Just trained",
@@ -302,7 +310,7 @@
       "signOutError": "Couldn't sign out. Try again.",
       "signOutConfirm": {
         "title": "Sign out?",
-        "message": "Your data stays on this phone."
+        "message": "Your workouts are saved to your account. They are removed from this phone and come back when you sign in."
       },
       "syncing": "Syncing…",
       "synced": "Synced at {{time}}",
@@ -310,7 +318,22 @@
       "syncError": "Couldn't sync. Your data is still safe on this phone.",
       "needsChoice": "You still need to choose which data to keep: this phone's or your account's.",
       "choose": "Choose now",
-      "syncNow": "Sync now"
+      "syncNow": "Sync now",
+      "delete": "Delete account",
+      "deleteError": "Couldn't delete the account. Nothing was erased; try again with a connection.",
+      "deleteConfirm": {
+        "title": "Delete your account?",
+        "message": "Your account, your cloud copy and also the plan and history on this phone are deleted.",
+        "continue": "Continue",
+        "lastTitle": "This can't be undone",
+        "lastMessage": "If you want to keep your workouts, cancel and export a backup from \"Your data\" before deleting.",
+        "confirm": "Delete everything"
+      },
+      "unsynced": {
+        "title": "Some changes are not uploaded",
+        "message": "Your latest changes could not be saved to your account (no connection?). If you sign out now, they are lost.",
+        "confirm": "Sign out anyway"
+      }
     }
   },
   "weekday": {
@@ -928,6 +951,7 @@
       "keepPhone": "This phone's",
       "keepAccount": "My account's",
       "later": "Decide later"
-    }
+    },
+    "restoring": "Loading your data…"
   }
 }

@@ -5,8 +5,10 @@ import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 import { AccountSection } from "./AccountSection";
 import { AppearanceSection } from "./AppearanceSection";
 import { DataSection } from "./DataSection";
+import { DeleteAccountButton } from "./DeleteAccountButton";
 import { ProgressionSection } from "./ProgressionSection";
 import { ReminderSection } from "./ReminderSection";
+import { SignOutButton } from "./SignOutButton";
 import { UnitsSection } from "./UnitsSection";
 
 export function SettingsScreen() {
@@ -24,6 +26,8 @@ export function SettingsScreen() {
       <ReminderSection />
       <AppearanceSection />
       <DataSection />
+      <SignOutButton />
+      <DeleteAccountButton />
     </ScrollView>
   );
 }

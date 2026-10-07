@@ -51,7 +51,7 @@ function applyRemoteRow(
   tx: Transaction,
   table: SyncTable,
   remote: SyncRow,
-): void {
+): boolean {
   const name = sql.identifier(table.local);
   const local = tx.get<{ updated_at: number }>(
     sql`SELECT updated_at FROM ${name} WHERE id = ${remote.id}`,
@@ -63,21 +63,24 @@ function applyRemoteRow(
   if (change === "delete")
     tx.run(sql`DELETE FROM ${name} WHERE id = ${remote.id}`);
   if (change === "upsert") upsertRow(tx, table, toLocalRow(table, remote));
+  return change !== "skip";
 }
 
 /**
  * Aplica en el teléfono las filas bajadas de una tabla. Una fila que no se puede aplicar (por ejemplo,
  * apunta a un ejercicio que esta versión de la app no tiene) se registra y no detiene a las demás.
+ * Devuelve cuántas filas cambiaron de verdad: el eco de lo que se acaba de subir no cuenta.
  */
 export function applyRemoteRows(
   table: SyncTable,
   rows: readonly SyncRow[],
-): void {
-  if (rows.length === 0) return;
+): number {
+  if (rows.length === 0) return 0;
+  let changed = 0;
   db.transaction((tx) => {
     for (const row of rows) {
       try {
-        applyRemoteRow(tx, table, row);
+        if (applyRemoteRow(tx, table, row)) changed += 1;
       } catch (error) {
         logger.warn("Skipped a row that could not be applied", {
           table: table.local,
@@ -87,6 +90,7 @@ export function applyRemoteRows(
       }
     }
   });
+  return changed;
 }
 
 export function readDeletions() {
@@ -162,6 +166,13 @@ export async function savePushedAt(pushedAt: number): Promise<void> {
 
 export async function savePulledAt(pulledAt: string | null): Promise<void> {
   await saveSetting(SETTING_KEYS.syncPulledAt, pulledAt ?? "");
+}
+
+/** El teléfono deja de pertenecer a una cuenta (al eliminarla). */
+export async function unlinkUser(): Promise<void> {
+  await saveSetting(SETTING_KEYS.syncUserId, "");
+  await savePushedAt(0);
+  await savePulledAt(null);
 }
 
 /** Enlaza el teléfono con una cuenta y deja los cursores a cero: la siguiente sincronización es completa. */

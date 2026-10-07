@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { getTextStyle, tokens } from "@/design/tokens";
 import type { ResourceStatus } from "@/shared/hooks/use-focus-resource";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
+import { useSyncStore } from "@/shared/store/sync.store";
 import { Button } from "./Button";
 
 interface AsyncStateViewProps {
@@ -12,7 +13,10 @@ interface AsyncStateViewProps {
   children: ReactNode;
 }
 
-/** Estados de carga y error compartidos; el vacío lo decide cada pantalla. */
+/**
+ * Estados de carga y error compartidos; el vacío lo decide cada pantalla. Mientras se bajan los datos de
+ * la cuenta a un teléfono vacío también muestra carga, para no enseñar un "no tienes nada" que no es cierto.
+ */
 export function AsyncStateView({
   status,
   onRetry,
@@ -21,15 +25,28 @@ export function AsyncStateView({
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
 
-  if (status === "ready") return <>{children}</>;
+  const isRestoring = useSyncStore((state) => state.isRestoring);
+  const isLoading = status === "loading" || (isRestoring && status === "ready");
+
+  if (status === "ready" && !isRestoring) return <>{children}</>;
 
   return (
     <View style={styles.center}>
-      {status === "loading" ? (
-        <ActivityIndicator
-          accessibilityLabel={t("common.loading")}
-          color={c.textSecondary}
-        />
+      {isLoading ? (
+        <>
+          <ActivityIndicator
+            size="large"
+            accessibilityLabel={t(
+              isRestoring ? "sync.restoring" : "common.loading",
+            )}
+            color={c.textSecondary}
+          />
+          {isRestoring && (
+            <Text style={[styles.message, { color: c.textSecondary }]}>
+              {t("sync.restoring")}
+            </Text>
+          )}
+        </>
       ) : (
         <>
           <Text style={[styles.message, { color: c.text }]}>

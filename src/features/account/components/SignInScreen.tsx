@@ -5,7 +5,7 @@ import { Button } from "@/shared/components";
 import { useAccountAction } from "../hooks/use-account-action";
 import { useStartApp } from "../hooks/use-start-app";
 import { signIn, signInWithProvider } from "../services/account.service";
-import { SOCIAL_PROVIDERS } from "../types/account.types";
+import { AVAILABLE_PROVIDERS } from "../types/account.types";
 import { canSignIn, shouldFlagEmail } from "../utils/account-validation.utils";
 import { AccountLink } from "./AccountLink";
 import { AccountNotice } from "./AccountNotice";
@@ -39,7 +39,7 @@ export function SignInScreen() {
         />
       }
     >
-      {SOCIAL_PROVIDERS.map((provider) => (
+      {AVAILABLE_PROVIDERS.map((provider) => (
         <SocialButton
           key={provider}
           provider={provider}
@@ -55,7 +55,9 @@ export function SignInScreen() {
         value={email}
         onChange={setEmail}
         placeholder={t("account.fields.emailPlaceholder")}
-        {...(shouldFlagEmail(email) && { error: t("account.fields.emailInvalid") })}
+        {...(shouldFlagEmail(email) && {
+          error: t("account.fields.emailInvalid"),
+        })}
       />
       <AccountTextField
         kind="password"
@@ -63,7 +65,9 @@ export function SignInScreen() {
         value={password}
         onChange={setPassword}
         placeholder={t("account.fields.passwordPlaceholder")}
-        {...(account.errorCode === "invalid_credentials" && { error: t("account.signIn.wrongPassword") })}
+        {...(account.errorCode === "invalid_credentials" && {
+          error: t("account.signIn.wrongPassword"),
+        })}
       />
       <AccountLink
         label={t("account.signIn.forgot")}
