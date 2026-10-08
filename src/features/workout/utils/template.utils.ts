@@ -69,6 +69,10 @@ export function buildTemplate({
   increments,
 }: BuildTemplateOptions): ExerciseTemplate {
   const rule = parseProgressionRule(planExercise.progressionRule);
+  const weightSteps = {
+    lb: weightStepFor({ increments, equipment, unit: "lb" }),
+    kg: weightStepFor({ increments, equipment, unit: "kg" }),
+  };
   return {
     sets: planExercise.sets,
     reps: planExercise.reps,
@@ -78,11 +82,8 @@ export function buildTemplate({
     targetWeight: planExercise.targetWeight,
     unit: planExercise.unit,
     loadType: planExercise.loadType,
-    weightStep: weightStepFor({
-      increments,
-      equipment,
-      unit: planExercise.unit,
-    }),
+    weightStep: weightSteps[planExercise.unit],
+    weightSteps,
     isProgressionEnabled: rule.enabled,
   };
 }

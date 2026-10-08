@@ -1,4 +1,4 @@
-import type { SessionExercise, SessionSet } from "../types/workout.types";
+import type { SessionExercise } from "../types/workout.types";
 
 export type SessionHintVariant = "increase" | "preview" | "deload";
 
@@ -10,9 +10,12 @@ export interface SessionHintChoice {
   canApply: boolean;
 }
 
-function pendingWeights(sets: readonly SessionSet[]): number[] {
+/** Pesos de las series pendientes que siguen en la unidad de la sugerencia; tras cambiar de unidad no se comparan. */
+function pendingWeights({ sets, template }: SessionExercise): number[] {
   return sets.flatMap((set) =>
-    !set.completed && set.weight !== null ? [set.weight] : [],
+    !set.completed && set.weight !== null && set.unit === template.unit
+      ? [set.weight]
+      : [],
   );
 }
 
@@ -20,11 +23,11 @@ function pendingWeights(sets: readonly SessionSet[]): number[] {
  * La sugerencia que toca mostrar en un ejercicio de la sesión. Subir o descargar solo se ofrecen mientras
  * quede alguna serie pendiente que aún no tenga ese peso: una vez aceptada (o hecho el ejercicio) desaparece.
  */
-export function pickSessionHint({
-  insight,
-  sets,
-}: SessionExercise): SessionHintChoice | null {
-  const pending = pendingWeights(sets);
+export function pickSessionHint(
+  exercise: SessionExercise,
+): SessionHintChoice | null {
+  const { insight } = exercise;
+  const pending = pendingWeights(exercise);
   const { increase, preview, deload } = insight;
   if (increase !== null && pending.some((weight) => weight < increase)) {
     return { variant: "increase", weight: increase, canApply: true };

@@ -19,7 +19,7 @@ export function IconRenderer({
   size = 24,
   color = "currentColor",
   style,
-}: IconRendererProps) {
+}: Readonly<IconRendererProps>) {
   const IconComponent = ICON_REGISTRY[name];
 
   if (!IconComponent) {

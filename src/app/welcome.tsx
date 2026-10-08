@@ -1,9 +1,9 @@
 import { WelcomeScreen } from "@/features/account";
-import { AppLayout } from "@/shared/layouts";
+import { AppLayout, EDGES_WITHOUT_BOTTOM } from "@/shared/layouts";
 
 export default function WelcomeRoute() {
   return (
-    <AppLayout>
+    <AppLayout edges={EDGES_WITHOUT_BOTTOM}>
       <WelcomeScreen />
     </AppLayout>
   );

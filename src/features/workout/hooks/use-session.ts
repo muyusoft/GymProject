@@ -26,6 +26,7 @@ import {
   countTotalSets,
   firstPendingIndex,
 } from "../utils/session-stats.utils";
+import { switchPendingSets } from "../utils/unit-switch.utils";
 import { useRestTimer } from "./use-rest-timer";
 import { useSessionData } from "./use-session-data";
 
@@ -81,6 +82,18 @@ export function useSession(sessionId: string) {
 
   const changeSet = useCallback(
     (exercise: SessionExercise, setId: string, patch: SetPatch) => {
+      // La unidad es del ejercicio, no de una serie: cambiarla convierte todas sus series pendientes.
+      if (patch.unit !== undefined) {
+        const step = exercise.template.weightSteps[patch.unit];
+        const changes = switchPendingSets({
+          sets: exercise.sets,
+          unit: patch.unit,
+          step,
+        });
+        for (const { id, weight, unit } of changes)
+          patchSet(id, { weight, unit });
+        return;
+      }
       patchSet(setId, patch);
       const set = exercise.sets.find((item) => item.id === setId);
       if (set?.completed) void evaluateRecord(exercise, { ...set, ...patch });

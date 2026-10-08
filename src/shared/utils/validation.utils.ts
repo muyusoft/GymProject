@@ -3,7 +3,8 @@ export const validationUtils = {
    * Valida email
    */
   isValidEmail(email: string): boolean {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Cada parte del dominio excluye el punto: así no hay dos formas de repartir el texto y no retrocede.
+    const regex = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/;
     return regex.test(email);
   },
 
@@ -11,7 +12,7 @@ export const validationUtils = {
    * Valida teléfono (formato Ecuador: +593 o 0)
    */
   isValidPhone(phone: string): boolean {
-    const regex = /^(\+593|0)[0-9]{9,10}$/;
+    const regex = /^(\+593|0)\d{9,10}$/;
     return regex.test(phone.replace(/\s|-/g, ""));
   },
 
@@ -20,7 +21,6 @@ export const validationUtils = {
    */
   isValidURL(url: string): boolean {
     try {
-      // eslint-disable-next-line no-new
       new URL(url);
       return true;
     } catch {

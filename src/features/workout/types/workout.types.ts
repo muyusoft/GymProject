@@ -32,6 +32,8 @@ export interface ExerciseTemplate {
   loadType: LoadType;
   /** Salto de peso del equipo en la unidad del ejercicio. */
   weightStep: number;
+  /** El mismo salto en cada unidad, para poder cambiar de lb a kg durante la sesión. */
+  weightSteps: Record<WeightUnit, number>;
   /** "Sugerirme subir peso" de este ejercicio en el plan. */
   isProgressionEnabled: boolean;
 }

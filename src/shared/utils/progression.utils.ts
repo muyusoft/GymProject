@@ -3,12 +3,11 @@ import type {
   ProgressionTarget,
   SessionResult,
 } from "@/shared/types/history.types";
-import { LIMIT_RPE, rpeToEffort, type EffortLevel } from "./effort.utils";
+import { rpeToEffort, type EffortLevel } from "./effort.utils";
 
 /** Sin respuesta de esfuerzo hacen falta dos sesiones completas; con ella basta la última. */
 export const REQUIRED_SESSIONS = 2;
 export const REQUIRED_SESSIONS_WITH_EFFORT = 1;
-export const RPE_LIMIT = LIMIT_RPE;
 
 interface IncreaseOptions {
   /** Sesiones terminadas del ejercicio, de la más nueva a la más vieja. */
@@ -54,7 +53,7 @@ export function averageRpe(result: SessionResult): number | null {
 function sharedWeight(sessions: readonly SessionResult[]): number | null {
   const sets = sessions.flatMap(completedSets);
   const first = sets[0];
-  if (!first || first.weight === null) return null;
+  if (first?.weight === undefined || first.weight === null) return null;
   const isSame = sets.every(
     (set) => set.weight === first.weight && set.unit === first.unit,
   );

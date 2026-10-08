@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
-import { View, SafeAreaView, ScrollView, StyleSheet } from "react-native";
+import { View, ScrollView, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { tokens } from "@/design/tokens";
 
 interface AuthLayoutProps {
@@ -13,7 +14,10 @@ interface AuthLayoutProps {
  * - Scrollable para formas largas
  * - Sin header/footer
  */
-export function AuthLayout({ children, backgroundColor }: AuthLayoutProps) {
+export function AuthLayout({
+  children,
+  backgroundColor,
+}: Readonly<AuthLayoutProps>) {
   return (
     <SafeAreaView
       style={[

@@ -47,15 +47,15 @@ import {
 const BATCH_SIZE = 50;
 const ID_BATCH_SIZE = 500;
 /** Marcas de esta instalación: un respaldo nunca las trae ni las pisa. */
-const INSTALL_KEYS: readonly string[] = [
+const INSTALL_KEYS: ReadonlySet<string> = new Set([
   SETTING_KEYS.seeded,
   SETTING_KEYS.syncPrep,
   SETTING_KEYS.syncUserId,
   SETTING_KEYS.syncPushedAt,
   SETTING_KEYS.syncPulledAt,
-];
+]);
 const KNOWN_SETTING_KEYS = Object.values(SETTING_KEYS).filter(
-  (key) => !INSTALL_KEYS.includes(key),
+  (key) => !INSTALL_KEYS.has(key),
 );
 /** Tablas que el respaldo reemplaza siempre; el peso corporal solo si el respaldo lo trae. */
 const REPLACED_TABLES = SYNCED_TABLES.filter(

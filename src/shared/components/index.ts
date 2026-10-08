@@ -9,6 +9,8 @@ export { ErrorBoundary } from "./ErrorBoundary";
 export { ExerciseInfoButton } from "./ExerciseInfoButton";
 export { InlineError } from "./InlineError";
 export { ListRow } from "./ListRow";
+export { LoadingBars } from "./LoadingBars";
+export { LogoMark } from "./LogoMark";
 export { PlateMotif } from "./PlateMotif";
 export { ProgressionHint, type ProgressionHintKind } from "./ProgressionHint";
 export { ScreenHeader } from "./ScreenHeader";

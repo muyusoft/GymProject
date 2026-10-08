@@ -88,7 +88,10 @@ export async function startSession(
 }
 
 export type SetPatch = Partial<
-  Pick<SessionSet, "weight" | "reps" | "seconds" | "completed" | "isPR" | "rpe">
+  Pick<
+    SessionSet,
+    "weight" | "unit" | "reps" | "seconds" | "completed" | "isPR" | "rpe"
+  >
 >;
 
 export async function updateSet(id: string, patch: SetPatch): Promise<void> {

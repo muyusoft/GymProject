@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
-import { View, SafeAreaView, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
+import { SafeAreaView, type Edge } from "react-native-safe-area-context";
 import { tokens } from "@/design/tokens";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 
@@ -8,7 +9,14 @@ interface AppLayoutProps {
   header?: ReactNode;
   footer?: ReactNode;
   backgroundColor?: string;
+  /**
+   * Lados en los que se deja el margen seguro (muesca, barra de estado, barra de gestos). Por defecto los
+   * cuatro. Las pantallas de pestañas pasan `EDGES_WITHOUT_BOTTOM`: abajo ya está la barra de pestañas.
+   */
+  edges?: readonly Edge[];
 }
+
+const ALL_EDGES: readonly Edge[] = ["top", "right", "bottom", "left"];
 
 /**
  * Layout principal para pantallas de la app autenticada
@@ -22,11 +30,13 @@ export function AppLayout({
   header,
   footer,
   backgroundColor,
-}: AppLayoutProps) {
+  edges = ALL_EDGES,
+}: Readonly<AppLayoutProps>) {
   const { c: colors } = useOverloadTheme();
 
   return (
     <SafeAreaView
+      edges={edges}
       style={[
         styles.container,
         { backgroundColor: backgroundColor || colors.background },

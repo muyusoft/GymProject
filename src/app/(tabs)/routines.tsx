@@ -1,9 +1,9 @@
 import { WeeklyPlanScreen } from "@/features/plan";
-import { AppLayout } from "@/shared/layouts";
+import { AppLayout, EDGES_WITHOUT_BOTTOM } from "@/shared/layouts";
 
 export default function RoutinesTab() {
   return (
-    <AppLayout>
+    <AppLayout edges={EDGES_WITHOUT_BOTTOM}>
       <WeeklyPlanScreen />
     </AppLayout>
   );

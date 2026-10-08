@@ -6,14 +6,24 @@ import { capitalize, cleanLine, fixTypos } from "./normalize.utils";
 
 const DURATION = String.raw`\d+m\d+s|\d+m|\d+s`;
 const REST = new RegExp(String.raw`descansos?\s+(?:de\s+)?(${DURATION})`);
-const SETS = new RegExp(String.raw`(\d+)\s*series?\s+(?:de\s+)?(${DURATION}|\d+)`);
-const WEIGHT = /(\d+(?:[.,]\d+)?)\s*(lbs?|kgs?)\b/;
+const SETS = new RegExp(
+  String.raw`(\d+)\s*series?\s+(?:de\s+)?(${DURATION}|\d+)`,
+);
+// Cantidades acotadas (hasta 99999,999 y tres espacios): un peso real cabe y la búsqueda no retrocede de más.
+const WEIGHT = /(\d{1,5}(?:[.,]\d{1,3})?)\s{0,3}(lbs?|kgs?)\b/;
 const PARENTHESES = /\(([^()]*)\)/g;
 
 function splitName(rawName: string): { name: string; note: string | null } {
-  const notes = [...rawName.matchAll(PARENTHESES)].map((match) => (match[1] ?? "").trim());
-  const name = fixTypos(rawName.replace(PARENTHESES, " ").replace(/\s+/g, " ").trim());
-  return { name: capitalize(name), note: notes.filter(Boolean).join("; ") || null };
+  const notes = [...rawName.matchAll(PARENTHESES)].map((match) =>
+    (match[1] ?? "").trim(),
+  );
+  const name = fixTypos(
+    rawName.replace(PARENTHESES, " ").replace(/\s+/g, " ").trim(),
+  );
+  return {
+    name: capitalize(name),
+    note: notes.filter(Boolean).join("; ") || null,
+  };
 }
 
 interface Extraction {
@@ -30,7 +40,10 @@ function extract(text: string, pattern: RegExp): Extraction {
  * Una línea: `- nombre: [modificador] peso unidad [modificador] N series de M, descansos [de] XmYs`.
  * Devuelve null si no tiene nombre o no dice cuántas series; el llamador lo reporta como línea no reconocida.
  */
-export function parseExerciseLine(raw: string, lineNumber: number): ParsedLine | null {
+export function parseExerciseLine(
+  raw: string,
+  lineNumber: number,
+): ParsedLine | null {
   const cleaned = cleanLine(raw);
   const colon = cleaned.indexOf(":");
   if (colon <= 0) return null;
@@ -51,9 +64,15 @@ export function parseExerciseLine(raw: string, lineNumber: number): ParsedLine |
     raw: raw.trim(),
     name,
     note,
-    weight: weightMatch ? Number((weightMatch[1] ?? "").replace(",", ".")) : null,
+    weight: weightMatch
+      ? Number((weightMatch[1] ?? "").replace(",", "."))
+      : null,
     unit,
-    loadType: detectLoadType({ modifiers: weight.remaining, hasWeight: weightMatch !== null, isTimed }),
+    loadType: detectLoadType({
+      modifiers: weight.remaining,
+      hasWeight: weightMatch !== null,
+      isTimed,
+    }),
     sets: Number(sets.match[1]),
     reps: isTimed ? null : Number(work),
     seconds,

@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { getTextStyle, tokens } from "@/design/tokens";
 import { ExerciseInfoButton, ListRow } from "@/shared/components";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
-import IconRenderer from "@/shared/icons/icon-renderer";
+import { IconRenderer } from "@/shared/icons/icon-renderer";
 import { getExerciseName } from "@/shared/utils/exercise-name.utils";
 import { formatWeight } from "@/shared/utils/weight.utils";
 import type { LibraryExercise } from "../types/catalog.types";
@@ -49,8 +49,7 @@ export function LibraryListRow({
       <IconRenderer name="plus" size={ADD_ICON_SIZE} color={c.accentText} />
     </Pressable>
   ) : (
-    plan &&
-    plan.targetWeight !== null && (
+    typeof plan?.targetWeight === "number" && (
       <Text style={[styles.weight, { color: c.textSecondary }]}>
         {formatWeight({
           value: plan.targetWeight,

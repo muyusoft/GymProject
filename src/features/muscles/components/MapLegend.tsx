@@ -15,7 +15,7 @@ interface MapLegendProps {
 }
 
 /** Leyenda de la figura: cada color con su nombre. */
-export function MapLegend({ items }: MapLegendProps) {
+export function MapLegend({ items }: Readonly<MapLegendProps>) {
   const { c } = useOverloadTheme();
 
   return (
@@ -31,8 +31,17 @@ export function MapLegend({ items }: MapLegendProps) {
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: tokens.spacing[4] },
+  row: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: tokens.spacing[4],
+  },
   item: { flexDirection: "row", alignItems: "center", gap: tokens.spacing[2] },
-  dot: { width: DOT_SIZE, height: DOT_SIZE, borderRadius: tokens.borderRadius.full },
+  dot: {
+    width: DOT_SIZE,
+    height: DOT_SIZE,
+    borderRadius: tokens.borderRadius.full,
+  },
   label: getTextStyle("bodySm"),
 });

@@ -15,7 +15,11 @@ const mode = theme === "auto" ? (system ?? "dark") : theme;
 const c = getSemanticColors(mode);
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: c.surface, borderRadius: tokens.borderRadius.lg, padding: tokens.spacing[4] },
+  card: {
+    backgroundColor: c.surface,
+    borderRadius: tokens.borderRadius.lg,
+    padding: tokens.spacing[4],
+  },
   weight: { ...getTextStyle("numeric"), color: c.text },
 });
 ```
@@ -42,22 +46,22 @@ Directa, de coach, en segunda persona, sin exclamaciones de más. Unidades siemp
 
 ## Colores semánticos (`tokens.semantic.dark` / `.light`)
 
-| Clave | Oscuro | Claro | Uso |
-| --- | --- | --- | --- |
-| background | #0e0f0c | #f4f5f0 | Fondo de pantalla (los layouts deben usarlo) |
-| surface | #171915 | #ffffff | Tarjetas, hojas, filas |
-| surfaceAlt | #22251f | #e9ebe3 | Inputs, chips inactivos, series pendientes |
-| border / divider | #33372e | #d3d6cb | Bordes y divisores |
-| text | #f2f4ec | #14160f | Texto principal |
-| textSecondary | #a3a899 | #5b6052 | Texto secundario |
-| accent | #c6ff3d | #c6ff3d | Relleno de acción primaria, serie hecha |
-| onAccent | #0e0f0c | #0e0f0c | Texto e icono sobre accent |
-| accentText | #c6ff3d | #4a7300 | Volt usado como texto (el lima no cumple contraste sobre blanco) |
-| reward | #ff7a2f | #b8460a | Récords y rachas |
-| danger | #ff5a5f | #c8332f | Errores, borrar |
-| info | #6fb7ff | #1b66b3 | Descanso, deload, avisos |
-| musclePrimary / muscleSecondary / muscleIdle | #c6ff3d / #5f7d1f / #2a2d26 | #4a7300 / #8fb52c / #d3d6cb | Figura muscular (en claro el principal es verde oscuro para verse sobre el fondo) |
-| recoveryWorked / recoveryRecovering / recoveryReady | = danger / info / accent | danger / info / #4a7300 | Estados de recuperación, siempre con texto |
+| Clave                                               | Oscuro                      | Claro                       | Uso                                                                               |
+| --------------------------------------------------- | --------------------------- | --------------------------- | --------------------------------------------------------------------------------- |
+| background                                          | #0e0f0c                     | #f4f5f0                     | Fondo de pantalla (los layouts deben usarlo)                                      |
+| surface                                             | #171915                     | #ffffff                     | Tarjetas, hojas, filas                                                            |
+| surfaceAlt                                          | #22251f                     | #e9ebe3                     | Inputs, chips inactivos, series pendientes                                        |
+| border / divider                                    | #33372e                     | #d3d6cb                     | Bordes y divisores                                                                |
+| text                                                | #f2f4ec                     | #14160f                     | Texto principal                                                                   |
+| textSecondary                                       | #a3a899                     | #5b6052                     | Texto secundario                                                                  |
+| accent                                              | #c6ff3d                     | #c6ff3d                     | Relleno de acción primaria, serie hecha                                           |
+| onAccent                                            | #0e0f0c                     | #0e0f0c                     | Texto e icono sobre accent                                                        |
+| accentText                                          | #c6ff3d                     | #4a7300                     | Volt usado como texto (el lima no cumple contraste sobre blanco)                  |
+| reward                                              | #ff7a2f                     | #b8460a                     | Récords y rachas                                                                  |
+| danger                                              | #ff5a5f                     | #c8332f                     | Errores, borrar                                                                   |
+| info                                                | #6fb7ff                     | #1b66b3                     | Descanso, deload, avisos                                                          |
+| musclePrimary / muscleSecondary / muscleIdle        | #c6ff3d / #5f7d1f / #2a2d26 | #4a7300 / #8fb52c / #d3d6cb | Figura muscular (en claro el principal es verde oscuro para verse sobre el fondo) |
+| recoveryWorked / recoveryRecovering / recoveryReady | = danger / info / accent    | danger / info / #4a7300     | Estados de recuperación, siempre con texto                                        |
 
 `tokens.brand.dark` / `.light` guarda los colores oficiales de los botones "Continuar con Apple / Google" (blanco o negro para Apple; el tema oscuro o claro de Google). Solo los usa `SocialButton`, junto con los logotipos `brand-apple` y `brand-google`, que son la excepción a los iconos de trazo.
 
@@ -67,15 +71,15 @@ Las escalas `tokens.colors.primary` (volt), `secondary` (ember), `success`, `err
 
 Fuentes: `@expo-google-fonts/barlow` y `@expo-google-fonts/barlow-condensed`, cargadas en `src/app/_layout.tsx` con `useFonts` antes de ocultar el splash. Los nombres de familia están en `tokens.typography.fontFamily`.
 
-| Estilo | Familia | Tamaño / interlineado | Uso |
-| --- | --- | --- | --- |
-| displayXl | Barlow Condensed 700 | 64 / 60 | Número héroe |
-| displayLg | Barlow Condensed 700 | 40 / 40, mayúsculas | Títulos de pantalla |
-| numeric | Barlow Condensed 600 | 28 / 32, cifras tabulares | Peso, reps, cronómetro |
-| title | Barlow 600 | 20 / 26 | Nombre de ejercicio |
-| body | Barlow 400 | 16 / 24 | Texto corrido |
-| bodySm | Barlow 400 | 14 / 20 | Metadatos |
-| label | Barlow 600 | 12 / 16, mayúsculas, +0.08em | Etiquetas y tabs |
+| Estilo    | Familia              | Tamaño / interlineado        | Uso                    |
+| --------- | -------------------- | ---------------------------- | ---------------------- |
+| displayXl | Barlow Condensed 700 | 64 / 60                      | Número héroe           |
+| displayLg | Barlow Condensed 700 | 40 / 40, mayúsculas          | Títulos de pantalla    |
+| numeric   | Barlow Condensed 600 | 28 / 32, cifras tabulares    | Peso, reps, cronómetro |
+| title     | Barlow 600           | 20 / 26                      | Nombre de ejercicio    |
+| body      | Barlow 400           | 16 / 24                      | Texto corrido          |
+| bodySm    | Barlow 400           | 14 / 20                      | Metadatos              |
+| label     | Barlow 600           | 12 / 16, mayúsculas, +0.08em | Etiquetas y tabs       |
 
 ## Espaciado, radios y forma
 
@@ -84,3 +88,4 @@ Fuentes: `@expo-google-fonts/barlow` y `@expo-google-fonts/barlow-condensed`, ca
 - Sin sombras: la profundidad viene de pasar de `surface` a `surfaceAlt`.
 - Iconos de línea 2 px, solo desde `@/shared/icons`; 24 en la tab bar, 20 en filas. El check de serie completada es el único icono relleno.
 - Motivo de marca: discos de pesas (barras verticales redondeadas de alturas crecientes), para estados vacíos y portada.
+- Logo: el símbolo "Discos" (tres discos de altura creciente, rejilla de 48) con el nombre en Barlow Condensed. En la app es `LogoMark` (`src/shared/components/LogoMark.tsx`), con los colores de `tokens.brand.<modo>.logo`. Los PNG del icono, el splash y el favicon se generan con `node scripts/generate-brand-assets.cjs`; si cambia el símbolo, se cambia ahí y en `LogoMark`, y se vuelve a correr.

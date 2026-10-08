@@ -1,4 +1,8 @@
-import type { ParseIssue, ParsedDay, ParsedNotes } from "../types/notes-import.types";
+import type {
+  ParseIssue,
+  ParsedDay,
+  ParsedNotes,
+} from "../types/notes-import.types";
 import { parseDayHeader, resolveHeaderDate } from "./day-header.utils";
 import { parseExerciseLine } from "./line.utils";
 
@@ -16,13 +20,23 @@ export function parseNotes(text: string, today: Date): ParsedNotes {
     const lineNumber = index + 1;
     const header = parseDayHeader(raw);
     if (header) {
-      days.push({ header, headerText: raw, date: resolveHeaderDate(header, today), lines: [] });
+      days.push({
+        header,
+        headerText: raw,
+        date: resolveHeaderDate(header, today),
+        lines: [],
+      });
       return;
     }
     const parsed = parseExerciseLine(raw, lineNumber);
-    const current = days[days.length - 1];
+    const current = days.at(-1);
     if (parsed && current) current.lines.push(parsed);
-    else issues.push({ lineNumber, raw, reason: parsed ? "line_without_day" : "unrecognized_line" });
+    else
+      issues.push({
+        lineNumber,
+        raw,
+        reason: parsed ? "line_without_day" : "unrecognized_line",
+      });
   });
 
   return { days, issues };

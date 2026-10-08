@@ -15,7 +15,7 @@ interface VolumeTileProps {
 }
 
 /** El nivel va en fondo y borde, pero el número de series siempre está en texto. */
-export function VolumeTile({ group, sets, tier }: VolumeTileProps) {
+export function VolumeTile({ group, sets, tier }: Readonly<VolumeTileProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
   const colors = {
@@ -24,14 +24,23 @@ export function VolumeTile({ group, sets, tier }: VolumeTileProps) {
     low: { background: c.surfaceAlt, text: c.text, border: c.info },
   }[tier];
 
+  const groupLabel = t(`muscles.group.${group}`);
+
   return (
     <View
       accessible
-      accessibilityLabel={`${t(`muscles.group.${group}`)}: ${t("muscles.volume.sets", { count: sets })}`}
-      style={[styles.tile, { backgroundColor: colors.background, borderColor: colors.border }]}
+      accessibilityLabel={`${groupLabel}: ${t("muscles.volume.sets", { count: sets })}`}
+      style={[
+        styles.tile,
+        { backgroundColor: colors.background, borderColor: colors.border },
+      ]}
     >
-      <Text style={[styles.label, { color: colors.text }]}>{t(`muscles.group.${group}`)}</Text>
-      <Text style={[styles.value, { color: colors.text }]}>{formatNumber(sets, i18n.language)}</Text>
+      <Text style={[styles.label, { color: colors.text }]}>
+        {t(`muscles.group.${group}`)}
+      </Text>
+      <Text style={[styles.value, { color: colors.text }]}>
+        {formatNumber(sets, i18n.language)}
+      </Text>
     </View>
   );
 }
