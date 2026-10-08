@@ -19,7 +19,11 @@ interface SeriesOptions {
   unit: WeightUnit;
 }
 
-export function buildFeaturedSeries({ sessions, buckets, unit }: SeriesOptions): FeaturedSeries {
+export function buildFeaturedSeries({
+  sessions,
+  buckets,
+  unit,
+}: SeriesOptions): FeaturedSeries {
   const bars = maxPerBucket(
     sessions.map((session) => ({
       date: session.date,
@@ -27,9 +31,11 @@ export function buildFeaturedSeries({ sessions, buckets, unit }: SeriesOptions):
     })),
     buckets,
   );
-  const filled = bars.flatMap((value, index) => (value === null ? [] : [{ value, index }]));
+  const filled = bars.flatMap((value, index) =>
+    value === null ? [] : [{ value, index }],
+  );
   const first = filled[0];
-  const last = filled[filled.length - 1];
+  const last = filled.at(-1);
   if (!first || !last) return { bars, current: null, trend: null, span: 0 };
   return {
     bars,
@@ -43,5 +49,8 @@ export function buildFeaturedSeries({ sessions, buckets, unit }: SeriesOptions):
 export function isLatestRecord(sessions: readonly ExerciseSession[]): boolean {
   const [latest, ...earlier] = sessions;
   if (!latest || earlier.length === 0) return false;
-  return latest.best.oneRepMaxKg > Math.max(...earlier.map((session) => session.best.oneRepMaxKg));
+  return (
+    latest.best.oneRepMaxKg >
+    Math.max(...earlier.map((session) => session.best.oneRepMaxKg))
+  );
 }

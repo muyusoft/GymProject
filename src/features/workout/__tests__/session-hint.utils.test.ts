@@ -51,6 +51,7 @@ function exercise(
       unit: "kg",
       loadType: "total",
       weightStep: 2.5,
+      weightSteps: { lb: 5, kg: 2.5 },
       isProgressionEnabled: true,
     },
     sets,
@@ -104,6 +105,13 @@ describe("pickSessionHint", () => {
       pickSessionHint(exercise({ increase: 82.5, deload: 50 }, [set("a", 80)]))
         ?.variant,
     ).toBe("increase");
+  });
+
+  it("tras cambiar de unidad en la sesión ya no ofrece la sugerencia, que está en la otra unidad", () => {
+    const switched = { ...set("a", 36), unit: "lb" as const };
+    expect(
+      pickSessionHint(exercise({ increase: 82.5 }, [switched])),
+    ).toBeNull();
   });
 
   it("sin sugerencias o sin peso no hay aviso", () => {

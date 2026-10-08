@@ -32,10 +32,13 @@ export function bestStrength(
   sourceIds: readonly string[],
   strengthById: ReadonlyMap<string, string>,
 ): SourceStrength | null {
-  const found = sourceIds
-    .map((id) => strengthById.get(id))
-    .filter((strength): strength is SourceStrength =>
-      strength !== undefined && isOneOf(SOURCE_STRENGTHS, strength),
-    );
-  return SOURCE_STRENGTHS.find((strength) => found.includes(strength)) ?? null;
+  const found = new Set(
+    sourceIds
+      .map((id) => strengthById.get(id))
+      .filter(
+        (strength): strength is SourceStrength =>
+          strength !== undefined && isOneOf(SOURCE_STRENGTHS, strength),
+      ),
+  );
+  return SOURCE_STRENGTHS.find((strength) => found.has(strength)) ?? null;
 }

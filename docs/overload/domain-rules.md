@@ -28,7 +28,8 @@ Funciones puras, sin React ni base de datos, en la carpeta `utils/` del feature 
 
 - Con historial del ejercicio, la sesión arranca con el peso más alto de la última sesión terminada, no con el del plan. El peso del plan solo es el punto de partida la primera vez.
 - Una sugerencia de subir peso o de descarga no se aplica sola: el aviso del ejercicio en la sesión ofrece aceptarla ("Subir a 82.5 kg") o dejarla ("Ahora no"). Al aceptar cambia el peso de las series pendientes de ese ejercicio (con rango de reps, también las baja al mínimo); las ya hechas no se tocan. Si no se acepta, vuelve a ofrecerse la próxima sesión mientras se cumpla la regla. En Hoy el aviso solo informa.
-- No aplica a ejercicios sin peso, ni si la unidad del plan cambió desde la última sesión (entonces vale el plan).
+- La sesión retoma también la unidad de la última vez (lb o kg), aunque el plan diga otra. No aplica a ejercicios sin peso.
+- **Cambiar de unidad en la sesión:** el editor de una serie tiene un selector lb / kg que convierte todas las series pendientes del ejercicio y acerca el peso al salto del equipo en la nueva unidad. Las series ya hechas no cambian. Una sesión con series en las dos unidades no cuenta para sugerir subir peso.
 - Hoy, la sesión y los avisos muestran ese mismo peso. La tarjeta del ejercicio en la sesión muestra "Último: peso × reps" (reps de la peor serie con ese peso).
 - Cambiar el peso en el plan no afecta a un ejercicio que ya tiene historial: se cambia en la sesión.
 

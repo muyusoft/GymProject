@@ -221,6 +221,7 @@ const TEMPLATE: ExerciseTemplate = {
   unit: "lb",
   loadType: "per_arm",
   weightStep: 2.5,
+  weightSteps: { lb: 5, kg: 2.5 },
   repsMin: null,
   isProgressionEnabled: true,
 };

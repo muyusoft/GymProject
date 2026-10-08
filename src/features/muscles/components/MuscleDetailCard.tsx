@@ -15,19 +15,22 @@ interface MuscleDetailCardProps {
 }
 
 /** Qué músculos trabaja el ejercicio; las fuentes del dato se abren aparte. Sin dato dice que no se pinta nada. */
-export function MuscleDetailCard({ exercise }: MuscleDetailCardProps) {
+export function MuscleDetailCard({
+  exercise,
+}: Readonly<MuscleDetailCardProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
   const { primary, secondary } = summarizeLinks(exercise.links);
   const [isSourcesOpen, setIsSourcesOpen] = useState(false);
 
+  const describe = (link: MuscleLink) => {
+    const label = t(muscleLabelKey(link));
+    return link.basis === "described"
+      ? `${label} (${t("muscles.described")})`
+      : label;
+  };
   const names = (links: readonly MuscleLink[]) =>
-    links
-      .map(
-        (link) =>
-          `${t(muscleLabelKey(link))}${link.basis === "described" ? ` (${t("muscles.described")})` : ""}`,
-      )
-      .join(", ");
+    links.map(describe).join(", ");
 
   return (
     <View style={[styles.card, { backgroundColor: c.surface }]}>

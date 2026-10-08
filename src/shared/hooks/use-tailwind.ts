@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { StyleSheet, StyleProp, ViewStyle, TextStyle } from "react-native";
+import { StyleProp, ViewStyle, TextStyle } from "react-native";
 
 /**
  * Hook para usar clases Tailwind en React Native

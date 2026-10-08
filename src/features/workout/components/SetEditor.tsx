@@ -1,9 +1,10 @@
 import { StyleSheet, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { tokens } from "@/design/tokens";
-import { Button, Stepper } from "@/shared/components";
+import { Button, SegmentedControl, Stepper } from "@/shared/components";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 import { formatClock } from "@/shared/utils/duration.utils";
+import { WEIGHT_UNITS } from "@/shared/types/training.types";
 import { formatNumber } from "@/shared/utils/weight.utils";
 import type { SetPatch } from "../services/session-write.service";
 import type { ExerciseTemplate, SessionSet } from "../types/workout.types";
@@ -16,17 +17,36 @@ interface SetEditorProps {
   onClose: () => void;
 }
 
-/** Peso (± salto del equipo) y reps (± 1) con botones: registrar una serie nunca pide el teclado. */
-export function SetEditor({ set, template, onChange, onClose }: Readonly<SetEditorProps>) {
+/**
+ * Peso (± salto del equipo) y reps (± 1) con botones: registrar una serie nunca pide el teclado.
+ * El selector lb / kg cambia la unidad de todas las series pendientes del ejercicio, no solo de esta.
+ */
+export function SetEditor({
+  set,
+  template,
+  onChange,
+  onClose,
+}: Readonly<SetEditorProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
+  const unitOptions = WEIGHT_UNITS.map((unit) => ({
+    value: unit,
+    label: t(`common.${unit}`),
+  }));
 
   return (
     <View style={[styles.panel, { backgroundColor: c.surfaceAlt }]}>
       {usesWeight(set.loadType) && (
+        <SegmentedControl
+          options={unitOptions}
+          value={set.unit}
+          onChange={(unit) => onChange({ unit })}
+        />
+      )}
+      {usesWeight(set.loadType) && (
         <Stepper
           value={set.weight ?? 0}
-          step={template.weightStep}
+          step={template.weightSteps[set.unit]}
           {...SET_LIMITS.weight}
           unit={set.unit}
           formatValue={(value) => formatNumber(value, i18n.language)}
@@ -49,11 +69,20 @@ export function SetEditor({ set, template, onChange, onClose }: Readonly<SetEdit
           onChange={(reps) => onChange({ reps })}
         />
       )}
-      <Button variant="ghost" label={t("session.editorDone")} block onPress={onClose} />
+      <Button
+        variant="ghost"
+        label={t("session.editorDone")}
+        block
+        onPress={onClose}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  panel: { gap: tokens.spacing[3], padding: tokens.spacing[3], borderRadius: tokens.borderRadius.md },
+  panel: {
+    gap: tokens.spacing[3],
+    padding: tokens.spacing[3],
+    borderRadius: tokens.borderRadius.md,
+  },
 });

@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { getTextStyle, tokens } from "@/design/tokens";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
-import IconRenderer from "@/shared/icons/icon-renderer";
+import { IconRenderer } from "@/shared/icons/icon-renderer";
 import type { DaySummary } from "../types/plan.types";
 
 const CHEVRON_SIZE = 20;
@@ -20,11 +20,12 @@ export function EditorDayRow({
 }: Readonly<EditorDayRowProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
+  const weekdayLabel = t(`weekday.long.${day.weekday}`);
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`${t(`weekday.long.${day.weekday}`)}, ${day.name}`}
+      accessibilityLabel={`${weekdayLabel}, ${day.name}`}
       accessibilityHint={t("plan.editor.longPressHint")}
       onPress={onPress}
       onLongPress={onLongPress}

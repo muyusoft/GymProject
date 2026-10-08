@@ -16,6 +16,7 @@ const TEMPLATE: ExerciseTemplate = {
   unit: "kg",
   loadType: "total",
   weightStep: 2.5,
+  weightSteps: { lb: 5, kg: 2.5 },
   isProgressionEnabled: true,
 };
 

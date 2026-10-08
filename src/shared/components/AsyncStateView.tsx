@@ -1,11 +1,12 @@
 import type { ReactNode } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { getTextStyle, tokens } from "@/design/tokens";
 import type { ResourceStatus } from "@/shared/hooks/use-focus-resource";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 import { useSyncStore } from "@/shared/store/sync.store";
 import { Button } from "./Button";
+import { LoadingBars } from "./LoadingBars";
 
 interface AsyncStateViewProps {
   status: ResourceStatus;
@@ -34,12 +35,8 @@ export function AsyncStateView({
     <View style={styles.center}>
       {isLoading ? (
         <>
-          <ActivityIndicator
-            size="large"
-            accessibilityLabel={t(
-              isRestoring ? "sync.restoring" : "common.loading",
-            )}
-            color={c.textSecondary}
+          <LoadingBars
+            label={t(isRestoring ? "sync.restoring" : "common.loading")}
           />
           {isRestoring && (
             <Text style={[styles.message, { color: c.textSecondary }]}>

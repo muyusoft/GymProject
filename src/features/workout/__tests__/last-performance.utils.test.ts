@@ -16,6 +16,7 @@ const TEMPLATE: ExerciseTemplate = {
   unit: "kg",
   loadType: "total",
   weightStep: 2.5,
+  weightSteps: { lb: 5, kg: 2.5 },
   isProgressionEnabled: true,
 };
 
@@ -73,15 +74,32 @@ describe("withLastWeight", () => {
     expect(withLastWeight(TEMPLATE, null)).toBe(TEMPLATE);
   });
 
-  it("no aplica si la unidad cambió o el ejercicio no lleva peso", () => {
-    expect(
-      withLastWeight(TEMPLATE, { weight: 185, unit: "lb", reps: 9 })
-        .targetWeight,
-    ).toBe(80);
+  it("retoma también la unidad de la última vez, con el salto del equipo en esa unidad", () => {
+    const template = withLastWeight(TEMPLATE, {
+      weight: 185,
+      unit: "lb",
+      reps: 9,
+    });
+    expect(template).toMatchObject({
+      targetWeight: 185,
+      unit: "lb",
+      weightStep: TEMPLATE.weightSteps.lb,
+    });
+  });
+
+  it("no aplica a un ejercicio sin peso", () => {
     const bodyweight = { ...TEMPLATE, targetWeight: null };
     expect(
-      withLastWeight(bodyweight, { weight: 85, unit: "kg", reps: 9 })
-        .targetWeight,
-    ).toBeNull();
+      withLastWeight(bodyweight, { weight: 85, unit: "kg", reps: 9 }),
+    ).toBe(bodyweight);
+  });
+
+  it("la serie más pesada se decide comparando en la misma unidad", () => {
+    const mixed = session(set(80, 10), set(180, 8, { unit: "lb" }));
+    expect(lastPerformance(mixed)).toEqual({
+      weight: 180,
+      unit: "lb",
+      reps: 8,
+    });
   });
 });

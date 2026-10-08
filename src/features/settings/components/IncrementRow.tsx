@@ -14,7 +14,10 @@ interface IncrementRowProps {
   onChange: (id: string, step: number) => void;
 }
 
-export function IncrementRow({ increment, onChange }: IncrementRowProps) {
+export function IncrementRow({
+  increment,
+  onChange,
+}: Readonly<IncrementRowProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
 

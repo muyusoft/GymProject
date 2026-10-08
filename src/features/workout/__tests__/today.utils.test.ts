@@ -55,6 +55,7 @@ describe("template formatting", () => {
     unit: "lb",
     loadType: "total",
     weightStep: 5,
+    weightSteps: { lb: 10, kg: 5 },
     repsMin: null,
     isProgressionEnabled: true,
   };

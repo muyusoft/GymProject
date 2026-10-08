@@ -3,7 +3,10 @@ import { StyleSheet, View } from "react-native";
 import type { Tabs } from "expo-router";
 import { tokens } from "@/design/tokens";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
-import { getTabColors } from "@/shared/utils/tab-bar.utils";
+import {
+  getTabColors,
+  tabBarBottomPadding,
+} from "@/shared/utils/tab-bar.utils";
 import { TabBarItem } from "./TabBarItem";
 
 const TAB_ICON_SIZE = 24;
@@ -14,7 +17,12 @@ export type TabBarProps = Parameters<
 
 type TabRoute = TabBarProps["state"]["routes"][number];
 
-export function TabBar({ state, descriptors, navigation, insets }: Readonly<TabBarProps>) {
+export function TabBar({
+  state,
+  descriptors,
+  navigation,
+  insets,
+}: Readonly<TabBarProps>) {
   const { c } = useOverloadTheme();
 
   const handlePress = (route: TabRoute, isFocused: boolean) => {
@@ -38,7 +46,7 @@ export function TabBar({ state, descriptors, navigation, insets }: Readonly<TabB
         {
           backgroundColor: c.surface,
           borderTopColor: c.border,
-          paddingBottom: insets.bottom,
+          paddingBottom: tabBarBottomPadding(insets.bottom),
         },
       ]}
     >

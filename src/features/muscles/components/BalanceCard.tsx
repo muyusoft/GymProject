@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { getTextStyle, tokens } from "@/design/tokens";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
-import IconRenderer from "@/shared/icons/icon-renderer";
+import { IconRenderer } from "@/shared/icons/icon-renderer";
 import type { BalanceInsight } from "../utils/muscle-volume.utils";
 
 const ICON_SIZE = 20;
@@ -11,10 +11,11 @@ interface BalanceCardProps {
   balance: BalanceInsight;
 }
 
-export function BalanceCard({ balance }: BalanceCardProps) {
+export function BalanceCard({ balance }: Readonly<BalanceCardProps>) {
   const { t } = useTranslation();
   const { c } = useOverloadTheme();
-  const name = (group: BalanceInsight["top"]) => t(`muscles.group.${group}`).toLowerCase();
+  const name = (group: BalanceInsight["top"]) =>
+    t(`muscles.group.${group}`).toLowerCase();
 
   return (
     <View style={[styles.card, { backgroundColor: c.surface }]}>

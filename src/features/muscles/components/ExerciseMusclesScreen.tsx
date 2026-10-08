@@ -2,7 +2,13 @@ import { router } from "expo-router";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { getTextStyle, tokens } from "@/design/tokens";
-import { AsyncStateView, BodyMap, Chip, EmptyState, ScreenHeader } from "@/shared/components";
+import {
+  AsyncStateView,
+  BodyMap,
+  Chip,
+  EmptyState,
+  ScreenHeader,
+} from "@/shared/components";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 import { getExerciseName } from "@/shared/utils/exercise-name.utils";
 import { useExerciseMuscles } from "../hooks/use-exercise-muscles";
@@ -14,20 +20,27 @@ interface ExerciseMusclesScreenProps {
   dayId?: string | undefined;
 }
 
-export function ExerciseMusclesScreen({ dayId }: ExerciseMusclesScreenProps) {
+export function ExerciseMusclesScreen({
+  dayId,
+}: Readonly<ExerciseMusclesScreenProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
   const { status, reload, data, selected, select } = useExerciseMuscles(dayId);
 
   const eyebrow = data
-    ? t("muscles.byExercise.eyebrow", { weekday: t(`weekday.long.${data.weekday}`), day: data.dayName })
+    ? t("muscles.byExercise.eyebrow", {
+        weekday: t(`weekday.long.${data.weekday}`),
+        day: data.dayName,
+      })
     : t("muscles.byExercise.title");
 
   return (
     <AsyncStateView status={status} onRetry={() => void reload()}>
       <ScrollView contentContainerStyle={styles.content}>
         <ScreenHeader eyebrow={eyebrow} onBack={() => router.back()} />
-        <Text style={[styles.title, { color: c.text }]}>{t("muscles.byExercise.title")}</Text>
+        <Text style={[styles.title, { color: c.text }]}>
+          {t("muscles.byExercise.title")}
+        </Text>
         {!data || data.exercises.length === 0 ? (
           <EmptyState title={t("muscles.byExercise.empty")} />
         ) : (
@@ -42,11 +55,22 @@ export function ExerciseMusclesScreen({ dayId }: ExerciseMusclesScreenProps) {
                 />
               ))}
             </View>
-            <BodyMap mode="exercise" groups={selected ? exercisePaint(selected.links, c) : {}} />
+            <BodyMap
+              mode="exercise"
+              groups={selected ? exercisePaint(selected.links, c) : {}}
+            />
             <MapLegend
               items={[
-                { key: "primary", color: c.musclePrimary, label: t("muscles.primary") },
-                { key: "secondary", color: c.muscleSecondary, label: t("muscles.secondary") },
+                {
+                  key: "primary",
+                  color: c.musclePrimary,
+                  label: t("muscles.primary"),
+                },
+                {
+                  key: "secondary",
+                  color: c.muscleSecondary,
+                  label: t("muscles.secondary"),
+                },
                 { key: "idle", color: c.muscleIdle, label: t("muscles.idle") },
               ]}
             />

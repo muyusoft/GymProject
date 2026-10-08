@@ -6,17 +6,24 @@
 
 const DIACRITICS = /[̀-ͯ]/g;
 const NOT_ALPHANUMERIC = /[^a-z0-9]+/g;
-const EDGE_DASHES = /^-+|-+$/g;
+const DASH = "-";
 const CATALOG_PREFIX = "fedb:";
 const COMMON_PREFIX = "common:";
 
+/** Cada tramo de símbolos queda en un solo guion, así que en los extremos sobra como mucho uno. */
+function trimDashes(slug: string): string {
+  const start = slug.startsWith(DASH) ? 1 : 0;
+  const end = slug.endsWith(DASH) ? slug.length - 1 : slug.length;
+  return slug.slice(start, Math.max(start, end));
+}
+
 function slugify(text: string): string {
-  return text
+  const slug = text
     .normalize("NFD")
     .replace(DIACRITICS, "")
     .toLowerCase()
-    .replace(NOT_ALPHANUMERIC, "-")
-    .replace(EDGE_DASHES, "");
+    .replace(NOT_ALPHANUMERIC, DASH);
+  return trimDashes(slug);
 }
 
 /** Ejercicio que viene de free-exercise-db: "fedb:Barbell_Squat". */

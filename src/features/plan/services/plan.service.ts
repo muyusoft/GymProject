@@ -17,14 +17,23 @@ import { listCompletedPlanDayIds } from "@/shared/db/queries/session.queries";
 import type { PlanDayRow, PlanRow } from "@/shared/db/types";
 import { syncReminders } from "@/shared/services/reminders.service";
 import type { PlanSettingsPatch, WeeklyPlan } from "../types/plan.types";
-import { buildDaySummaries, getFreeWeekdays, planDefaults } from "../utils/plan-summary.utils";
-import { startOfWeekMonday, toIsoDate, weekDates, weekdayIndex } from "@/shared/utils/week.utils";
+import {
+  buildDaySummaries,
+  getFreeWeekdays,
+  planDefaults,
+} from "../utils/plan-summary.utils";
+import {
+  startOfWeekMonday,
+  toIsoDate,
+  weekDates,
+  weekdayIndex,
+} from "@/shared/utils/week.utils";
 
 async function loadCompletedDayIds(weekStart: Date): Promise<Set<string>> {
   const dates = weekDates(weekStart);
   const ids = await listCompletedPlanDayIds({
     from: toIsoDate(weekStart),
-    to: toIsoDate(dates[dates.length - 1] ?? weekStart),
+    to: toIsoDate(dates.at(-1) ?? weekStart),
   });
   return new Set(ids);
 }
@@ -65,7 +74,10 @@ export async function createPlan(name: string): Promise<void> {
   await insertPlan(name);
 }
 
-export function savePlanSettings(planId: string, patch: PlanSettingsPatch): Promise<void> {
+export function savePlanSettings(
+  planId: string,
+  patch: PlanSettingsPatch,
+): Promise<void> {
   return updatePlan(planId, patch);
 }
 
@@ -75,7 +87,11 @@ interface AddDayOptions {
   name: string;
 }
 
-export async function addDay({ planId, weekday, name }: AddDayOptions): Promise<PlanDayRow> {
+export async function addDay({
+  planId,
+  weekday,
+  name,
+}: AddDayOptions): Promise<PlanDayRow> {
   const defaults = planDefaults(await listPlanDays(planId));
   const created = await insertPlanDay({
     planId,
@@ -102,7 +118,11 @@ interface DuplicateDayOptions {
 }
 
 /** Copia el día y sus ejercicios al día libre elegido; el historial queda con el ejercicio, no con la copia. */
-export async function duplicateDay({ dayId, weekday, name }: DuplicateDayOptions): Promise<void> {
+export async function duplicateDay({
+  dayId,
+  weekday,
+  name,
+}: DuplicateDayOptions): Promise<void> {
   const source = await findPlanDay(dayId);
   if (!source) throw new Error(`Plan day not found: ${dayId}`);
   const copy = await insertPlanDay({

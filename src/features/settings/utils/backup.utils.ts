@@ -12,20 +12,20 @@ import {
 } from "../types/backup.types";
 import { isBackupData } from "./backup-validation.utils";
 
-const EXCLUDED_SETTINGS: readonly string[] = [
+const EXCLUDED_SETTINGS: ReadonlySet<string> = new Set([
   SETTING_KEYS.seeded,
   SETTING_KEYS.syncPrep,
   SETTING_KEYS.syncUserId,
   SETTING_KEYS.syncPushedAt,
   SETTING_KEYS.syncPulledAt,
-];
+]);
 
 /** El catálogo sembrado y las marcas de instalación ("seeded", "syncPrep") no se respaldan: se vuelven a crear solos en cada instalación. */
 export function pickUserSettings(
   all: Readonly<Record<string, string>>,
 ): Record<string, string> {
   return Object.fromEntries(
-    Object.entries(all).filter(([key]) => !EXCLUDED_SETTINGS.includes(key)),
+    Object.entries(all).filter(([key]) => !EXCLUDED_SETTINGS.has(key)),
   );
 }
 

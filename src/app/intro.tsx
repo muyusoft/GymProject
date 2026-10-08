@@ -1,9 +1,9 @@
 import { IntroScreen } from "@/features/onboarding";
-import { AppLayout } from "@/shared/layouts";
+import { AppLayout, EDGES_WITHOUT_BOTTOM } from "@/shared/layouts";
 
 export default function IntroRoute() {
   return (
-    <AppLayout>
+    <AppLayout edges={EDGES_WITHOUT_BOTTOM}>
       <IntroScreen />
     </AppLayout>
   );
