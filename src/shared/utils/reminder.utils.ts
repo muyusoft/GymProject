@@ -29,14 +29,23 @@ interface SlotOptions {
 }
 
 /** Un aviso semanal por cada día de entreno del plan, a la hora elegida; un día repetido cuenta una vez. */
-export function buildReminderSlots({ days, hour, minute }: SlotOptions): ReminderSlot[] {
+export function buildReminderSlots({
+  days,
+  hour,
+  minute,
+}: SlotOptions): ReminderSlot[] {
   const byWeekday = new Map<number, ReminderDay>();
   for (const day of days) {
     if (!byWeekday.has(day.weekday)) byWeekday.set(day.weekday, day);
   }
   return [...byWeekday.values()]
     .sort((a, b) => a.weekday - b.weekday)
-    .map((day) => ({ weekday: toNotificationWeekday(day.weekday), hour, minute, dayName: day.name }));
+    .map((day) => ({
+      weekday: toNotificationWeekday(day.weekday),
+      hour,
+      minute,
+      dayName: day.name,
+    }));
 }
 
 export interface WeighInSlot {
@@ -55,8 +64,30 @@ interface WeighInSlotOptions {
 }
 
 /** A diario: un aviso cada día. Cada semana: uno solo, el día elegido. */
-export function buildWeighInSlot({ frequency, weekday, hour, minute }: WeighInSlotOptions): WeighInSlot {
-  return { weekday: frequency === "daily" ? null : toNotificationWeekday(weekday), hour, minute };
+export function buildWeighInSlot({
+  frequency,
+  weekday,
+  hour,
+  minute,
+}: WeighInSlotOptions): WeighInSlot {
+  return {
+    weekday: frequency === "daily" ? null : toNotificationWeekday(weekday),
+    hour,
+    minute,
+  };
+}
+
+interface NotificationRuntime {
+  os: string;
+  isExpoGo: boolean;
+}
+
+/** Expo Go para Android ya no trae las notificaciones: allí el módulo falla con solo importarlo. */
+export function supportsNotifications({
+  os,
+  isExpoGo,
+}: NotificationRuntime): boolean {
+  return !(os === "android" && isExpoGo);
 }
 
 /** 18, 5 → "18:05". */

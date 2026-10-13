@@ -1,4 +1,4 @@
-import * as Notifications from "expo-notifications";
+import Constants, { ExecutionEnvironment } from "expo-constants";
 import { Platform } from "react-native";
 import i18n from "@/config/i18n";
 import { logger } from "@/config/logger";
@@ -7,6 +7,7 @@ import { findActivePlan, listPlanDays } from "@/shared/db/queries/plan.queries";
 import {
   buildReminderSlots,
   buildWeighInSlot,
+  supportsNotifications,
 } from "@/shared/utils/reminder.utils";
 import {
   parseSettings,
@@ -15,9 +16,24 @@ import {
 
 const CHANNEL_ID = "workout-reminders";
 
+type NotificationsModule = typeof import("expo-notifications");
+
+const IS_SUPPORTED = supportsNotifications({
+  os: Platform.OS,
+  isExpoGo: Constants.executionEnvironment === ExecutionEnvironment.StoreClient,
+});
+
+/** El módulo se carga solo donde existe: importarlo en Expo Go para Android rompe el arranque. */
+async function loadNotifications(): Promise<NotificationsModule | null> {
+  if (!IS_SUPPORTED) return null;
+  return import("expo-notifications");
+}
+
 /** Una sola vez al arrancar: cómo se muestra un aviso con la app abierta y el canal de Android. */
 export async function configureNotifications(): Promise<void> {
   try {
+    const Notifications = await loadNotifications();
+    if (!Notifications) return;
     Notifications.setNotificationHandler({
       handleNotification: async () => ({
         shouldShowBanner: true,
@@ -40,6 +56,8 @@ export async function configureNotifications(): Promise<void> {
 /** Pide el permiso del sistema (solo al activar el recordatorio); true si ya está concedido. */
 export async function requestReminderPermission(): Promise<boolean> {
   try {
+    const Notifications = await loadNotifications();
+    if (!Notifications) return false;
     const current = await Notifications.getPermissionsAsync();
     if (current.granted) return true;
     if (!current.canAskAgain) return false;
@@ -51,7 +69,10 @@ export async function requestReminderPermission(): Promise<boolean> {
 }
 
 /** Un aviso semanal por cada día de entreno del plan, a la hora elegida. */
-async function scheduleWorkoutReminders(settings: AppSettings): Promise<void> {
+async function scheduleWorkoutReminders(
+  Notifications: NotificationsModule,
+  settings: AppSettings,
+): Promise<void> {
   if (!settings.reminderEnabled) return;
   const plan = await findActivePlan();
   const days = plan ? await listPlanDays(plan.id) : [];
@@ -80,7 +101,10 @@ async function scheduleWorkoutReminders(settings: AppSettings): Promise<void> {
 }
 
 /** El aviso de pesaje: cada día, o una vez por semana el día elegido. */
-async function scheduleWeighInReminder(settings: AppSettings): Promise<void> {
+async function scheduleWeighInReminder(
+  Notifications: NotificationsModule,
+  settings: AppSettings,
+): Promise<void> {
   if (!settings.weighInReminderEnabled) return;
   const { weekday, hour, minute } = buildWeighInSlot({
     frequency: settings.weighInFrequency,
@@ -118,13 +142,15 @@ async function scheduleWeighInReminder(settings: AppSettings): Promise<void> {
  */
 export async function syncReminders(): Promise<void> {
   try {
+    const Notifications = await loadNotifications();
+    if (!Notifications) return;
     await Notifications.cancelAllScheduledNotificationsAsync();
     const settings = parseSettings(await getAllSettings(), "en");
     if (!settings.reminderEnabled && !settings.weighInReminderEnabled) return;
     if (!(await Notifications.getPermissionsAsync()).granted) return;
     await Promise.all([
-      scheduleWorkoutReminders(settings),
-      scheduleWeighInReminder(settings),
+      scheduleWorkoutReminders(Notifications, settings),
+      scheduleWeighInReminder(Notifications, settings),
     ]);
   } catch (error) {
     logger.error("Failed to sync reminders", { error });
