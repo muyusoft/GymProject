@@ -1,9 +1,29 @@
 import { describe, expect, it } from "vitest";
-import { buildReminderSlots, buildWeighInSlot, formatReminderTime, toNotificationWeekday } from "../reminder.utils";
+import {
+  buildReminderSlots,
+  buildWeighInSlot,
+  formatReminderTime,
+  supportsNotifications,
+  toNotificationWeekday,
+} from "../reminder.utils";
+
+describe("supportsNotifications", () => {
+  it("solo Expo Go en Android se queda sin notificaciones", () => {
+    expect(supportsNotifications({ os: "android", isExpoGo: true })).toBe(
+      false,
+    );
+    expect(supportsNotifications({ os: "android", isExpoGo: false })).toBe(
+      true,
+    );
+    expect(supportsNotifications({ os: "ios", isExpoGo: true })).toBe(true);
+  });
+});
 
 describe("toNotificationWeekday", () => {
   it("pasa de lunes = 0 a domingo = 1 de expo-notifications", () => {
-    expect([0, 1, 2, 3, 4, 5, 6].map(toNotificationWeekday)).toEqual([2, 3, 4, 5, 6, 7, 1]);
+    expect([0, 1, 2, 3, 4, 5, 6].map(toNotificationWeekday)).toEqual([
+      2, 3, 4, 5, 6, 7, 1,
+    ]);
   });
 });
 
@@ -24,7 +44,9 @@ describe("buildReminderSlots", () => {
 
   it("no repite un día de la semana", () => {
     const repeated = [...days, { weekday: 0, name: "Otro lunes" }];
-    expect(buildReminderSlots({ days: repeated, hour: 7, minute: 0 })).toHaveLength(3);
+    expect(
+      buildReminderSlots({ days: repeated, hour: 7, minute: 0 }),
+    ).toHaveLength(3);
   });
 
   it("sin días de entreno no hay avisos", () => {
@@ -34,12 +56,19 @@ describe("buildReminderSlots", () => {
 
 describe("buildWeighInSlot", () => {
   it("a diario avisa todos los días, sin día de la semana", () => {
-    expect(buildWeighInSlot({ frequency: "daily", weekday: 3, hour: 7, minute: 15 })).toEqual({ weekday: null, hour: 7, minute: 15 });
+    expect(
+      buildWeighInSlot({ frequency: "daily", weekday: 3, hour: 7, minute: 15 }),
+    ).toEqual({ weekday: null, hour: 7, minute: 15 });
   });
 
   it("cada semana avisa solo el día elegido, en la numeración de expo-notifications", () => {
-    expect(buildWeighInSlot({ frequency: "weekly", weekday: 0, hour: 7, minute: 0 })).toEqual({ weekday: 2, hour: 7, minute: 0 });
-    expect(buildWeighInSlot({ frequency: "weekly", weekday: 6, hour: 6, minute: 30 }).weekday).toBe(1);
+    expect(
+      buildWeighInSlot({ frequency: "weekly", weekday: 0, hour: 7, minute: 0 }),
+    ).toEqual({ weekday: 2, hour: 7, minute: 0 });
+    expect(
+      buildWeighInSlot({ frequency: "weekly", weekday: 6, hour: 6, minute: 30 })
+        .weekday,
+    ).toBe(1);
   });
 });
 

@@ -33,6 +33,8 @@ export default function RootLayout() {
     <ErrorBoundary>
       <ThemeProvider value={mode === "dark" ? DarkTheme : DefaultTheme}>
         <Stack screenOptions={{ headerShown: false }}>
+          {/* Va primera: sin una dirección inicial, el Stack abre la primera pantalla declarada. */}
+          <Stack.Screen name="(tabs)" />
           <Stack.Screen
             name="exercise/configure"
             options={{ presentation: "modal" }}
