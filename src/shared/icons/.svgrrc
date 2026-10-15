@@ -1,0 +1,14 @@
+{
+  "replaceAttrValues": {
+    "#1c1e19": "{props.tones.deep}",
+    "#2b2e27": "{props.tones.frame}",
+    "#3d4236": "{props.tones.pad}",
+    "#5b6152": "{props.tones.line}",
+    "#8a907f": "{props.tones.metal}",
+    "#a3a899": "{props.tones.steel}",
+    "#c9cdbf": "{props.tones.edge}",
+    "#f2f4ec": "{props.tones.ink}",
+    "#6fb7ff": "{props.tones.person}",
+    "#3a5f86": "{props.tones.personMuted}"
+  }
+}

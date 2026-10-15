@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { tokens } from "@/design/tokens";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 import type { IconName } from "@/shared/icons";
-import IconRenderer from "@/shared/icons/icon-renderer";
+import { IconRenderer } from "@/shared/icons/icon-renderer";
 import type { ReorderDirection } from "../types/plan.types";
 
 const ICON_SIZE = 20;

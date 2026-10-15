@@ -17,8 +17,17 @@ export const SETTING_KEYS = {
   weighInWeekday: "weighInWeekday",
   onboardingDone: "onboardingDone",
   introSeen: "introSeen",
+  /** Equipo disponible para "Crear un plan para mí", separado por comas; vacío = sin equipo. */
+  equipment: "equipment",
+  /** Minutos por sesión elegidos en el asistente. */
+  sessionMinutes: "sessionMinutes",
+  /** Ofrecer calentamiento antes de entrenar y estiramientos al terminar. */
+  warmupEnabled: "warmupEnabled",
+  stretchEnabled: "stretchEnabled",
   /** Versión de la preparación para sincronizar (ids estables) ya aplicada a esta instalación. */
   syncPrep: "syncPrep",
+  /** Versión de los ejercicios comunes ya aplicada a esta instalación (ver catalog-update). */
+  catalogVersion: "catalogVersion",
   /** Sincronización: cuenta enlazada a este teléfono y hasta dónde se subió y se bajó. */
   syncUserId: "syncUserId",
   syncPushedAt: "syncPushedAt",

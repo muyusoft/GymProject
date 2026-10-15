@@ -24,6 +24,10 @@ export interface CommonExerciseRecord {
   freeExerciseDbName: string | null;
   pattern: string;
   musclesOverride?: MusclesOverrideRecord;
+  /** Equipo con el nombre de free-exercise-db ("machine", "body only"…) cuando la fuente no lo da o se equivoca. */
+  equipment?: string;
+  /** Combinaciones de equipo que sirven para hacerlo (ver equipment.types); null = sin dato. */
+  requires?: string[][] | null;
 }
 
 export interface PatternRecord {

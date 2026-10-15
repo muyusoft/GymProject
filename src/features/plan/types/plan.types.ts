@@ -1,5 +1,6 @@
 import type { PlanDayRow } from "@/shared/db/types";
 import type { PlanExerciseDetail } from "@/shared/db/queries/plan-exercise.queries";
+import type { WeekSchedule } from "@/shared/utils/week-schedule.utils";
 import type { DayNameSuggestion } from "../utils/day-name.utils";
 
 export interface DayDefaults {
@@ -27,6 +28,8 @@ export interface WeeklyPlan {
   totalExercises: number;
   defaults: DayDefaults;
   weekStart: Date;
+  /** La semana en curso con los días perdidos aplicados; el plan de arriba no cambia. */
+  schedule: WeekSchedule;
 }
 
 export interface DayDetail {

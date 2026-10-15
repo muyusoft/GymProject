@@ -7,10 +7,8 @@ import { chunk } from "@/shared/utils/chunk.utils";
 import { generateId } from "@/shared/utils/id.utils";
 import { toIsoDate } from "@/shared/utils/week.utils";
 import type { SessionSet } from "../types/workout.types";
-import {
-  lastPerformance,
-  withLastWeight,
-} from "../utils/last-performance.utils";
+import { lastPerformance } from "@/shared/utils/last-performance.utils";
+import { withLastWeight } from "../utils/last-performance.utils";
 import {
   buildInitialSets,
   nextSetValues,

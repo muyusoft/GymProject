@@ -16,5 +16,6 @@ export { ProgressionHint, type ProgressionHintKind } from "./ProgressionHint";
 export { ScreenHeader } from "./ScreenHeader";
 export { SegmentedControl } from "./SegmentedControl";
 export { Stepper } from "./Stepper";
+export { TypeableStepper } from "./TypeableStepper";
 export { TabBar, type TabBarProps } from "./TabBar";
 export { Toggle } from "./Toggle";

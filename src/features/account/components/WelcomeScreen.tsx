@@ -54,6 +54,14 @@ export function WelcomeScreen() {
           {t("account.welcome.body")}
         </Text>
         <WelcomeActions />
+        {/* Solo en desarrollo, para revisar la introducción; la app publicada no lo muestra. */}
+        {__DEV__ && (
+          <AccountLink
+            label={t("account.welcome.devIntro")}
+            align="center"
+            onPress={() => router.push({ pathname: "/intro", params: { replay: "1" } })}
+          />
+        )}
       </View>
     </ScrollView>
   );

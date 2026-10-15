@@ -1,5 +1,7 @@
+import { router } from "expo-router";
 import { StyleSheet, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { tokens } from "@/design/tokens";
 import { Button, EmptyState, InlineError } from "@/shared/components";
 
 interface EmptyPlanProps {
@@ -22,13 +24,30 @@ export function EmptyPlan({
         body={t("plan.empty.body")}
         action={
           <Button
-            label={t("plan.empty.create")}
-            loading={isCreating}
-            onPress={onCreate}
+            label={t("plan.empty.forMe")}
+            icon="lightbulb"
+            onPress={() => router.push("/plan/wizard")}
           />
         }
       >
-        {hasError && <InlineError message={t("common.saveError")} />}
+        <View style={styles.others}>
+          <Button
+            variant="secondary"
+            label={t("plan.empty.create")}
+            block
+            loading={isCreating}
+            onPress={onCreate}
+          />
+          <Button
+            variant="secondary"
+            label={t("plan.importNotes")}
+            icon="clipboard"
+            block
+            disabled={isCreating}
+            onPress={() => router.push("/import")}
+          />
+          {hasError && <InlineError message={t("common.saveError")} />}
+        </View>
       </EmptyState>
     </View>
   );
@@ -36,4 +55,5 @@ export function EmptyPlan({
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: "center" },
+  others: { alignSelf: "stretch", gap: tokens.spacing[2] },
 });

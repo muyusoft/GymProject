@@ -2,7 +2,7 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-nati
 import { useTranslation } from "react-i18next";
 import { getTextStyle, tokens } from "@/design/tokens";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
-import IconRenderer from "@/shared/icons/icon-renderer";
+import { IconRenderer } from "@/shared/icons/icon-renderer";
 import type { TodayView } from "../types/workout.types";
 
 const ICON_SIZE = 20;
@@ -26,6 +26,14 @@ export function TodayCard({ dayName, today, isStarting, onStart }: Readonly<Toda
         {t("today.eyebrow", { minutes: today.durationMinutes })}
       </Text>
       <Text style={[styles.title, { color: c.onAccent }]}>{dayName}</Text>
+      {today.movedFromWeekday !== null && (
+        <View style={styles.done}>
+          <IconRenderer name="repeat" size={ICON_SIZE} color={c.onAccent} />
+          <Text style={[styles.stat, { color: c.onAccent }]}>
+            {t("today.movedFrom", { weekday: t(`weekday.sentence.${today.movedFromWeekday}`) })}
+          </Text>
+        </View>
+      )}
       <View style={styles.stats}>
         <Text style={[styles.stat, { color: c.onAccent }]}>
           {t("today.stats.exercises", { count: exercises.length })}

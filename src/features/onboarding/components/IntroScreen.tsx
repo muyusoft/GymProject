@@ -19,14 +19,20 @@ const renderPage: ListRenderItem<IntroStep> = ({ item }) => (
   <IntroPage step={item} />
 );
 
-function finishIntro() {
+function finishFirstIntro() {
   // Queda anotado que ya se vio: si luego se cierra sesión, la app abre en la bienvenida.
   void useSettingsStore.getState().update("introSeen", true);
   router.replace("/welcome");
 }
 
+interface IntroScreenProps {
+  /** Vista de nuevo desde Ajustes (o el atajo de desarrollo): al terminar vuelve a donde se abrió. */
+  isReplay: boolean;
+}
+
 /** Introducción para usuarios nuevos: cinco tarjetas deslizables que explican qué hace la app. */
-export function IntroScreen() {
+export function IntroScreen({ isReplay }: Readonly<IntroScreenProps>) {
+  const finishIntro = isReplay ? () => router.back() : finishFirstIntro;
   const { width } = useWindowDimensions();
   const pager = useIntroPager(width);
   const getItemLayout = useCallback(

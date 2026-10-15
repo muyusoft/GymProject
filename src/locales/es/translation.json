@@ -81,7 +81,16 @@
       "legend": "El punto marca los días con entreno. Toca un día para ir a su semana."
     },
     "doneTitle": "Lo que hiciste",
-    "greetingName": "Hola, {{name}}"
+    "greetingName": "Hola, {{name}}",
+    "movedFrom": "Movido del {{weekday}}",
+    "missed": {
+      "eyebrow": "Pendiente del {{weekday}}",
+      "title": "{{day}} quedó sin hacer",
+      "body": "Si lo haces hoy, el resto de la semana se corre un día hasta el próximo descanso.",
+      "lost": "{{day}} no cabe esta semana y se pierde.",
+      "doToday": "Hacer {{day}} hoy",
+      "keepPlan": "Seguir con mi plan"
+    }
   },
   "session": {
     "finish": "Terminar",
@@ -114,7 +123,7 @@
       "message_other": "Quedan {{count}} series sin marcar.",
       "confirm": "Terminar"
     },
-    "record": "PR",
+    "record": "Récord",
     "recordLabel": "Récord personal",
     "effort": {
       "question": "¿Cómo te fue?",
@@ -139,6 +148,26 @@
       "messageDone_one": "Se borrará {{count}} serie que ya registraste en esta sesión. Tu plan no cambia.",
       "messageDone_other": "Se borrarán {{count}} series que ya registraste en esta sesión. Tu plan no cambia.",
       "keep": "Seguir entrenando"
+    },
+    "applyToFollowing_one": "Aplicar a la serie siguiente",
+    "applyToFollowing_other": "Aplicar a las {{count}} series siguientes",
+    "planReps": {
+      "question": "¿Actualizar el plan a {{reps}} reps?",
+      "hint": "Hiciste todas las series con {{reps}} reps; el plan dice {{planReps}}.",
+      "day": "Solo este día",
+      "all": "Todos los días con {{exercise}}",
+      "no": "No, dejar el plan"
+    },
+    "newRecord": {
+      "title": {
+        "weight": "¡Nuevo récord de peso!",
+        "strength": "¡Nuevo récord de fuerza!"
+      },
+      "body": {
+        "weight": "{{set}} en {{exercise}}: más peso que nunca con esas reps",
+        "strength": "{{set}} en {{exercise}} · 1RM est. {{oneRepMax}}, tu mejor marca"
+      },
+      "dismiss": "Cerrar aviso de récord"
     }
   },
   "recovery": {
@@ -233,7 +262,9 @@
   },
   "stepper": {
     "decrease": "Disminuir",
-    "increase": "Aumentar"
+    "increase": "Aumentar",
+    "type": "{{value}} {{unit}}. Toca para escribir el valor",
+    "typeField": "Escribe el valor en {{unit}}"
   },
   "settings": {
     "title": "Ajustes",
@@ -245,7 +276,9 @@
       "appearance": "Apariencia",
       "reminders": "Recordatorios",
       "data": "Tus datos",
-      "account": "Cuenta"
+      "account": "Cuenta",
+      "help": "Ayuda",
+      "warmup": "Calentamiento y estiramientos"
     },
     "weightUnit": {
       "title": "Unidad de peso",
@@ -334,6 +367,15 @@
         "message": "No se pudieron guardar tus últimos cambios en la cuenta (¿sin conexión?). Si cierras sesión ahora, se pierden.",
         "confirm": "Cerrar sesión de todos modos"
       }
+    },
+    "help": {
+      "replayIntro": "Ver la introducción"
+    },
+    "warmup": {
+      "warmup": "Ofrecer calentamiento",
+      "warmupHint": "Antes de la primera serie, con series de aproximación en el primer ejercicio compuesto.",
+      "stretch": "Ofrecer estiramientos",
+      "stretchHint": "Al terminar el entreno, para lo que trabajaste."
     }
   },
   "weekday": {
@@ -354,6 +396,15 @@
       "4": "Viernes",
       "5": "Sábado",
       "6": "Domingo"
+    },
+    "sentence": {
+      "0": "lunes",
+      "1": "martes",
+      "2": "miércoles",
+      "3": "jueves",
+      "4": "viernes",
+      "5": "sábado",
+      "6": "domingo"
     }
   },
   "equipment": {
@@ -390,12 +441,13 @@
     "rest": "Descanso",
     "addDay": "Agregar entreno el {{weekday}}",
     "editPlan": "Editar plan",
-    "noDays": "Aún no hay días. Toca Editar plan para agregar los tuyos.",
+    "noDays": "Aún no hay días. Deja que te armemos la semana o toca Editar plan para agregar los tuyos.",
     "timeBadge": "Tiempo",
     "empty": {
       "title": "Aún no tienes plan",
       "body": "Arma tu plan semanal y Hoy te prepara el entreno solo.",
-      "create": "Crear plan"
+      "create": "Crear plan",
+      "forMe": "Crear un plan para mí"
     },
     "editor": {
       "eyebrow": "Editar plan",
@@ -483,7 +535,193 @@
       "rangeHint": "Rango {{min}}–{{max}}: primero subes repeticiones hasta {{max}} y luego el peso. Al subir de peso vuelves a {{min}}.",
       "rangeOff": "Bájalas para trabajar con un rango de repeticiones."
     },
-    "importNotes": "Importar notas"
+    "importNotes": "Importar notas",
+    "week": {
+      "holds": "Esta semana: {{day}}, movido del {{weekday}}",
+      "ownLost": "Su entreno no cabe esta semana y se pierde.",
+      "movedTo": "Esta semana se hace el {{weekday}}",
+      "skipped": "Saltado esta semana"
+    },
+    "wizard": {
+      "progress": "Pregunta {{current}} de {{total}}",
+      "close": "Cerrar sin crear plan",
+      "step": "Paso {{current}} de {{total}}",
+      "seePlan": "Ver mi plan",
+      "goal": {
+        "title": "¿Qué buscas?",
+        "note": "Para subir o bajar de peso manda sobre todo la alimentación. El entreno decide qué ganas o conservas: músculo y fuerza.",
+        "options": {
+          "muscle": {
+            "title": "Ganar músculo",
+            "body": "8–12 reps y volumen moderado a alto"
+          },
+          "strength": {
+            "title": "Ganar fuerza",
+            "body": "Pocas reps con más peso y descansos largos"
+          },
+          "fat_loss": {
+            "title": "Perder grasa",
+            "body": "Conservar el músculo mientras bajas de peso"
+          },
+          "fitness": {
+            "title": "Ponerme en forma",
+            "body": "Menos series y sesiones más cortas"
+          }
+        }
+      },
+      "schedule": {
+        "title": "¿Cuántos días entrenas?",
+        "dayCount_one": "{{count}} día",
+        "dayCount_other": "{{count}} días",
+        "experience": "Tu experiencia",
+        "split": {
+          "2": "Con 2 días: cuerpo completo cada día.",
+          "3": "Con 3 días: cuerpo completo, con tres días distintos.",
+          "4": "Con 4 días: torso y pierna, dos veces cada uno.",
+          "5": "Con 5 días: torso, pierna, empuje, tirón y pierna.",
+          "6": "Con 6 días: empuje, tirón y pierna, dos veces."
+        },
+        "levels": {
+          "beginner": {
+            "title": "Empezando",
+            "body": "Menos de 6 meses con pesas"
+          },
+          "intermediate": {
+            "title": "Algo de experiencia",
+            "body": "Entre 6 meses y 2 años"
+          },
+          "advanced": {
+            "title": "Avanzado",
+            "body": "Más de 2 años, con constancia"
+          }
+        }
+      },
+      "focus": {
+        "title": "¿Qué quieres priorizar?",
+        "equipment": "Equipo: gimnasio completo",
+        "equipmentSoon": "Pronto: solo mancuernas o en casa",
+        "options": {
+          "balanced": {
+            "title": "Equilibrado",
+            "body": "El mismo trabajo para todo el cuerpo"
+          },
+          "lower": {
+            "title": "Piernas y glúteos",
+            "body": "Más series para el tren inferior"
+          },
+          "upper": {
+            "title": "Tren superior",
+            "body": "Más series para pecho, espalda y brazos"
+          }
+        },
+        "minutes": "¿Cuánto tiempo tienes por sesión?",
+        "minutesOption_one": "{{count}} minuto",
+        "minutesOption_other": "{{count}} minutos"
+      },
+      "preview": {
+        "eyebrow": "Tu plan · se repite cada semana",
+        "title": "Así queda tu semana",
+        "note": "Los pesos se definen en tu primera sesión; después Overset te avisa cuándo subir. Puedes cambiar días y ejercicios cuando quieras.",
+        "save": "Guardar plan",
+        "change": "Cambiar respuestas",
+        "emptyTitle": "No pudimos armar el plan",
+        "emptyBody": "El catálogo no tiene ejercicios con músculos para estas respuestas. Prueba crear el plan desde cero.",
+        "minutes": "~{{count}} min",
+        "short": "Algunos días quedan más cortos que el tiempo que elegiste: con más series pasarías el volumen semanal recomendado para tu nivel.",
+        "shortBeginner": "Para empezar, sesiones más cortas bastan: más series todavía no suman. Cuando lleves unas semanas, Overset te irá sugiriendo subir peso.",
+        "bodyweight": "Tu plan usa tu peso corporal. Por ahora Overset no te sugiere cuándo progresar: sube reps cuando las series se sientan fáciles. Pronto llegará la progresión por repeticiones.",
+        "missing": "Con tu equipo no hay ejercicios de: {{patterns}}. Esos músculos se trabajan con otros ejercicios del plan."
+      },
+      "days": {
+        "fullA": "Cuerpo completo A",
+        "fullB": "Cuerpo completo B",
+        "fullC": "Cuerpo completo C",
+        "upperA": "Torso A",
+        "upperB": "Torso B",
+        "lowerA": "Pierna A",
+        "lowerB": "Pierna B",
+        "push": "Empuje",
+        "pull": "Tirón"
+      },
+      "patterns": {
+        "horizontal_push": "empuje horizontal",
+        "fly": "aperturas",
+        "dip": "fondos",
+        "vertical_push": "empuje vertical",
+        "lateral_raise": "elevación lateral",
+        "rear_delt": "deltoide posterior",
+        "vertical_pull": "tirón vertical",
+        "horizontal_pull": "tirón horizontal",
+        "shrug": "encogimientos",
+        "squat": "sentadilla",
+        "lunge": "zancada y búlgara",
+        "hinge_conventional": "peso muerto convencional",
+        "hinge_rdl": "peso muerto rumano y piernas rígidas",
+        "hip_thrust": "empuje de cadera",
+        "knee_extension": "extensión de rodilla",
+        "knee_flexion": "curl femoral",
+        "hip_abduction": "abducción de cadera",
+        "hip_adduction": "aducción de cadera",
+        "calf_standing": "pantorrilla de pie",
+        "calf_seated": "pantorrilla sentado",
+        "elbow_flexion": "flexión de codo",
+        "elbow_extension": "extensión de codo",
+        "core": "core"
+      },
+      "equipment": {
+        "title": "¿Con qué equipo cuentas?",
+        "hint": "Marca todo lo que tengas, en casa o en el gimnasio de tu edificio. Solo usaremos ejercicios que puedas hacer.",
+        "fullGym": "Gimnasio completo",
+        "fullGymBody": "Marca todo de una vez",
+        "none": "No tengo equipo",
+        "noneBody": "Un plan con tu peso corporal",
+        "groups": {
+          "freeWeights": "Peso libre",
+          "bars": "Barras y suspensión",
+          "upperMachines": "Máquinas de tren superior",
+          "lowerMachines": "Máquinas de tren inferior"
+        },
+        "items": {
+          "dumbbells": "Mancuernas",
+          "barbell": "Barra y discos",
+          "kettlebell": "Kettlebell",
+          "adjustableBench": "Banco ajustable",
+          "benchPress": "Banco de press",
+          "rack": "Rack",
+          "smith": "Smith (barra guiada)",
+          "tBarRow": "Remo en T",
+          "preacherBench": "Banco predicador",
+          "pullUpBar": "Barra de dominadas",
+          "powerTower": "Torre de dominadas y fondos",
+          "trx": "TRX",
+          "bands": "Bandas elásticas",
+          "cableTower": "Poleas (torre ajustable)",
+          "latPulldown": "Jalón al pecho",
+          "seatedRow": "Remo sentado",
+          "chestSupportedRow": "Remo con pecho apoyado",
+          "chestPress": "Press de pecho",
+          "shoulderPress": "Press de hombros",
+          "pecDeck": "Pec deck",
+          "bicepsMachine": "Máquina de bíceps",
+          "legPress": "Prensa",
+          "hackSquat": "Hack squat",
+          "squatMachine": "Máquina de sentadilla",
+          "hipThrustMachine": "Hip thrust",
+          "legExtension": "Extensión de cuádriceps",
+          "lyingLegCurl": "Curl femoral acostado",
+          "seatedLegCurl": "Curl femoral sentado",
+          "calfMachine": "Pantorrilla",
+          "hipMachine": "Aductores y abductores",
+          "backExtension": "Banco de hiperextensiones"
+        }
+      },
+      "swap": {
+        "title": "Cambiar ejercicio",
+        "empty": "No hay otros ejercicios para este movimiento con tu equipo.",
+        "action": "Cambiar {{exercise}}",
+        "hint": "Toca un ejercicio para cambiarlo por otro que trabaje lo mismo."
+      }
+    }
   },
   "library": {
     "title": "Ejercicios",
@@ -555,7 +793,7 @@
       "year": "Año"
     },
     "oneRepMax": "{{name}} · 1RM est.",
-    "record": "PR",
+    "record": "Récord",
     "today": "Hoy",
     "delta": {
       "up": "+{{value}} en {{span}}",
@@ -771,8 +1009,8 @@
     "start": "Empezar",
     "steps": {
       "plan": {
-        "title": "Arma tu semana una sola vez",
-        "body": "Crea tu plan desde cero o impórtalo de tus notas. Cada día, Overset te deja la sesión lista para empezar."
+        "title": "Tu entreno, serie a serie",
+        "body": "Arma tu semana una vez. Overset te prepara cada día, registra cada serie y te dice cuándo subir peso."
       },
       "log": {
         "title": "Cada serie, con un toque",
@@ -801,8 +1039,7 @@
       "days": {
         "chest": "Pecho y tríceps",
         "back": "Espalda y bíceps",
-        "rest": "Descanso",
-        "legs": "Pierna"
+        "rest": "Descanso"
       },
       "dayMeta_one": "{{count}} ejercicio · ~{{minutes}} min",
       "dayMeta_other": "{{count}} ejercicios · ~{{minutes}} min",
@@ -822,7 +1059,9 @@
       "trained": "Día entrenado",
       "bodyWeight": "Peso corporal · media de 7 días",
       "weeklyChange": "−{{weight}} por semana"
-    }
+    },
+    "brand": "Overset",
+    "welcome": "Te damos la bienvenida a Overset"
   },
   "account": {
     "brand": "Overset",
@@ -892,7 +1131,8 @@
         "recovery": "Recuperación",
         "group": "Pierna",
         "ready": "Lista para entrenar"
-      }
+      },
+      "devIntro": "Ver introducción (solo desarrollo)"
     },
     "signIn": {
       "title": "Iniciar sesión",
@@ -953,5 +1193,360 @@
       "later": "Decidir después"
     },
     "restoring": "Cargando tus datos…"
+  },
+  "movement": {
+    "dose": {
+      "reps_one": "{{count}} repetición",
+      "reps_other": "{{count}} repeticiones",
+      "repsPerSide_one": "{{count}} por lado",
+      "repsPerSide_other": "{{count}} por lado",
+      "steps_one": "{{count}} paso por lado",
+      "steps_other": "{{count}} pasos por lado",
+      "seconds_one": "{{count}} s",
+      "seconds_other": "{{count}} s",
+      "secondsPerSide_one": "{{count}} s por lado",
+      "secondsPerSide_other": "{{count}} s por lado"
+    },
+    "source": {
+      "fradkin2010": "Fradkin y col. 2010 · Calentamiento y rendimiento",
+      "behm2016": "Behm y col. 2016 · Efectos del estiramiento",
+      "herbert2011": "Herbert y col. 2011 · Estiramiento y dolor muscular",
+      "garber2011": "Garber y col. 2011 · ACSM, flexibilidad"
+    },
+    "jumpingJacks": {
+      "name": "Jumping jacks",
+      "purpose": "Sube el pulso y la temperatura del cuerpo antes de cargar peso.",
+      "tip": "Si prefieres no saltar, da un paso hacia el lado en vez del salto.",
+      "step1": "De pie, con los pies juntos y los brazos a los lados.",
+      "step2": "Salta abriendo las piernas y sube los brazos por encima de la cabeza.",
+      "step3": "Salta de vuelta a la posición inicial.",
+      "step4": "Mantén un ritmo cómodo durante 30 segundos."
+    },
+    "walkingKneeHug": {
+      "name": "Rodillas al pecho caminando",
+      "purpose": "Moviliza la cadera y despierta glúteos e isquiotibiales.",
+      "tip": "Si pierdes el equilibrio, hazlo sin caminar, apoyado en una pared.",
+      "step1": "Da un paso hacia adelante.",
+      "step2": "Sube la rodilla contraria y abrázala contra el pecho.",
+      "step3": "Sostén un segundo, con la espalda recta.",
+      "step4": "Suelta, avanza y cambia de pierna."
+    },
+    "armCircles": {
+      "name": "Círculos de brazos",
+      "purpose": "Calienta los hombros en todo su recorrido.",
+      "tip": "Mueve solo los brazos; el tronco se queda quieto.",
+      "step1": "De pie, con los brazos extendidos a los lados.",
+      "step2": "Haz círculos pequeños hacia adelante.",
+      "step3": "Agrándalos poco a poco hasta círculos amplios.",
+      "step4": "Repite hacia atrás."
+    },
+    "catCamel": {
+      "name": "Gato-camello",
+      "purpose": "Moviliza la columna vértebra por vértebra.",
+      "tip": "Muévete sin forzar; es movilidad, no un estiramiento.",
+      "step1": "Apóyate en manos y rodillas, manos bajo los hombros.",
+      "step2": "Redondea la espalda hacia el techo y mete la barbilla.",
+      "step3": "Baja el abdomen y lleva la mirada al frente.",
+      "step4": "Alterna despacio, siguiendo la respiración."
+    },
+    "bodyweightSquat": {
+      "name": "Sentadilla sin peso",
+      "purpose": "Prepara rodillas, cadera y tobillos para el movimiento de sentadilla.",
+      "tip": "Las rodillas siguen la línea de los pies, sin irse hacia adentro.",
+      "step1": "Pies al ancho de hombros y puntas un poco abiertas.",
+      "step2": "Baja llevando la cadera atrás y abajo, con el pecho alto.",
+      "step3": "Llega hasta donde mantengas los talones en el suelo.",
+      "step4": "Sube empujando el suelo."
+    },
+    "lungeTwist": {
+      "name": "Zancada con giro",
+      "purpose": "Abre la cadera y moviliza la parte media de la espalda.",
+      "tip": "La rodilla de adelante queda sobre el pie, no por delante de él.",
+      "step1": "Da un paso largo hacia adelante y baja a zancada.",
+      "step2": "Gira el tronco hacia el lado de la pierna de adelante.",
+      "step3": "Vuelve al centro.",
+      "step4": "Sube y cambia de pierna."
+    },
+    "legSwingFront": {
+      "name": "Balanceo de pierna adelante y atrás",
+      "purpose": "Moviliza la cadera y prepara los isquiotibiales.",
+      "tip": "Controla el balanceo; no busques llegar alto desde la primera.",
+      "step1": "Apóyate de lado en una pared o un soporte.",
+      "step2": "Balancea la pierna de afuera hacia adelante y atrás.",
+      "step3": "Aumenta el recorrido poco a poco.",
+      "step4": "Cambia de lado."
+    },
+    "legSwingSide": {
+      "name": "Balanceo de pierna lateral",
+      "purpose": "Moviliza la cadera hacia los lados y prepara los aductores.",
+      "tip": "Mantén la cadera mirando a la pared mientras la pierna se mueve.",
+      "step1": "Ponte de frente a una pared, con las manos apoyadas.",
+      "step2": "Balancea una pierna de lado a lado, por delante de la otra.",
+      "step3": "Aumenta el recorrido poco a poco.",
+      "step4": "Cambia de pierna."
+    },
+    "gluteBridge": {
+      "name": "Puente de glúteo",
+      "purpose": "Activa los glúteos antes de sentadillas, peso muerto y zancadas.",
+      "tip": "Si lo sientes en la espalda baja, sube un poco menos y aprieta más los glúteos.",
+      "step1": "Acostado boca arriba, rodillas dobladas y pies apoyados.",
+      "step2": "Aprieta los glúteos y sube la cadera.",
+      "step3": "Sostén un segundo arriba, con el cuerpo en línea.",
+      "step4": "Baja despacio."
+    },
+    "hipHinge": {
+      "name": "Bisagra de cadera",
+      "purpose": "Enseña y calienta el movimiento del peso muerto.",
+      "tip": "Un palo apoyado en la espalda (cabeza, espalda alta y cadera) te ayuda a mantenerla recta.",
+      "step1": "De pie, con las rodillas apenas dobladas.",
+      "step2": "Lleva la cadera hacia atrás con la espalda recta.",
+      "step3": "Baja hasta sentir tensión detrás de los muslos.",
+      "step4": "Vuelve apretando los glúteos."
+    },
+    "ankleRock": {
+      "name": "Movilidad de tobillo en la pared",
+      "purpose": "Mejora la flexión del tobillo para bajar más en la sentadilla.",
+      "tip": "Si tocas la pared con facilidad, aleja un poco el pie.",
+      "step1": "De frente a una pared, con un pie a un palmo de ella.",
+      "step2": "Lleva la rodilla hacia la pared sin levantar el talón.",
+      "step3": "Vuelve atrás.",
+      "step4": "Repite y cambia de pie."
+    },
+    "bandLateralWalk": {
+      "name": "Caminata lateral con banda",
+      "purpose": "Activa los glúteos laterales para que las rodillas no se vayan hacia adentro.",
+      "tip": "Si la banda te tira las rodillas hacia adentro, usa una más suave o bájala a los tobillos.",
+      "step1": "Pasa la banda por encima de las rodillas y separa los pies al ancho de cadera.",
+      "step2": "Baja a media sentadilla, con el pecho alto.",
+      "step3": "Da un paso lateral, sin juntar del todo los pies: la banda siempre tensa.",
+      "step4": "Haz los pasos hacia un lado y vuelve hacia el otro."
+    },
+    "bandMonsterWalk": {
+      "name": "Monster walk con banda",
+      "purpose": "Activa los glúteos en todas las direcciones de la cadera.",
+      "tip": "Pasos cortos y controlados; las rodillas siempre hacia afuera.",
+      "step1": "Banda sobre las rodillas, en media sentadilla.",
+      "step2": "Camina hacia adelante en diagonal, abriendo cada paso.",
+      "step3": "Mantén la banda tensa todo el tiempo.",
+      "step4": "Vuelve caminando hacia atrás."
+    },
+    "bandGluteBridge": {
+      "name": "Puente de glúteo con banda",
+      "purpose": "Activa glúteos con más intensidad que el puente sin banda.",
+      "tip": "Si la banda gana y las rodillas se cierran, usa una más suave.",
+      "step1": "Banda sobre las rodillas, acostado boca arriba.",
+      "step2": "Separa las rodillas contra la banda.",
+      "step3": "Sube la cadera apretando los glúteos.",
+      "step4": "Baja despacio sin dejar que las rodillas se junten."
+    },
+    "thoracicRotation": {
+      "name": "Rotación torácica en cuadrupedia",
+      "purpose": "Moviliza la parte media de la espalda, clave para press y remos.",
+      "tip": "Mantén la cadera quieta; el giro sale de la espalda.",
+      "step1": "Apóyate en manos y rodillas.",
+      "step2": "Pon una mano detrás de la cabeza.",
+      "step3": "Gira el codo hacia el techo siguiéndolo con la mirada.",
+      "step4": "Vuelve y repite; luego cambia de lado."
+    },
+    "scapularPushUp": {
+      "name": "Flexión escapular",
+      "purpose": "Activa los músculos que mueven los omóplatos antes de empujar.",
+      "tip": "Puedes hacerlo con las rodillas apoyadas.",
+      "step1": "En posición de plancha, con los brazos estirados.",
+      "step2": "Sin doblar los codos, deja que el pecho baje entre los omóplatos.",
+      "step3": "Empuja el suelo y separa los omóplatos.",
+      "step4": "Repite con un ritmo controlado."
+    },
+    "wallSlide": {
+      "name": "Deslizamientos en la pared",
+      "purpose": "Prepara los hombros para levantar los brazos por encima de la cabeza.",
+      "tip": "Sube solo hasta donde puedas mantener el contacto con la pared.",
+      "step1": "De espaldas a la pared, con la espalda baja apoyada.",
+      "step2": "Pon los brazos en W, con codos y manos contra la pared.",
+      "step3": "Desliza los brazos hacia arriba sin despegarlos.",
+      "step4": "Baja de vuelta a la W."
+    },
+    "bandPullApart": {
+      "name": "Separaciones con banda",
+      "purpose": "Activa la espalda alta y la parte trasera del hombro.",
+      "tip": "Sin encoger los hombros hacia las orejas.",
+      "step1": "Toma la banda frente al pecho, con los brazos estirados.",
+      "step2": "Separa las manos llevando la banda al pecho.",
+      "step3": "Junta los omóplatos al final.",
+      "step4": "Vuelve despacio."
+    },
+    "bandDislocate": {
+      "name": "Dislocaciones con banda",
+      "purpose": "Moviliza el hombro en todo su recorrido.",
+      "tip": "Si no pasa con facilidad, abre más el agarre.",
+      "step1": "Toma la banda con un agarre bien ancho, frente a la cadera.",
+      "step2": "Con los brazos estirados, súbela por encima de la cabeza.",
+      "step3": "Llévala hasta detrás de la espalda.",
+      "step4": "Vuelve por el mismo camino."
+    },
+    "bandExternalRotation": {
+      "name": "Rotación externa con banda",
+      "purpose": "Activa los músculos del manguito rotador.",
+      "tip": "Una toalla entre el codo y el cuerpo ayuda a no despegarlo.",
+      "step1": "Ata la banda a la altura del codo y ponte de lado.",
+      "step2": "Codo pegado al cuerpo y doblado en 90 grados.",
+      "step3": "Gira el antebrazo hacia afuera.",
+      "step4": "Vuelve despacio y cambia de lado."
+    },
+    "standingQuad": {
+      "name": "Cuádriceps de pie",
+      "purpose": "Estira la parte de adelante del muslo.",
+      "tip": "Debe sentirse en el muslo, nunca dolor en la rodilla.",
+      "step1": "Apoya una mano en la pared para mantener el equilibrio.",
+      "step2": "Dobla una rodilla y toma el tobillo con la mano del mismo lado.",
+      "step3": "Lleva el talón hacia el glúteo, con las rodillas juntas.",
+      "step4": "Mantén sin rebotes y cambia de pierna."
+    },
+    "seatedHamstring": {
+      "name": "Isquiotibiales sentado",
+      "purpose": "Estira la parte de atrás del muslo.",
+      "tip": "La espalda recta importa más que llegar al pie.",
+      "step1": "Sentado, con una pierna estirada y la otra doblada.",
+      "step2": "Inclínate hacia adelante desde la cadera.",
+      "step3": "Lleva las manos hacia el pie hasta sentir tensión.",
+      "step4": "Mantén y cambia de pierna."
+    },
+    "kneelingHipFlexor": {
+      "name": "Flexor de cadera arrodillado",
+      "purpose": "Estira la parte de adelante de la cadera, que se acorta al estar sentado.",
+      "tip": "Pon algo blando bajo la rodilla apoyada.",
+      "step1": "Arrodíllate con una pierna adelante, en zancada.",
+      "step2": "Aprieta el glúteo de la pierna de atrás.",
+      "step3": "Lleva la cadera un poco hacia adelante.",
+      "step4": "Mantén y cambia de lado."
+    },
+    "figureFour": {
+      "name": "Glúteo en figura 4",
+      "purpose": "Estira el glúteo y la parte externa de la cadera.",
+      "tip": "Relaja la cabeza y los hombros en el suelo.",
+      "step1": "Acostado boca arriba, con las rodillas dobladas.",
+      "step2": "Cruza un tobillo sobre la rodilla contraria.",
+      "step3": "Toma el muslo de abajo y acércalo al pecho.",
+      "step4": "Mantén y cambia de lado."
+    },
+    "butterfly": {
+      "name": "Mariposa",
+      "purpose": "Estira los aductores, la parte interna del muslo.",
+      "tip": "No empujes las rodillas con los codos; deja que bajen solas.",
+      "step1": "Sentado, junta las plantas de los pies.",
+      "step2": "Toma los pies con las manos.",
+      "step3": "Deja caer las rodillas hacia el suelo.",
+      "step4": "Inclínate un poco hacia adelante con la espalda recta."
+    },
+    "wallCalf": {
+      "name": "Gemelos en la pared",
+      "purpose": "Estira la pantorrilla.",
+      "tip": "Dobla un poco la rodilla de atrás para estirar la parte baja de la pantorrilla.",
+      "step1": "Apoya las manos en la pared, con un pie atrás.",
+      "step2": "Talón de atrás en el suelo y pierna estirada.",
+      "step3": "Lleva la cadera hacia la pared.",
+      "step4": "Mantén y cambia de pierna."
+    },
+    "doorwayChest": {
+      "name": "Pectoral en el marco de la puerta",
+      "purpose": "Estira el pecho y la parte de adelante del hombro.",
+      "tip": "Si sientes hormigueo en la mano, baja un poco el codo.",
+      "step1": "Apoya el antebrazo en el marco, con el codo a la altura del hombro.",
+      "step2": "Da un paso adelante con la pierna del mismo lado.",
+      "step3": "Gira el pecho hacia el lado contrario.",
+      "step4": "Mantén y cambia de brazo."
+    },
+    "wallLat": {
+      "name": "Dorsal en la pared",
+      "purpose": "Estira el dorsal, el músculo ancho de la espalda.",
+      "tip": "Colgarte de una barra también estira el dorsal.",
+      "step1": "Ponte frente a una pared y apoya las manos a la altura de la cadera.",
+      "step2": "Camina hacia atrás con los brazos estirados.",
+      "step3": "Lleva la cadera atrás y deja caer el pecho.",
+      "step4": "Mantén y respira."
+    },
+    "crossBodyShoulder": {
+      "name": "Hombro cruzado",
+      "purpose": "Estira la parte trasera del hombro.",
+      "tip": "Mantén el hombro bajo, lejos de la oreja.",
+      "step1": "Cruza un brazo estirado por delante del pecho.",
+      "step2": "Sujétalo con el otro brazo por encima del codo.",
+      "step3": "Acércalo al pecho.",
+      "step4": "Mantén y cambia de brazo."
+    },
+    "overheadTriceps": {
+      "name": "Tríceps detrás de la cabeza",
+      "purpose": "Estira el tríceps.",
+      "tip": "La cabeza queda erguida; no la empujes hacia adelante.",
+      "step1": "Sube un brazo y dobla el codo detrás de la cabeza.",
+      "step2": "Con la otra mano, toma el codo.",
+      "step3": "Empújalo suavemente hacia atrás.",
+      "step4": "Mantén y cambia de brazo."
+    },
+    "childPose": {
+      "name": "Postura del niño",
+      "purpose": "Relaja y estira la espalda.",
+      "tip": "Separa las rodillas si la barriga no tiene espacio.",
+      "step1": "Arrodíllate y siéntate sobre los talones.",
+      "step2": "Inclínate hacia adelante con los brazos estirados.",
+      "step3": "Apoya la frente en el suelo.",
+      "step4": "Respira hondo y suelta la espalda."
+    },
+    "gentleCobra": {
+      "name": "Cobra suave",
+      "purpose": "Estira el abdomen y moviliza la espalda baja.",
+      "tip": "Si molesta la espalda baja, apóyate en los antebrazos.",
+      "step1": "Acostado boca abajo, con las manos bajo los hombros.",
+      "step2": "Empuja el suelo y sube el pecho.",
+      "step3": "Mantén la cadera apoyada.",
+      "step4": "Sube solo hasta donde sea cómodo."
+    }
+  },
+  "warmup": {
+    "eyebrow": "Antes de empezar · opcional",
+    "title": "Calentamiento",
+    "minutes_one": "~{{count}} min · para los músculos de hoy",
+    "minutes_other": "~{{count}} min · para los músculos de hoy",
+    "progress": "{{done}} de {{total}} hechos",
+    "band": "Banda",
+    "noEquipment": "Sin equipo",
+    "rowLabel": "{{name}}, {{dose}}, {{equipment}}",
+    "note": "Movimientos activos y activación: preparan sin restar fuerza. Puedes apagar el calentamiento en Ajustes.",
+    "skip": "Saltar",
+    "start": "Ir al primer ejercicio",
+    "ramp": {
+      "title": "Aproximación · opcional",
+      "hide": "Ocultar",
+      "index": "A{{index}}",
+      "empty": "Barra sola o carga mínima",
+      "note": "Peso subiendo hasta el de trabajo. No cuentan para tus series ni récords."
+    },
+    "howTo": "Ver cómo se hace: {{name}}"
+  },
+  "stretch": {
+    "eyebrow": "Entreno terminado · opcional",
+    "title": "Estiramientos",
+    "minutes_one": "~{{count}} min · para lo que entrenaste hoy",
+    "minutes_other": "~{{count}} min · para lo que entrenaste hoy",
+    "start": "Empezar · {{name}}",
+    "side": "{{name}} · lado {{side}}",
+    "remaining": "{{label}}, quedan {{seconds}} segundos",
+    "stop": "Parar",
+    "note": "Estirar mejora la movilidad; no evita las agujetas. Sin rebotes y sin dolor.",
+    "skip": "Terminar sin estirar",
+    "done": "Listo"
+  },
+  "movementInfo": {
+    "eyebrow": "Ficha",
+    "notFound": "No encontramos este movimiento.",
+    "purpose": "Para qué sirve",
+    "steps": "Cómo se hace",
+    "sources": "Fuentes",
+    "openSource": "Abrir la fuente: {{source}}",
+    "kind": {
+      "warmup": "Calentamiento",
+      "stretch": "Estiramiento"
+    },
+    "figure": "Ilustración: {{name}}"
   }
 }

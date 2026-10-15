@@ -2,7 +2,7 @@ import { and, eq, isNotNull, ne } from "drizzle-orm";
 import { db } from "@/shared/db/client";
 import { sessions, setLogs } from "@/shared/db/schema";
 import { toValidSet, type ValidSet } from "@/shared/utils/one-rep-max.utils";
-import { isRecord } from "@/shared/utils/records.utils";
+import { recordKind, type RecordKind } from "@/shared/utils/records.utils";
 
 interface RecordCheck {
   exerciseId: string;
@@ -11,8 +11,8 @@ interface RecordCheck {
   candidate: ValidSet;
 }
 
-/** ¿Esta serie supera todo lo registrado antes de este ejercicio (sesiones terminadas, incluidas las importadas)? */
-export async function isNewRecord({ exerciseId, sessionId, candidate }: RecordCheck): Promise<boolean> {
+/** Qué récord es esta serie frente a todo lo registrado antes (sesiones terminadas, incluidas las importadas); null si ninguno. */
+export async function findNewRecord({ exerciseId, sessionId, candidate }: RecordCheck): Promise<RecordKind | null> {
   const rows = await db
     .select({
       weight: setLogs.weight,
@@ -35,5 +35,5 @@ export async function isNewRecord({ exerciseId, sessionId, candidate }: RecordCh
     const valid = toValidSet(row);
     return valid ? [valid] : [];
   });
-  return isRecord(candidate, history);
+  return recordKind(candidate, history);
 }

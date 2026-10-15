@@ -3,6 +3,7 @@
  * Usan stroke="currentColor": el color llega por la prop `color` de IconRenderer.
  * Excepción: brand-apple y brand-google son los logotipos oficiales (relleno, y Google con sus cuatro colores).
  * Para agregar uno: crea el .svg con el mismo encabezado y regístralo en los tres lugares de este archivo.
+ * Las ilustraciones de equipo (4:3, varios tonos) tienen su propio registro en equipment-illustrations.ts.
  */
 
 import type { FC } from "react";
@@ -243,3 +244,8 @@ export const ICON_REGISTRY: Record<IconName, FC<SvgProps>> = {
   user: UserIcon,
   x: XIcon,
 };
+
+export { EquipmentIllustration } from "./equipment-illustration";
+export type { EquipmentIllustrationName, IllustrationTones } from "./equipment-illustrations";
+export { MovementIllustration } from "./movement-illustration";
+export { MOVEMENT_ILLUSTRATION_NAMES, type MovementIllustrationName } from "./movement-illustrations";

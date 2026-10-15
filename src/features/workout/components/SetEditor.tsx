@@ -1,7 +1,12 @@
 import { StyleSheet, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { tokens } from "@/design/tokens";
-import { Button, SegmentedControl, Stepper } from "@/shared/components";
+import {
+  Button,
+  SegmentedControl,
+  Stepper,
+  TypeableStepper,
+} from "@/shared/components";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 import { formatClock } from "@/shared/utils/duration.utils";
 import { WEIGHT_UNITS } from "@/shared/types/training.types";
@@ -14,6 +19,9 @@ interface SetEditorProps {
   set: SessionSet;
   template: ExerciseTemplate;
   onChange: (patch: SetPatch) => void;
+  /** Cuántas series siguientes pendientes cambiarían al copiar esta; con 0 no se ofrece. */
+  followingCount: number;
+  onApplyToFollowing: () => void;
   onClose: () => void;
 }
 
@@ -25,6 +33,8 @@ export function SetEditor({
   set,
   template,
   onChange,
+  followingCount,
+  onApplyToFollowing,
   onClose,
 }: Readonly<SetEditorProps>) {
   const { t, i18n } = useTranslation();
@@ -44,7 +54,7 @@ export function SetEditor({
         />
       )}
       {usesWeight(set.loadType) && (
-        <Stepper
+        <TypeableStepper
           value={set.weight ?? 0}
           step={template.weightSteps[set.unit]}
           {...SET_LIMITS.weight}
@@ -67,6 +77,15 @@ export function SetEditor({
           {...SET_LIMITS.reps}
           unit={t("session.repsUnit")}
           onChange={(reps) => onChange({ reps })}
+        />
+      )}
+      {followingCount > 0 && (
+        <Button
+          variant="secondary"
+          icon="copy"
+          label={t("session.applyToFollowing", { count: followingCount })}
+          block
+          onPress={onApplyToFollowing}
         />
       )}
       <Button

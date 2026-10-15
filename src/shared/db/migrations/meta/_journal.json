@@ -29,6 +29,20 @@
       "when": 1791305162781,
       "tag": "0003_hard_meteorite",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1792011598489,
+      "tag": "0004_schedule_shifts",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1792037518698,
+      "tag": "0005_exercise_requires",
+      "breakpoints": true
     }
   ]
 }

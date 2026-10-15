@@ -68,3 +68,7 @@ export type SessionOrigin = (typeof SESSION_ORIGINS)[number];
 
 export const MUSCLE_CATEGORIES = ["shoulder", "back", "chest", "legs", "arms", "core"] as const;
 export type MuscleCategory = (typeof MUSCLE_CATEGORIES)[number];
+
+/** Tiempo por sesión que elige la persona; ajusta el plan, el calentamiento y los estiramientos. */
+export const SESSION_MINUTES = [30, 45, 60, 75] as const;
+export type SessionMinutes = (typeof SESSION_MINUTES)[number];

@@ -3,7 +3,9 @@ import type {
   LoadType,
   WeightUnit,
 } from "@/shared/types/training.types";
-import type { LastPerformance } from "../utils/last-performance.utils";
+import type { LastPerformance } from "@/shared/utils/last-performance.utils";
+import type { ValidSet } from "@/shared/utils/one-rep-max.utils";
+import type { RecordKind } from "@/shared/utils/records.utils";
 
 export interface SessionSet {
   id: string;
@@ -83,6 +85,13 @@ export interface SessionExercise {
   last: LastPerformance | null;
 }
 
+/** Un récord recién batido en la sesión: qué serie y de qué tipo, para explicarlo en el aviso. */
+export interface RecordNotice {
+  exercise: SessionExercise;
+  set: ValidSet;
+  kind: RecordKind;
+}
+
 export interface SessionView {
   id: string;
   dayName: string;
@@ -137,4 +146,17 @@ export interface TodayView {
   activeSessionId: string | null;
   isDoneToday: boolean;
   hints: ProgressionHintData[];
+  /** Si lo de hoy es un día movido esta semana: de qué día de la semana viene. */
+  movedFromWeekday: number | null;
+  /** El último día de entreno que quedó sin hacer, ofrecido para hacerlo hoy. */
+  missedDay: MissedDayOffer | null;
+}
+
+export interface MissedDayOffer {
+  /** Fecha del día perdido, yyyy-MM-dd. */
+  date: string;
+  weekday: number;
+  dayName: string;
+  /** El día que se quedaría fuera esta semana si se hace hoy; null si todo cabe. */
+  lostDayName: string | null;
 }

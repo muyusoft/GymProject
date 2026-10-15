@@ -26,3 +26,15 @@ export function isAtMin(value: number, { min }: StepperRange): boolean {
 export function isAtMax(value: number, { max }: StepperRange): boolean {
   return value >= max;
 }
+
+/**
+ * Un número escrito a mano: acepta coma o punto decimal y lo deja dentro del rango. null si no es un número,
+ * para que quien llama conserve el valor anterior en vez de guardar algo inventado.
+ */
+export function parseTypedValue(text: string, range: StepperRange): number | null {
+  const normalized = text.trim().replace(",", ".");
+  if (normalized === "") return null;
+  const value = Number(normalized);
+  if (!Number.isFinite(value)) return null;
+  return clampValue(Math.round(value * PRECISION) / PRECISION, range);
+}

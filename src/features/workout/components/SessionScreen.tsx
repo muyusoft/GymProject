@@ -6,17 +6,20 @@ import { AsyncStateView, InlineError } from "@/shared/components";
 import { toIsoDate } from "@/shared/utils/week.utils";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 import { useCancelSession } from "../hooks/use-cancel-session";
+import { useDayMuscles } from "../hooks/use-day-muscles";
+import { useRampSets } from "../hooks/use-ramp-sets";
+import { useWarmup } from "../hooks/use-warmup";
 import { useSession } from "../hooks/use-session";
 import { useSubstitution } from "../hooks/use-substitution";
 import type { SessionExercise } from "../types/workout.types";
 import { sessionProgress } from "../utils/session-stats.utils";
-import { EffortPrompt } from "./EffortPrompt";
-import { ExerciseCard } from "./ExerciseCard";
+import { RecordToast } from "./RecordToast";
 import { RestTimer } from "./RestTimer";
+import { SessionExerciseContent } from "./SessionExerciseContent";
 import { SessionHeader } from "./SessionHeader";
-import { SessionHint } from "./SessionHint";
 import { SessionNav } from "./SessionNav";
 import { SubstituteSheet } from "./SubstituteSheet";
+import { WarmupCard } from "./WarmupCard";
 
 const EMPTY_EXERCISES: readonly SessionExercise[] = [];
 
@@ -31,10 +34,14 @@ export function SessionScreen({ sessionId }: Readonly<SessionScreenProps>) {
   const cancellation = useCancelSession(sessionId, session.view);
   const { view, current, timer } = session;
   const exercise = view?.exercises[current];
+  const exercises = view?.exercises ?? EMPTY_EXERCISES;
+  const muscles = useDayMuscles(exercises.map((item) => item.exerciseId));
+  const warmup = useWarmup({ sessionId, view, muscles });
+  const ramp = useRampSets(exercises, muscles);
   const substitution = useSubstitution({
     date: toIsoDate(new Date(view?.startedAt ?? Date.now())),
     sessionId,
-    exercises: view?.exercises ?? EMPTY_EXERCISES,
+    exercises,
     onChanged: session.reload,
   });
 
@@ -63,31 +70,28 @@ export function SessionScreen({ sessionId }: Readonly<SessionScreenProps>) {
               onBack={() => router.back()}
               onFinish={session.finish}
             />
+            <RecordToast notice={session.recordNotice} onDismiss={session.dismissRecord} />
           </View>
           <ScrollView
             contentContainerStyle={styles.content}
             keyboardShouldPersistTaps="handled"
           >
-            <SessionHint
-              key={exercise.exerciseId}
-              exercise={exercise}
-              onApply={(choice) => session.applyHint(exercise, choice)}
-            />
-            <ExerciseCard
-              exercise={exercise}
-              editingSetId={session.editingSetId}
-              onToggleSet={(set) => session.toggleSet(exercise, set)}
-              onEditSet={session.setEditingSetId}
-              onChangeSet={(setId, patch) =>
-                session.changeSet(exercise, setId, patch)
-              }
-              onAddSet={() => void session.appendSet(exercise)}
-              onSubstitute={() => substitution.open(exercise)}
-            />
-            <EffortPrompt
-              exercise={exercise}
-              onRate={(level) => session.rateEffort(exercise, level)}
-            />
+            {warmup.isVisible ? (
+              <WarmupCard
+                movements={warmup.movements}
+                doneIds={warmup.doneIds}
+                onToggle={warmup.toggle}
+                onClose={warmup.close}
+              />
+            ) : (
+              <SessionExerciseContent
+                session={session}
+                exercise={exercise}
+                ramp={ramp.rampFor(exercise)}
+                onHideRamp={ramp.hide}
+                onSubstitute={substitution.open}
+              />
+            )}
             <SessionNav
               exercises={view.exercises}
               current={current}

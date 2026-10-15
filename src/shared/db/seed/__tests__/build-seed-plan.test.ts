@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { buildCatalogUpdate } from "../build-catalog-update";
 import { buildSeedPlan } from "../build-seed-plan";
 import { resolveMuscles } from "../muscle-rows";
 import type { PatternRecord, SeedInput } from "../seed.types";
@@ -135,5 +136,33 @@ describe("resolveMuscles", () => {
       ],
     };
     expect(() => resolveMuscles(bad)).toThrow("Invalid muscle group");
+  });
+});
+
+describe("equipo de los ejercicios comunes", () => {
+  const withEquipment: SeedInput = {
+    ...INPUT,
+    commonExercises: [
+      { nameEs: "Press banca", freeExerciseDbName: "Bench Press", pattern: "horizontal_push", requires: [["barbell", "benchPress"]] },
+      { nameEs: "Sentadilla en máquina", freeExerciseDbName: null, pattern: "horizontal_push", equipment: "machine", requires: null },
+    ],
+  };
+
+  it("guarda los requisitos como JSON y deja sin dato a quien no los trae", () => {
+    const plan = buildSeedPlan(withEquipment, createId);
+    expect(plan.exercises.find((e) => e.id === "fedb:Bench")?.requires).toBe('[["barbell","benchPress"]]');
+    expect(plan.exercises.find((e) => e.id === "fedb:Crunch")?.requires).toBeNull();
+  });
+
+  it("un ejercicio propio toma el equipo que declara", () => {
+    const plan = buildSeedPlan(withEquipment, createId);
+    const machine = plan.exercises.find((e) => e.nameEs === "Sentadilla en máquina");
+    expect([machine?.equipment, machine?.defaultLoadType]).toEqual(["machine", "total"]);
+  });
+
+  it("la actualización del catálogo solo reescribe los ejercicios comunes y sus músculos", () => {
+    const update = buildCatalogUpdate(withEquipment, createId);
+    expect(update.exercises.map((e) => e.id)).toEqual(["fedb:Bench", "common:sentadilla-en-maquina"]);
+    expect(update.muscles.every((m) => m.exerciseId !== "fedb:Crunch")).toBe(true);
   });
 });

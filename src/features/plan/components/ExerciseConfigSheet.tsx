@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { getTextStyle, tokens } from "@/design/tokens";
 import { AsyncStateView, Button, InlineError } from "@/shared/components";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
-import IconRenderer from "@/shared/icons/icon-renderer";
+import { IconRenderer } from "@/shared/icons/icon-renderer";
 import { getExerciseName } from "@/shared/utils/exercise-name.utils";
 import { useExerciseConfig } from "../hooks/use-exercise-config";
 import { loadTypeUsesWeight } from "../utils/exercise-config.utils";

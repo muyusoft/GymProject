@@ -7,6 +7,7 @@ import { getExerciseName } from "@/shared/utils/exercise-name.utils";
 import { formatWeight } from "@/shared/utils/weight.utils";
 import type { SetPatch } from "../services/session-write.service";
 import type { SessionExercise, SessionSet } from "../types/workout.types";
+import { copyToFollowing } from "../utils/copy-sets.utils";
 import { getSetStatuses } from "../utils/session-stats.utils";
 import { formatTemplateSummary } from "../utils/template.utils";
 import { SetEditor } from "./SetEditor";
@@ -35,6 +36,7 @@ export function ExerciseCard({
   const { c } = useOverloadTheme();
   const statuses = getSetStatuses(exercise.sets);
   const doneCount = exercise.sets.filter((set) => set.completed).length;
+  const copies = copyToFollowing(exercise.sets, editingSetId);
 
   return (
     <View style={[styles.card, { backgroundColor: c.surface }]}>
@@ -100,6 +102,10 @@ export function ExerciseCard({
               set={set}
               template={exercise.template}
               onChange={(patch) => onChangeSet(set.id, patch)}
+              followingCount={copies.length}
+              onApplyToFollowing={() =>
+                copies.forEach((copy) => onChangeSet(copy.id, copy.patch))
+              }
               onClose={() => onEditSet(null)}
             />
           )}

@@ -31,6 +31,8 @@ export const exercises = sqliteTable("exercises", {
   equipment: text("equipment", { enum: EQUIPMENTS }).notNull(),
   defaultLoadType: text("default_load_type", { enum: LOAD_TYPES }).notNull(),
   aliases: text("aliases").notNull().default("[]"),
+  /** JSON: combinaciones de equipo que sirven para hacerlo (ver equipment.types). null = sin dato. */
+  requires: text("requires"),
   evidenceLevel: text("evidence_level", { enum: SOURCE_STRENGTHS }),
   status: text("status", { enum: EXERCISE_STATUSES })
     .notNull()

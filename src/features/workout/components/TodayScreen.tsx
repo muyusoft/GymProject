@@ -11,6 +11,7 @@ import { useSubstitution } from "../hooks/use-substitution";
 import { useToday } from "../hooks/use-today";
 import type { TodayExercise } from "../types/workout.types";
 import { EmptyToday } from "./EmptyToday";
+import { MissedDayPrompt } from "./MissedDayPrompt";
 import { SubstituteSheet } from "./SubstituteSheet";
 import { TodayCard } from "./TodayCard";
 import { TodayExerciseList } from "./TodayExerciseList";
@@ -81,6 +82,9 @@ export function TodayScreen() {
             currentWeek={today.weekStrip}
             onSelectDay={openDay}
           />
+          {today.missedDay && (
+            <MissedDayPrompt offer={today.missedDay} onChanged={reload} />
+          )}
           {today.day ? (
             <>
               <TodayCard

@@ -1,9 +1,12 @@
 import type { Language, WeighInFrequency } from "@/shared/types/settings.types";
 import { LANGUAGES, WEIGH_IN_FREQUENCIES } from "@/shared/types/settings.types";
 import {
+  SESSION_MINUTES,
   UNIT_PREFERENCES,
+  type SessionMinutes,
   type UnitPreference,
 } from "@/shared/types/training.types";
+import { GYM_EQUIPMENT, type GymEquipment } from "@/shared/types/equipment.types";
 import { isOneOf } from "@/shared/utils/guard.utils";
 import type { ThemePreference } from "./color-mode.utils";
 
@@ -30,6 +33,14 @@ export interface AppSettings {
   onboardingDone: boolean;
   /** La introducción ya se vio alguna vez: al quedar sin sesión se abre en la bienvenida, no en ella. */
   introSeen: boolean;
+  /** Equipo que la persona marcó al crear su plan; sin guardar = gimnasio completo. */
+  equipment: readonly GymEquipment[];
+  /** Minutos por sesión elegidos en el asistente; decide cuánto calentamiento y estiramiento se ofrece. */
+  sessionMinutes: SessionMinutes;
+  /** Ofrecer calentamiento y series de aproximación antes de entrenar. */
+  warmupEnabled: boolean;
+  /** Ofrecer estiramientos al terminar. */
+  stretchEnabled: boolean;
 }
 
 export type AppSettingKey = keyof AppSettings;
@@ -45,8 +56,23 @@ export const MIN_HEIGHT_CM = 120;
 export const MAX_HEIGHT_CM = 230;
 export const HEIGHT_NOT_SET = 0;
 
-export const serializeSetting: (value: string | boolean | number) => string =
-  String;
+const LIST_SEPARATOR = ",";
+export const DEFAULT_SESSION_MINUTES: SessionMinutes = 45;
+
+export function serializeSetting(value: string | boolean | number | readonly string[]): string {
+  return typeof value === "object" ? value.join(LIST_SEPARATOR) : String(value);
+}
+
+/** Lista guardada como texto separado por comas; los valores desconocidos se descartan. */
+function parseEquipment(raw: string | undefined): readonly GymEquipment[] {
+  if (raw === undefined) return GYM_EQUIPMENT;
+  return raw.split(LIST_SEPARATOR).filter((item): item is GymEquipment => isOneOf(GYM_EQUIPMENT, item));
+}
+
+function parseMinutes(raw: string | undefined): SessionMinutes {
+  const value = Number(raw);
+  return SESSION_MINUTES.find((minutes) => minutes === value) ?? DEFAULT_SESSION_MINUTES;
+}
 
 function parseBoolean(raw: string | undefined, fallback: boolean): boolean {
   return raw === undefined ? fallback : raw === TRUE_VALUE;
@@ -113,5 +139,9 @@ export function parseSettings(
     weighInWeekday: parseBoundedInt(raw.weighInWeekday, MAX_WEEKDAY, 0),
     onboardingDone: parseBoolean(raw.onboardingDone, false),
     introSeen: parseBoolean(raw.introSeen, false),
+    equipment: parseEquipment(raw.equipment),
+    sessionMinutes: parseMinutes(raw.sessionMinutes),
+    warmupEnabled: parseBoolean(raw.warmupEnabled, true),
+    stretchEnabled: parseBoolean(raw.stretchEnabled, true),
   };
 }

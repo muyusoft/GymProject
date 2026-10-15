@@ -40,7 +40,10 @@ export function IntroPanel({
       ]}
     >
       <Text style={[styles.counter, { color: c.textSecondary }]}>
-        {t("intro.progress", { current: index + 1, total })}
+        {/* La primera tarjeta da la bienvenida; el paso ya lo dice la barra de arriba. */}
+        {step === "plan"
+          ? t("intro.welcome")
+          : t("intro.progress", { current: index + 1, total })}
       </Text>
       <Text
         accessibilityRole="header"

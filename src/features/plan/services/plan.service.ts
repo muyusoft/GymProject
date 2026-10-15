@@ -13,9 +13,11 @@ import {
   listPlanExercisesByDay,
   listPlanExercisesByPlan,
 } from "@/shared/db/queries/plan-exercise.queries";
+import { listWeekShifts } from "@/shared/db/queries/schedule-shift.queries";
 import { listCompletedPlanDayIds } from "@/shared/db/queries/session.queries";
 import type { PlanDayRow, PlanRow } from "@/shared/db/types";
 import { syncReminders } from "@/shared/services/reminders.service";
+import { buildWeekSchedule } from "@/shared/utils/week-schedule.utils";
 import type { PlanSettingsPatch, WeeklyPlan } from "../types/plan.types";
 import {
   buildDaySummaries,
@@ -40,10 +42,11 @@ async function loadCompletedDayIds(weekStart: Date): Promise<Set<string>> {
 
 async function summarizePlan(plan: PlanRow, today: Date): Promise<WeeklyPlan> {
   const weekStart = startOfWeekMonday(today);
-  const [days, inWeek, completedDayIds] = await Promise.all([
+  const [days, inWeek, completedDayIds, shifts] = await Promise.all([
     listPlanDays(plan.id),
     listPlanExercisesByPlan(plan.id),
     loadCompletedDayIds(weekStart),
+    listWeekShifts(weekStart),
   ]);
   const exercises = inWeek.map((entry) => entry.planExercise);
 
@@ -61,6 +64,7 @@ async function summarizePlan(plan: PlanRow, today: Date): Promise<WeeklyPlan> {
     totalExercises: exercises.length,
     defaults: planDefaults(days),
     weekStart,
+    schedule: buildWeekSchedule(days, shifts),
   };
 }
 

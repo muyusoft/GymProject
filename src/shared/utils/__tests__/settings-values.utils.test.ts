@@ -1,3 +1,4 @@
+import { GYM_EQUIPMENT } from "@/shared/types/equipment.types";
 import { describe, expect, it } from "vitest";
 import { parseSettings, serializeSetting } from "../settings-values.utils";
 
@@ -21,6 +22,10 @@ describe("parseSettings", () => {
       weighInWeekday: 0,
       onboardingDone: false,
       introSeen: false,
+      equipment: GYM_EQUIPMENT,
+      sessionMinutes: 45,
+      warmupEnabled: true,
+      stretchEnabled: true,
     });
   });
 
@@ -93,5 +98,28 @@ describe("serializeSetting", () => {
     expect(serializeSetting(true)).toBe("true");
     expect(serializeSetting("kg")).toBe("kg");
     expect(serializeSetting(45)).toBe("45");
+  });
+});
+
+describe("equipo guardado", () => {
+  it("sin guardar es el gimnasio completo", () => {
+    expect(parseSettings({}, "es").equipment).toContain("legPress");
+  });
+
+  it("guarda la lista separada por comas y la vuelve a leer", () => {
+    const raw = serializeSetting(["dumbbells", "adjustableBench"]);
+    expect(raw).toBe("dumbbells,adjustableBench");
+    expect(parseSettings({ equipment: raw }, "es").equipment).toEqual(["dumbbells", "adjustableBench"]);
+  });
+
+  it("vacío es sin equipo y lo desconocido se descarta", () => {
+    expect(parseSettings({ equipment: "" }, "es").equipment).toEqual([]);
+    expect(parseSettings({ equipment: "dumbbells,jacuzzi" }, "es").equipment).toEqual(["dumbbells"]);
+  });
+
+  it("lee los minutos por sesión y descarta los que no son una opción", () => {
+    expect(parseSettings({ sessionMinutes: "60" }, "es").sessionMinutes).toBe(60);
+    expect(parseSettings({ sessionMinutes: "50" }, "es").sessionMinutes).toBe(45);
+    expect(parseSettings({ sessionMinutes: "x" }, "es").sessionMinutes).toBe(45);
   });
 });

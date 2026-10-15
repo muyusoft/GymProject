@@ -1,10 +1,8 @@
 import { describe, expect, it } from "vitest";
 import type { LoggedSet, SessionResult } from "@/shared/types/history.types";
 import type { ExerciseTemplate } from "../types/workout.types";
-import {
-  lastPerformance,
-  withLastWeight,
-} from "../utils/last-performance.utils";
+import { lastPerformance } from "@/shared/utils/last-performance.utils";
+import { withLastWeight } from "../utils/last-performance.utils";
 
 const TEMPLATE: ExerciseTemplate = {
   sets: 3,

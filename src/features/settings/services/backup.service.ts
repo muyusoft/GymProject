@@ -15,6 +15,7 @@ import {
   planDays,
   planExercises,
   plans,
+  scheduleShifts,
   sessions,
   setLogs,
   settings,
@@ -50,6 +51,7 @@ const ID_BATCH_SIZE = 500;
 const INSTALL_KEYS: ReadonlySet<string> = new Set([
   SETTING_KEYS.seeded,
   SETTING_KEYS.syncPrep,
+  SETTING_KEYS.catalogVersion,
   SETTING_KEYS.syncUserId,
   SETTING_KEYS.syncPushedAt,
   SETTING_KEYS.syncPulledAt,
@@ -202,6 +204,7 @@ export async function restoreBackup(file: BackupFile): Promise<BackupSummary> {
     );
     for (const table of REPLACED_TABLES) recordAllDeletions(tx, table);
     for (const table of [
+      scheduleShifts,
       exerciseSwaps,
       setLogs,
       sessions,

@@ -108,6 +108,11 @@ export const SYNC_TABLES: readonly SyncTable[] = [
     ],
   },
   {
+    local: "schedule_shifts",
+    remote: "schedule_shifts",
+    columns: ["date", "target_date"],
+  },
+  {
     local: "body_weights",
     remote: "body_weights",
     columns: ["date", "weight", "unit"],

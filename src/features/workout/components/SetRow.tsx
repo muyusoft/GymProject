@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { getTextStyle, tokens } from "@/design/tokens";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
-import IconRenderer from "@/shared/icons/icon-renderer";
+import { IconRenderer } from "@/shared/icons/icon-renderer";
 import { formatClock } from "@/shared/utils/duration.utils";
 import { formatNumber } from "@/shared/utils/weight.utils";
 import type { SessionSet } from "../types/workout.types";
@@ -18,6 +18,8 @@ interface SetRowProps {
   onToggle: () => void;
   onEdit: () => void;
 }
+
+const RECORD_ICON_SIZE = 16;
 
 /** Tocar el check completa la serie; tocar peso o reps abre el ajuste (sin teclado). */
 export function SetRow({ set, status, onToggle, onEdit }: Readonly<SetRowProps>) {
@@ -51,7 +53,8 @@ export function SetRow({ set, status, onToggle, onEdit }: Readonly<SetRowProps>)
           <Text style={[styles.index, { color: set.isPR ? c.reward : c.textSecondary }]}>
             {t("session.setLabel", { index: number })}
           </Text>
-          {set.isPR && <Text style={[styles.index, { color: c.reward }]}>{t("session.record")}</Text>}
+          {/* Solo el trofeo: la columna es estrecha y la etiqueta de la fila ya dice "Récord personal". */}
+          {set.isPR && <IconRenderer name="trophy" size={RECORD_ICON_SIZE} color={c.reward} />}
         </View>
         <Text style={[styles.number, { color: c.text }]}>
           {usesWeight(set.loadType) && set.weight !== null ? formatNumber(set.weight, i18n.language) : "—"}

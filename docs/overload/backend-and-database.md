@@ -80,7 +80,7 @@ Corre una sola vez por instalación; deja la marca `seeded` en `settings`. Dentr
 
 El seed recibe sus datos por parámetro desde el layout raíz (`runSeed(db, catalogSeedData)`), porque `shared` no puede importar de un feature.
 
-Límite a tener en cuenta: como corre una sola vez, **cambiar los JSON del catálogo no actualiza las instalaciones existentes**. Por eso las traducciones de las instrucciones no pasan por el seed: viven en `instructions-es.json` y se leen al mostrar la ficha.
+Como el seed corre una sola vez, los cambios en los **ejercicios comunes** llegan a instalaciones existentes con la **actualización del catálogo** (`src/shared/db/catalog-update.ts`): corre después del seed y de la preparación para sincronizar, una vez por versión (`CATALOG_VERSION`, marca `catalogVersion` en `settings`), y en una transacción agrega los ejercicios comunes nuevos, actualiza nombre, patrón, equipo y requisitos de los existentes (ids estables, el historial no cambia) y rehace sus músculos. Al cambiar `common-exercises.json` hay que subir `CATALOG_VERSION`. El resto del catálogo abierto no se actualiza; por eso las traducciones de las instrucciones no pasan por el seed: viven en `instructions-es.json` y se leen al mostrar la ficha.
 
 ## Cómo se accede a los datos
 
@@ -127,7 +127,7 @@ Es la única forma de sacar los datos del teléfono. Desde Ajustes se exporta un
 - **Backend, cuentas y sincronización.** `updated_at` está en las tablas para eso, pero no hay nada construido.
 - **Claves foráneas activadas.** `client.ts` ejecuta `PRAGMA foreign_keys = ON` al abrir la base, así que las cascadas y los `set null` del esquema se aplican. Las filas que quedaron sueltas mientras estaban apagadas las limpia la preparación para sincronizar.
 - **Web.** El bundle web falla al cargar `wa-sqlite.wasm`; la app apunta a iOS y Android.
-- **Actualizar el catálogo** en instalaciones existentes: no hay mecanismo, por el seed de una sola vez.
+- **Actualizar el catálogo** en instalaciones existentes: solo los ejercicios comunes (ver Seed); el resto del catálogo abierto no.
 - **Cifrado.** La base no está cifrada. Hoy no guarda secretos; si llegara a guardarlos, deben ir en `expo-secure-store`.
 
 ## Preparación para sincronizar

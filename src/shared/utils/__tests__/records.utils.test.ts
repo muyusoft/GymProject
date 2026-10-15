@@ -6,7 +6,7 @@ import {
   toValidSet,
   type ValidSet,
 } from "../one-rep-max.utils";
-import { isRecord } from "../records.utils";
+import { isRecord, recordKind } from "../records.utils";
 
 const set = (weight: number, reps: number, unit: "kg" | "lb" = "kg"): ValidSet => ({
   weight,
@@ -92,5 +92,30 @@ describe("isRecord", () => {
   it("solo compara con el mismo tipo de carga", () => {
     const perArm = { ...set(40, 8), loadType: "per_arm" as const };
     expect(isRecord(perArm, history)).toBe(false);
+  });
+});
+
+describe("recordKind", () => {
+  const history = [set(75, 8)];
+
+  it("más peso con las mismas reps es récord de peso", () => {
+    expect(recordKind(set(80, 8), history)).toBe("weight");
+  });
+
+  it("menos peso con muchas más reps es récord de fuerza: sube el 1RM estimado", () => {
+    expect(recordKind(set(70, 12), history)).toBe("strength");
+  });
+
+  it("con menos peso que el máximo, subir el 1RM es de fuerza aunque también gane a esas reps", () => {
+    expect(recordKind(set(70, 12), [set(75, 8), set(65, 12)])).toBe("strength");
+  });
+
+  it("más peso con esas reps, sin subir el 1RM ni el máximo, sigue siendo de peso", () => {
+    expect(recordKind(set(65, 12), [set(100, 1), set(60, 12)])).toBe("weight");
+  });
+
+  it("si no supera nada no es récord", () => {
+    expect(recordKind(set(70, 8), history)).toBeNull();
+    expect(recordKind(set(80, 8), [])).toBeNull();
   });
 });

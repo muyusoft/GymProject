@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq, inArray, isNotNull } from "drizzle-orm";
 import { db } from "../client";
 import { exerciseMuscles, exercises } from "../schema";
 import type { ExerciseMuscleRow } from "../types";
@@ -34,6 +34,15 @@ export async function listPrimaryMuscles(): Promise<ExerciseMuscleRow[]> {
   return db.select().from(exerciseMuscles).where(eq(exerciseMuscles.role, "primary"));
 }
 
+/** Músculos principales de varios ejercicios a la vez (calentamiento y estiramientos del día). */
+export async function listPrimaryMusclesFor(exerciseIds: readonly string[]): Promise<ExerciseMuscleRow[]> {
+  if (exerciseIds.length === 0) return [];
+  return db
+    .select()
+    .from(exerciseMuscles)
+    .where(and(eq(exerciseMuscles.role, "primary"), inArray(exerciseMuscles.exerciseId, [...exerciseIds])));
+}
+
 export async function listAllExerciseMuscles(): Promise<ExerciseMuscleRow[]> {
   return db.select().from(exerciseMuscles);
 }
@@ -42,4 +51,20 @@ export async function listMusclesForExercise(
   exerciseId: string,
 ): Promise<ExerciseMuscleRow[]> {
   return db.select().from(exerciseMuscles).where(eq(exerciseMuscles.exerciseId, exerciseId));
+}
+
+/** Ejercicios con patrón de movimiento: los que puede usar el generador de planes. */
+export async function listPatternExercises() {
+  return db
+    .select({
+      id: exercises.id,
+      nameEs: exercises.nameEs,
+      nameEn: exercises.nameEn,
+      pattern: exercises.pattern,
+      requires: exercises.requires,
+      equipment: exercises.equipment,
+      defaultLoadType: exercises.defaultLoadType,
+    })
+    .from(exercises)
+    .where(isNotNull(exercises.pattern));
 }

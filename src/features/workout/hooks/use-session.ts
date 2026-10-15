@@ -8,15 +8,16 @@ import {
   successFeedback,
   tapFeedback,
 } from "@/shared/services/haptics.service";
+import { useSettingsStore } from "@/shared/store";
 import { requestSync } from "@/shared/services/sync/sync.service";
 import { effortToRpe, type EffortLevel } from "@/shared/utils/effort.utils";
 import { toValidSet } from "@/shared/utils/one-rep-max.utils";
-import { isNewRecord } from "../services/record.service";
+import { findNewRecord } from "../services/record.service";
 import {
   finishSession,
   type SetPatch,
 } from "../services/session-write.service";
-import type { SessionExercise, SessionSet } from "../types/workout.types";
+import type { RecordNotice, SessionExercise, SessionSet } from "../types/workout.types";
 import {
   repsAfterApply,
   type SessionHintChoice,
@@ -26,6 +27,7 @@ import {
   countTotalSets,
   firstPendingIndex,
 } from "../utils/session-stats.utils";
+import { shouldAnnounceRecord } from "../utils/record-notice.utils";
 import { switchPendingSets } from "../utils/unit-switch.utils";
 import { useRestTimer } from "./use-rest-timer";
 import { useSessionData } from "./use-session-data";
@@ -38,6 +40,8 @@ export function useSession(sessionId: string) {
   // null hasta que carga la sesión: entonces se fija en el ejercicio donde se quedó.
   const [selected, setSelected] = useState<number | null>(null);
   const [editingSetId, setEditingSetId] = useState<string | null>(null);
+  /** El récord que se acaba de batir, para el aviso; null sin aviso. */
+  const [recordNotice, setRecordNotice] = useState<RecordNotice | null>(null);
   const { view, patchSet } = data;
   const current = selected ?? (view ? firstPendingIndex(view.exercises) : 0);
 
@@ -52,12 +56,16 @@ export function useSession(sessionId: string) {
       const candidate = toValidSet({ ...set, completed: true });
       if (!candidate) return patchSet(set.id, { isPR: false });
       try {
-        const isPR = await isNewRecord({
+        const kind = await findNewRecord({
           exerciseId: exercise.exerciseId,
           sessionId,
           candidate,
         });
-        patchSet(set.id, { isPR });
+        patchSet(set.id, { isPR: kind !== null });
+        if (kind && !set.isPR && shouldAnnounceRecord(candidate, set.id, exercise.sets)) {
+          setRecordNotice({ exercise, set: candidate, kind });
+          void successFeedback();
+        }
       } catch (error) {
         logger.error("Failed to check personal record", { error });
       }
@@ -122,12 +130,17 @@ export function useSession(sessionId: string) {
     [patchSet],
   );
 
+  // Estable: el aviso reinicia su temporizador si esta función cambia en cada render.
+  const dismissRecord = useCallback(() => setRecordNotice(null), []);
+
   const complete = useCallback(async () => {
     if (await run(() => finishSession(sessionId, new Date()))) {
       void successFeedback();
       // Un entreno terminado es el mejor momento para subirlo; sin sesión o sin red no hace nada.
       void requestSync();
-      router.replace("/");
+      // Con los estiramientos activados se ofrecen antes de volver a Hoy.
+      if (useSettingsStore.getState().stretchEnabled) router.replace({ pathname: "/session/stretch/[id]", params: { id: sessionId } });
+      else router.replace("/");
     }
   }, [run, sessionId]);
 
@@ -164,6 +177,8 @@ export function useSession(sessionId: string) {
     rateEffort,
     applyHint,
     finish,
+    recordNotice,
+    dismissRecord,
     hasError: data.hasError || hasFinishError,
   };
 }

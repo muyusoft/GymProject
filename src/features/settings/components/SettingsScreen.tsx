@@ -5,11 +5,13 @@ import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 import { AccountSection } from "./AccountSection";
 import { AppearanceSection } from "./AppearanceSection";
 import { DataSection } from "./DataSection";
+import { HelpSection } from "./HelpSection";
 import { DeleteAccountButton } from "./DeleteAccountButton";
 import { ProgressionSection } from "./ProgressionSection";
 import { ReminderSection } from "./ReminderSection";
 import { SignOutButton } from "./SignOutButton";
 import { UnitsSection } from "./UnitsSection";
+import { WarmupSection } from "./WarmupSection";
 
 export function SettingsScreen() {
   const { t } = useTranslation();
@@ -23,9 +25,11 @@ export function SettingsScreen() {
       <AccountSection />
       <UnitsSection />
       <ProgressionSection />
+      <WarmupSection />
       <ReminderSection />
       <AppearanceSection />
       <DataSection />
+      <HelpSection />
       <SignOutButton />
       <DeleteAccountButton />
     </ScrollView>

@@ -30,6 +30,20 @@ export const exerciseSwaps = sqliteTable(
   (table) => [uniqueIndex("exercise_swaps_slot_idx").on(table.date, table.planExerciseId)],
 );
 
+/**
+ * Qué se hizo con un día de entreno que quedó sin hacer: se hizo otro día de la misma semana (y los
+ * siguientes se corrieron) o se dejó pasar. El plan no cambia; la semana siguiente vuelve a ser la del plan.
+ */
+export const scheduleShifts = sqliteTable("schedule_shifts", {
+  /** La fecha del día perdido: cada día perdido tiene una sola decisión. */
+  id: idColumn(),
+  /** Fecha local del día perdido, yyyy-MM-dd. */
+  date: text("date").notNull(),
+  /** Fecha local en que se hizo; null = se dejó pasar. */
+  targetDate: text("target_date"),
+  updatedAt: updatedAtColumn(),
+});
+
 export const sessions = sqliteTable("sessions", {
   id: idColumn(),
   planDayId: text("plan_day_id").references(() => planDays.id, {

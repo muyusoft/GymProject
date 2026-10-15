@@ -1,12 +1,12 @@
 import { StyleSheet, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { getTextStyle, tokens } from "@/design/tokens";
-import { Badge } from "@/shared/components";
+import { Badge, LogoMark } from "@/shared/components";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 
 interface SampleDay {
   weekday: number;
-  name: "chest" | "back" | "rest" | "legs";
+  name: "chest" | "back" | "rest";
   exercises?: number;
   minutes?: number;
   isToday?: boolean;
@@ -16,8 +16,8 @@ const SAMPLE_DAYS: readonly SampleDay[] = [
   { weekday: 0, name: "chest", exercises: 5, minutes: 55, isToday: true },
   { weekday: 1, name: "back", exercises: 6, minutes: 60 },
   { weekday: 2, name: "rest" },
-  { weekday: 3, name: "legs", exercises: 5, minutes: 65 },
 ];
+const LOGO_SIZE = tokens.spacing[10];
 
 function DayRow({ day }: Readonly<{ day: SampleDay }>) {
   const { t } = useTranslation();
@@ -41,20 +41,36 @@ function DayRow({ day }: Readonly<{ day: SampleDay }>) {
   );
 }
 
-/** Ilustración del paso 1: unos días del plan semanal, con el de hoy marcado. */
+/** Ilustración del paso 1, que también da la bienvenida: la marca y unos días del plan, con el de hoy marcado. */
 export function IntroPlanArt() {
   const { t } = useTranslation();
+  const { c } = useOverloadTheme();
 
   return (
-    <View accessible accessibilityRole="image" accessibilityLabel={t("intro.art.plan")} style={styles.list}>
-      {SAMPLE_DAYS.map((day) => (
-        <DayRow key={day.weekday} day={day} />
-      ))}
+    <View style={styles.art}>
+      <View style={styles.brand}>
+        <LogoMark size={LOGO_SIZE} />
+        <Text accessibilityRole="header" style={[styles.brandName, { color: c.text }]}>
+          {t("intro.brand")}
+        </Text>
+      </View>
+      <View accessible accessibilityRole="image" accessibilityLabel={t("intro.art.plan")} style={styles.list}>
+        {SAMPLE_DAYS.map((day) => (
+          <DayRow key={day.weekday} day={day} />
+        ))}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  art: { gap: tokens.spacing[6] },
+  brand: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: tokens.spacing[3] },
+  brandName: {
+    ...getTextStyle("displayLg"),
+    fontFamily: tokens.typography.fontFamily.display,
+    textTransform: "uppercase",
+  },
   list: { gap: tokens.spacing[2] },
   row: {
     flexDirection: "row",

@@ -90,7 +90,8 @@ function buildEntryRows(
     common && pattern ? resolveMuscles(pattern, common.musclesOverride) : [];
   const sourceIds =
     common && pattern ? resolveSourceIds(pattern, common.musclesOverride) : [];
-  const equipment = mapEquipment(free?.equipment ?? null);
+  const equipment = mapEquipment(common?.equipment ?? free?.equipment ?? null);
+  const requires = common?.requires ?? null;
 
   return {
     exercise: {
@@ -100,6 +101,7 @@ function buildEntryRows(
       nameEn: free?.name ?? common?.nameEs ?? "",
       instructionsEn: free ? free.instructions.join("\n") : null,
       pattern: common?.pattern ?? null,
+      requires: requires === null ? null : JSON.stringify(requires),
       equipment,
       defaultLoadType: defaultLoadTypeFor(equipment),
       evidenceLevel: bestStrength(sourceIds, strengthById),

@@ -10,6 +10,7 @@ export const SYNCED_TABLES = [
   "sessions",
   "set_logs",
   "exercise_swaps",
+  "schedule_shifts",
   "body_weights",
 ] as const;
 export type SyncedTable = (typeof SYNCED_TABLES)[number];

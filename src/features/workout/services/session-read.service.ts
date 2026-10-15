@@ -10,10 +10,8 @@ import type {
   SessionView,
 } from "../types/workout.types";
 import { buildInsight, type InsightSettings } from "../utils/insight.utils";
-import {
-  lastPerformance,
-  withLastWeight,
-} from "../utils/last-performance.utils";
+import { lastPerformance } from "@/shared/utils/last-performance.utils";
+import { withLastWeight } from "../utils/last-performance.utils";
 import { isExerciseDone } from "../utils/session-stats.utils";
 import type { DayExercise } from "../utils/swap.utils";
 import { buildTemplate } from "../utils/template.utils";

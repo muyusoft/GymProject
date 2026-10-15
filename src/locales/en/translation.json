@@ -81,7 +81,16 @@
       "legend": "The dot marks days with a workout. Tap a day to go to its week."
     },
     "doneTitle": "What you did",
-    "greetingName": "Hi, {{name}}"
+    "greetingName": "Hi, {{name}}",
+    "movedFrom": "Moved from {{weekday}}",
+    "missed": {
+      "eyebrow": "Missed on {{weekday}}",
+      "title": "{{day}} wasn't done",
+      "body": "If you do it today, the rest of the week moves one day, up to the next rest day.",
+      "lost": "{{day}} won't fit this week and will be skipped.",
+      "doToday": "Do {{day}} today",
+      "keepPlan": "Keep my plan"
+    }
   },
   "session": {
     "finish": "Finish",
@@ -114,7 +123,7 @@
       "message_other": "{{count}} sets are still unmarked.",
       "confirm": "Finish"
     },
-    "record": "PR",
+    "record": "Record",
     "recordLabel": "Personal record",
     "effort": {
       "question": "How did it go?",
@@ -139,6 +148,26 @@
       "messageDone_one": "{{count}} set you already logged in this session will be deleted. Your plan does not change.",
       "messageDone_other": "{{count}} sets you already logged in this session will be deleted. Your plan does not change.",
       "keep": "Keep training"
+    },
+    "applyToFollowing_one": "Apply to the next set",
+    "applyToFollowing_other": "Apply to the next {{count}} sets",
+    "planReps": {
+      "question": "Update the plan to {{reps}} reps?",
+      "hint": "You did every set with {{reps}} reps; the plan says {{planReps}}.",
+      "day": "Only this day",
+      "all": "Every day with {{exercise}}",
+      "no": "No, keep the plan"
+    },
+    "newRecord": {
+      "title": {
+        "weight": "New weight record!",
+        "strength": "New strength record!"
+      },
+      "body": {
+        "weight": "{{set}} on {{exercise}}: more weight than ever for those reps",
+        "strength": "{{set}} on {{exercise}} · est. 1RM {{oneRepMax}}, your best yet"
+      },
+      "dismiss": "Dismiss record notice"
     }
   },
   "recovery": {
@@ -233,7 +262,9 @@
   },
   "stepper": {
     "decrease": "Decrease",
-    "increase": "Increase"
+    "increase": "Increase",
+    "type": "{{value}} {{unit}}. Tap to type the value",
+    "typeField": "Type the value in {{unit}}"
   },
   "settings": {
     "title": "Settings",
@@ -245,7 +276,9 @@
       "appearance": "Appearance",
       "reminders": "Reminders",
       "data": "Your data",
-      "account": "Account"
+      "account": "Account",
+      "help": "Help",
+      "warmup": "Warm-up and stretches"
     },
     "weightUnit": {
       "title": "Weight unit",
@@ -334,6 +367,15 @@
         "message": "Your latest changes could not be saved to your account (no connection?). If you sign out now, they are lost.",
         "confirm": "Sign out anyway"
       }
+    },
+    "help": {
+      "replayIntro": "View the introduction"
+    },
+    "warmup": {
+      "warmup": "Offer a warm-up",
+      "warmupHint": "Before your first set, with ramp-up sets on the first compound exercise.",
+      "stretch": "Offer stretches",
+      "stretchHint": "After your workout, for what you trained."
     }
   },
   "weekday": {
@@ -347,6 +389,15 @@
       "6": "Sun"
     },
     "long": {
+      "0": "Monday",
+      "1": "Tuesday",
+      "2": "Wednesday",
+      "3": "Thursday",
+      "4": "Friday",
+      "5": "Saturday",
+      "6": "Sunday"
+    },
+    "sentence": {
       "0": "Monday",
       "1": "Tuesday",
       "2": "Wednesday",
@@ -390,12 +441,13 @@
     "rest": "Rest",
     "addDay": "Add a workout on {{weekday}}",
     "editPlan": "Edit plan",
-    "noDays": "No days yet. Tap Edit plan to add yours.",
+    "noDays": "No days yet. Let us build your week, or tap Edit plan to add your own.",
     "timeBadge": "Time",
     "empty": {
       "title": "No plan yet",
       "body": "Build your weekly plan and Today will set up your workout on its own.",
-      "create": "Create plan"
+      "create": "Create plan",
+      "forMe": "Build a plan for me"
     },
     "editor": {
       "eyebrow": "Edit plan",
@@ -483,7 +535,193 @@
       "rangeHint": "Range {{min}}–{{max}}: first add reps up to {{max}}, then add weight. After adding weight you go back to {{min}}.",
       "rangeOff": "Lower it to work with a rep range."
     },
-    "importNotes": "Import notes"
+    "importNotes": "Import notes",
+    "week": {
+      "holds": "This week: {{day}}, moved from {{weekday}}",
+      "ownLost": "Its workout doesn't fit this week and is skipped.",
+      "movedTo": "This week it's on {{weekday}}",
+      "skipped": "Skipped this week"
+    },
+    "wizard": {
+      "progress": "Question {{current}} of {{total}}",
+      "close": "Close without creating a plan",
+      "step": "Step {{current}} of {{total}}",
+      "seePlan": "See my plan",
+      "goal": {
+        "title": "What are you after?",
+        "note": "Losing or gaining weight comes down mostly to nutrition. Training decides what you build or keep: muscle and strength.",
+        "options": {
+          "muscle": {
+            "title": "Build muscle",
+            "body": "8–12 reps, moderate to high volume"
+          },
+          "strength": {
+            "title": "Get stronger",
+            "body": "Fewer reps, heavier weight, longer rests"
+          },
+          "fat_loss": {
+            "title": "Lose fat",
+            "body": "Keep your muscle while you lose weight"
+          },
+          "fitness": {
+            "title": "Get fit",
+            "body": "Fewer sets and shorter sessions"
+          }
+        }
+      },
+      "schedule": {
+        "title": "How many days do you train?",
+        "dayCount_one": "{{count}} day",
+        "dayCount_other": "{{count}} days",
+        "experience": "Your experience",
+        "split": {
+          "2": "With 2 days: full body each day.",
+          "3": "With 3 days: full body, three different days.",
+          "4": "With 4 days: upper and lower, twice each.",
+          "5": "With 5 days: upper, lower, push, pull and lower.",
+          "6": "With 6 days: push, pull and legs, twice."
+        },
+        "levels": {
+          "beginner": {
+            "title": "Just starting",
+            "body": "Less than 6 months lifting"
+          },
+          "intermediate": {
+            "title": "Some experience",
+            "body": "Between 6 months and 2 years"
+          },
+          "advanced": {
+            "title": "Advanced",
+            "body": "Over 2 years, consistently"
+          }
+        }
+      },
+      "focus": {
+        "title": "What do you want to prioritize?",
+        "equipment": "Equipment: full gym",
+        "equipmentSoon": "Coming soon: dumbbells only or at home",
+        "options": {
+          "balanced": {
+            "title": "Balanced",
+            "body": "The same work for the whole body"
+          },
+          "lower": {
+            "title": "Legs and glutes",
+            "body": "More sets for the lower body"
+          },
+          "upper": {
+            "title": "Upper body",
+            "body": "More sets for chest, back and arms"
+          }
+        },
+        "minutes": "How long is each session?",
+        "minutesOption_one": "{{count}} minute",
+        "minutesOption_other": "{{count}} minutes"
+      },
+      "preview": {
+        "eyebrow": "Your plan · repeats every week",
+        "title": "Here is your week",
+        "note": "Weights are set in your first session; after that Overset tells you when to add more. You can change days and exercises anytime.",
+        "save": "Save plan",
+        "change": "Change answers",
+        "emptyTitle": "We could not build the plan",
+        "emptyBody": "The catalog has no exercises with muscles for these answers. Try creating the plan from scratch.",
+        "minutes": "~{{count}} min",
+        "short": "Some days are shorter than the time you picked: more sets would go past the weekly volume recommended for your level.",
+        "shortBeginner": "When you are starting out, shorter sessions are enough: more sets do not add much yet. After a few weeks, Overset will start suggesting when to add weight.",
+        "bodyweight": "Your plan uses your body weight. For now Overset won’t suggest when to progress: add reps when sets feel easy. Rep-based progression is coming soon.",
+        "missing": "Your equipment has no exercises for: {{patterns}}. Those muscles are trained with other exercises in the plan."
+      },
+      "days": {
+        "fullA": "Full body A",
+        "fullB": "Full body B",
+        "fullC": "Full body C",
+        "upperA": "Upper A",
+        "upperB": "Upper B",
+        "lowerA": "Lower A",
+        "lowerB": "Lower B",
+        "push": "Push",
+        "pull": "Pull"
+      },
+      "patterns": {
+        "horizontal_push": "horizontal push",
+        "fly": "fly",
+        "dip": "dips",
+        "vertical_push": "vertical push",
+        "lateral_raise": "lateral raise",
+        "rear_delt": "rear delt",
+        "vertical_pull": "vertical pull",
+        "horizontal_pull": "horizontal pull",
+        "shrug": "shrug",
+        "squat": "squat",
+        "lunge": "lunge and split squat",
+        "hinge_conventional": "conventional deadlift",
+        "hinge_rdl": "romanian / stiff-leg deadlift",
+        "hip_thrust": "hip thrust",
+        "knee_extension": "knee extension",
+        "knee_flexion": "leg curl",
+        "hip_abduction": "hip abduction",
+        "hip_adduction": "hip adduction",
+        "calf_standing": "standing calf raise",
+        "calf_seated": "seated calf raise",
+        "elbow_flexion": "elbow flexion",
+        "elbow_extension": "elbow extension",
+        "core": "core"
+      },
+      "equipment": {
+        "title": "What equipment do you have?",
+        "hint": "Mark everything you have, at home or in your building’s gym. We will only use exercises you can do.",
+        "fullGym": "Full gym",
+        "fullGymBody": "Mark everything at once",
+        "none": "I have no equipment",
+        "noneBody": "A bodyweight plan",
+        "groups": {
+          "freeWeights": "Free weights",
+          "bars": "Bars and suspension",
+          "upperMachines": "Upper-body machines",
+          "lowerMachines": "Lower-body machines"
+        },
+        "items": {
+          "dumbbells": "Dumbbells",
+          "barbell": "Barbell and plates",
+          "kettlebell": "Kettlebell",
+          "adjustableBench": "Adjustable bench",
+          "benchPress": "Bench press station",
+          "rack": "Rack",
+          "smith": "Smith machine",
+          "tBarRow": "T-bar row",
+          "preacherBench": "Preacher bench",
+          "pullUpBar": "Pull-up bar",
+          "powerTower": "Pull-up and dip tower",
+          "trx": "TRX",
+          "bands": "Resistance bands",
+          "cableTower": "Cable tower (adjustable)",
+          "latPulldown": "Lat pulldown",
+          "seatedRow": "Seated row",
+          "chestSupportedRow": "Chest-supported row",
+          "chestPress": "Chest press",
+          "shoulderPress": "Shoulder press",
+          "pecDeck": "Pec deck",
+          "bicepsMachine": "Biceps machine",
+          "legPress": "Leg press",
+          "hackSquat": "Hack squat",
+          "squatMachine": "Squat machine",
+          "hipThrustMachine": "Hip thrust",
+          "legExtension": "Leg extension",
+          "lyingLegCurl": "Lying leg curl",
+          "seatedLegCurl": "Seated leg curl",
+          "calfMachine": "Calf machine",
+          "hipMachine": "Adductor and abductor",
+          "backExtension": "Back extension bench"
+        }
+      },
+      "swap": {
+        "title": "Swap exercise",
+        "empty": "There are no other exercises for this movement with your equipment.",
+        "action": "Swap {{exercise}}",
+        "hint": "Tap an exercise to swap it for another that trains the same muscles."
+      }
+    }
   },
   "library": {
     "title": "Exercises",
@@ -555,7 +793,7 @@
       "year": "Year"
     },
     "oneRepMax": "{{name}} · est. 1RM",
-    "record": "PR",
+    "record": "Record",
     "today": "Today",
     "delta": {
       "up": "+{{value}} in {{span}}",
@@ -771,8 +1009,8 @@
     "start": "Get started",
     "steps": {
       "plan": {
-        "title": "Build your week once",
-        "body": "Create your plan from scratch or import it from your notes. Every day, Overset has your session ready to go."
+        "title": "Your training, set by set",
+        "body": "Build your week once. Overset gets each day ready, logs every set and tells you when to add weight."
       },
       "log": {
         "title": "Every set, one tap",
@@ -801,8 +1039,7 @@
       "days": {
         "chest": "Chest and triceps",
         "back": "Back and biceps",
-        "rest": "Rest",
-        "legs": "Legs"
+        "rest": "Rest"
       },
       "dayMeta_one": "{{count}} exercise · ~{{minutes}} min",
       "dayMeta_other": "{{count}} exercises · ~{{minutes}} min",
@@ -822,7 +1059,9 @@
       "trained": "Day trained",
       "bodyWeight": "Body weight · 7-day average",
       "weeklyChange": "−{{weight}} per week"
-    }
+    },
+    "brand": "Overset",
+    "welcome": "Welcome to Overset"
   },
   "account": {
     "brand": "Overset",
@@ -892,7 +1131,8 @@
         "recovery": "Recovery",
         "group": "Legs",
         "ready": "Ready to train"
-      }
+      },
+      "devIntro": "View introduction (development only)"
     },
     "signIn": {
       "title": "Sign in",
@@ -953,5 +1193,360 @@
       "later": "Decide later"
     },
     "restoring": "Loading your data…"
+  },
+  "movement": {
+    "dose": {
+      "reps_one": "{{count}} rep",
+      "reps_other": "{{count}} reps",
+      "repsPerSide_one": "{{count}} per side",
+      "repsPerSide_other": "{{count}} per side",
+      "steps_one": "{{count}} step each way",
+      "steps_other": "{{count}} steps each way",
+      "seconds_one": "{{count}} s",
+      "seconds_other": "{{count}} s",
+      "secondsPerSide_one": "{{count}} s per side",
+      "secondsPerSide_other": "{{count}} s per side"
+    },
+    "source": {
+      "fradkin2010": "Fradkin et al. 2010 · Warm-up and performance",
+      "behm2016": "Behm et al. 2016 · Effects of stretching",
+      "herbert2011": "Herbert et al. 2011 · Stretching and muscle soreness",
+      "garber2011": "Garber et al. 2011 · ACSM, flexibility"
+    },
+    "jumpingJacks": {
+      "name": "Jumping jacks",
+      "purpose": "Raises your heart rate and body temperature before lifting.",
+      "tip": "If you'd rather not jump, step out to the side instead.",
+      "step1": "Stand with feet together and arms at your sides.",
+      "step2": "Jump your feet apart and raise your arms overhead.",
+      "step3": "Jump back to the start.",
+      "step4": "Keep an easy pace for 30 seconds."
+    },
+    "walkingKneeHug": {
+      "name": "Walking knee hug",
+      "purpose": "Mobilizes the hips and wakes up glutes and hamstrings.",
+      "tip": "If you lose balance, do it in place with a hand on a wall.",
+      "step1": "Step forward.",
+      "step2": "Lift the other knee and hug it to your chest.",
+      "step3": "Hold for a second with your back straight.",
+      "step4": "Release, step and switch legs."
+    },
+    "armCircles": {
+      "name": "Arm circles",
+      "purpose": "Warms the shoulders through their full range.",
+      "tip": "Only the arms move; keep your torso still.",
+      "step1": "Stand with your arms out to the sides.",
+      "step2": "Make small circles forward.",
+      "step3": "Gradually make them bigger.",
+      "step4": "Repeat backward."
+    },
+    "catCamel": {
+      "name": "Cat-camel",
+      "purpose": "Mobilizes the spine one segment at a time.",
+      "tip": "Move without forcing it; this is mobility, not a stretch.",
+      "step1": "Get on hands and knees, hands under shoulders.",
+      "step2": "Round your back to the ceiling and tuck your chin.",
+      "step3": "Drop your belly and look forward.",
+      "step4": "Alternate slowly with your breath."
+    },
+    "bodyweightSquat": {
+      "name": "Bodyweight squat",
+      "purpose": "Prepares knees, hips and ankles for squatting.",
+      "tip": "Knees track over your toes; don't let them cave in.",
+      "step1": "Feet shoulder-width apart, toes slightly out.",
+      "step2": "Sit your hips back and down with your chest up.",
+      "step3": "Go as low as you can with heels down.",
+      "step4": "Drive through the floor to stand."
+    },
+    "lungeTwist": {
+      "name": "Lunge with twist",
+      "purpose": "Opens the hips and mobilizes the mid-back.",
+      "tip": "Keep the front knee over the foot, not past it.",
+      "step1": "Take a long step forward into a lunge.",
+      "step2": "Rotate your torso toward the front leg.",
+      "step3": "Return to center.",
+      "step4": "Stand up and switch legs."
+    },
+    "legSwingFront": {
+      "name": "Front-to-back leg swing",
+      "purpose": "Mobilizes the hips and prepares the hamstrings.",
+      "tip": "Control the swing; don't aim high from the first rep.",
+      "step1": "Stand side-on to a wall or support.",
+      "step2": "Swing the outside leg forward and back.",
+      "step3": "Gradually increase the range.",
+      "step4": "Switch sides."
+    },
+    "legSwingSide": {
+      "name": "Side leg swing",
+      "purpose": "Mobilizes the hips sideways and prepares the adductors.",
+      "tip": "Keep your hips facing the wall while the leg moves.",
+      "step1": "Face a wall with your hands on it.",
+      "step2": "Swing one leg side to side in front of the other.",
+      "step3": "Gradually increase the range.",
+      "step4": "Switch legs."
+    },
+    "gluteBridge": {
+      "name": "Glute bridge",
+      "purpose": "Activates the glutes before squats, deadlifts and lunges.",
+      "tip": "If you feel it in your lower back, lift a bit less and squeeze harder.",
+      "step1": "Lie on your back, knees bent, feet flat.",
+      "step2": "Squeeze your glutes and lift your hips.",
+      "step3": "Hold a second at the top, body in a line.",
+      "step4": "Lower slowly."
+    },
+    "hipHinge": {
+      "name": "Hip hinge",
+      "purpose": "Teaches and warms up the deadlift pattern.",
+      "tip": "A stick along your back (head, upper back and hips) helps keep it straight.",
+      "step1": "Stand with knees slightly bent.",
+      "step2": "Push your hips back with a straight back.",
+      "step3": "Lower until you feel tension behind your thighs.",
+      "step4": "Return by squeezing your glutes."
+    },
+    "ankleRock": {
+      "name": "Wall ankle mobility",
+      "purpose": "Improves ankle bend so you can squat deeper.",
+      "tip": "If you touch the wall easily, move the foot back a bit.",
+      "step1": "Face a wall with one foot a hand's length away.",
+      "step2": "Drive the knee toward the wall without lifting the heel.",
+      "step3": "Come back.",
+      "step4": "Repeat and switch feet."
+    },
+    "bandLateralWalk": {
+      "name": "Banded lateral walk",
+      "purpose": "Activates the side glutes so the knees don't cave in.",
+      "tip": "If the band pulls your knees in, use a lighter one or move it to the ankles.",
+      "step1": "Put the band above your knees, feet hip-width apart.",
+      "step2": "Sit into a half squat, chest up.",
+      "step3": "Step sideways without bringing the feet together: keep the band tight.",
+      "step4": "Take your steps one way, then come back."
+    },
+    "bandMonsterWalk": {
+      "name": "Banded monster walk",
+      "purpose": "Activates the glutes in every direction of the hip.",
+      "tip": "Short, controlled steps; knees always pushing out.",
+      "step1": "Band above the knees, in a half squat.",
+      "step2": "Walk forward diagonally, opening each step.",
+      "step3": "Keep the band tight the whole time.",
+      "step4": "Walk back the same way."
+    },
+    "bandGluteBridge": {
+      "name": "Banded glute bridge",
+      "purpose": "Activates the glutes harder than a regular bridge.",
+      "tip": "If the band wins and your knees close, use a lighter one.",
+      "step1": "Band above the knees, lying on your back.",
+      "step2": "Push your knees out against the band.",
+      "step3": "Lift your hips, squeezing the glutes.",
+      "step4": "Lower slowly without letting the knees close."
+    },
+    "thoracicRotation": {
+      "name": "Quadruped thoracic rotation",
+      "purpose": "Mobilizes the mid-back, key for presses and rows.",
+      "tip": "Keep your hips still; the turn comes from the back.",
+      "step1": "Get on hands and knees.",
+      "step2": "Put one hand behind your head.",
+      "step3": "Rotate that elbow to the ceiling, following it with your eyes.",
+      "step4": "Return, repeat, then switch sides."
+    },
+    "scapularPushUp": {
+      "name": "Scapular push-up",
+      "purpose": "Activates the muscles that move the shoulder blades before pushing.",
+      "tip": "You can do it from your knees.",
+      "step1": "Hold a plank with straight arms.",
+      "step2": "Without bending the elbows, let your chest sink between the shoulder blades.",
+      "step3": "Push the floor away and spread the shoulder blades.",
+      "step4": "Repeat at a controlled pace."
+    },
+    "wallSlide": {
+      "name": "Wall slide",
+      "purpose": "Prepares the shoulders for overhead work.",
+      "tip": "Only go as high as you can while keeping contact.",
+      "step1": "Stand with your back to a wall, lower back against it.",
+      "step2": "Put your arms in a W, elbows and hands on the wall.",
+      "step3": "Slide your arms up without losing contact.",
+      "step4": "Lower back to the W."
+    },
+    "bandPullApart": {
+      "name": "Band pull-apart",
+      "purpose": "Activates the upper back and rear shoulders.",
+      "tip": "Don't shrug your shoulders toward your ears.",
+      "step1": "Hold the band in front of your chest, arms straight.",
+      "step2": "Pull your hands apart, bringing the band to your chest.",
+      "step3": "Squeeze the shoulder blades at the end.",
+      "step4": "Return slowly."
+    },
+    "bandDislocate": {
+      "name": "Band dislocate",
+      "purpose": "Moves the shoulder through its full range.",
+      "tip": "If it doesn't pass easily, widen your grip.",
+      "step1": "Hold the band with a very wide grip in front of your hips.",
+      "step2": "With straight arms, raise it overhead.",
+      "step3": "Take it behind your back.",
+      "step4": "Return the same way."
+    },
+    "bandExternalRotation": {
+      "name": "Band external rotation",
+      "purpose": "Activates the rotator cuff muscles.",
+      "tip": "A towel between elbow and body helps keep it in place.",
+      "step1": "Anchor the band at elbow height and stand side-on.",
+      "step2": "Elbow at your side, bent to 90 degrees.",
+      "step3": "Rotate the forearm outward.",
+      "step4": "Return slowly and switch sides."
+    },
+    "standingQuad": {
+      "name": "Standing quad stretch",
+      "purpose": "Stretches the front of the thigh.",
+      "tip": "You should feel it in the thigh, never pain in the knee.",
+      "step1": "Put one hand on a wall for balance.",
+      "step2": "Bend one knee and hold the ankle with the same-side hand.",
+      "step3": "Pull the heel toward your glute, knees together.",
+      "step4": "Hold without bouncing, then switch legs."
+    },
+    "seatedHamstring": {
+      "name": "Seated hamstring stretch",
+      "purpose": "Stretches the back of the thigh.",
+      "tip": "A straight back matters more than reaching your foot.",
+      "step1": "Sit with one leg straight and the other bent.",
+      "step2": "Lean forward from the hips.",
+      "step3": "Reach toward your foot until you feel tension.",
+      "step4": "Hold and switch legs."
+    },
+    "kneelingHipFlexor": {
+      "name": "Kneeling hip flexor stretch",
+      "purpose": "Stretches the front of the hip, which tightens from sitting.",
+      "tip": "Put something soft under the down knee.",
+      "step1": "Kneel with one leg forward in a lunge.",
+      "step2": "Squeeze the glute of the back leg.",
+      "step3": "Shift your hips slightly forward.",
+      "step4": "Hold and switch sides."
+    },
+    "figureFour": {
+      "name": "Figure-four glute stretch",
+      "purpose": "Stretches the glute and outer hip.",
+      "tip": "Relax your head and shoulders on the floor.",
+      "step1": "Lie on your back with knees bent.",
+      "step2": "Cross one ankle over the other knee.",
+      "step3": "Hold the lower thigh and pull it toward your chest.",
+      "step4": "Hold and switch sides."
+    },
+    "butterfly": {
+      "name": "Butterfly stretch",
+      "purpose": "Stretches the adductors, the inner thigh.",
+      "tip": "Don't push your knees down with your elbows; let them fall.",
+      "step1": "Sit and bring the soles of your feet together.",
+      "step2": "Hold your feet with your hands.",
+      "step3": "Let your knees drop toward the floor.",
+      "step4": "Lean forward slightly with a straight back."
+    },
+    "wallCalf": {
+      "name": "Wall calf stretch",
+      "purpose": "Stretches the calf.",
+      "tip": "Bend the back knee slightly to stretch the lower calf.",
+      "step1": "Hands on a wall, one foot back.",
+      "step2": "Back heel down and leg straight.",
+      "step3": "Move your hips toward the wall.",
+      "step4": "Hold and switch legs."
+    },
+    "doorwayChest": {
+      "name": "Doorway chest stretch",
+      "purpose": "Stretches the chest and front of the shoulder.",
+      "tip": "If your hand tingles, lower the elbow a little.",
+      "step1": "Rest your forearm on the door frame, elbow at shoulder height.",
+      "step2": "Step forward with the same-side leg.",
+      "step3": "Turn your chest away.",
+      "step4": "Hold and switch arms."
+    },
+    "wallLat": {
+      "name": "Wall lat stretch",
+      "purpose": "Stretches the lats, the wide back muscles.",
+      "tip": "Hanging from a bar also stretches the lats.",
+      "step1": "Face a wall and put your hands on it at hip height.",
+      "step2": "Walk back with your arms straight.",
+      "step3": "Push your hips back and let your chest drop.",
+      "step4": "Hold and breathe."
+    },
+    "crossBodyShoulder": {
+      "name": "Cross-body shoulder stretch",
+      "purpose": "Stretches the back of the shoulder.",
+      "tip": "Keep the shoulder down, away from your ear.",
+      "step1": "Bring one straight arm across your chest.",
+      "step2": "Hold it above the elbow with the other arm.",
+      "step3": "Pull it toward your chest.",
+      "step4": "Hold and switch arms."
+    },
+    "overheadTriceps": {
+      "name": "Overhead triceps stretch",
+      "purpose": "Stretches the triceps.",
+      "tip": "Keep your head upright; don't push it forward.",
+      "step1": "Raise one arm and bend the elbow behind your head.",
+      "step2": "Hold the elbow with your other hand.",
+      "step3": "Gently push it back.",
+      "step4": "Hold and switch arms."
+    },
+    "childPose": {
+      "name": "Child's pose",
+      "purpose": "Relaxes and stretches the back.",
+      "tip": "Spread your knees if your belly needs room.",
+      "step1": "Kneel and sit back on your heels.",
+      "step2": "Fold forward with your arms straight.",
+      "step3": "Rest your forehead on the floor.",
+      "step4": "Breathe deeply and let your back relax."
+    },
+    "gentleCobra": {
+      "name": "Gentle cobra",
+      "purpose": "Stretches the abs and mobilizes the lower back.",
+      "tip": "If your lower back complains, rest on your forearms.",
+      "step1": "Lie face down with hands under your shoulders.",
+      "step2": "Press into the floor and lift your chest.",
+      "step3": "Keep your hips down.",
+      "step4": "Only go as high as is comfortable."
+    }
+  },
+  "warmup": {
+    "eyebrow": "Before you start · optional",
+    "title": "Warm-up",
+    "minutes_one": "~{{count}} min · for today's muscles",
+    "minutes_other": "~{{count}} min · for today's muscles",
+    "progress": "{{done}} of {{total}} done",
+    "band": "Band",
+    "noEquipment": "No equipment",
+    "rowLabel": "{{name}}, {{dose}}, {{equipment}}",
+    "note": "Active movements and activation: they prepare you without sapping strength. You can turn the warm-up off in Settings.",
+    "skip": "Skip",
+    "start": "Go to the first exercise",
+    "ramp": {
+      "title": "Ramp-up · optional",
+      "hide": "Hide",
+      "index": "R{{index}}",
+      "empty": "Empty bar or lightest load",
+      "note": "Weight climbing up to your working weight. They don't count toward your sets or records."
+    },
+    "howTo": "See how to do it: {{name}}"
+  },
+  "stretch": {
+    "eyebrow": "Workout finished · optional",
+    "title": "Stretches",
+    "minutes_one": "~{{count}} min · for what you trained today",
+    "minutes_other": "~{{count}} min · for what you trained today",
+    "start": "Start · {{name}}",
+    "side": "{{name}} · side {{side}}",
+    "remaining": "{{label}}, {{seconds}} seconds left",
+    "stop": "Stop",
+    "note": "Stretching improves mobility; it doesn't prevent soreness. No bouncing, no pain.",
+    "skip": "Finish without stretching",
+    "done": "Done"
+  },
+  "movementInfo": {
+    "eyebrow": "Info",
+    "notFound": "We couldn't find this movement.",
+    "purpose": "What it's for",
+    "steps": "How to do it",
+    "sources": "Sources",
+    "openSource": "Open source: {{source}}",
+    "kind": {
+      "warmup": "Warm-up",
+      "stretch": "Stretch"
+    },
+    "figure": "Illustration: {{name}}"
   }
 }
