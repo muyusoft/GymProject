@@ -17,7 +17,7 @@ export function useRecovery(): RecoveryState {
 
   const states = useMemo(() => (data ? groupByState(data.recoveries) : null), [data]);
   const insight = useMemo(
-    () => (data?.today ? todayInsight(data.today.groups, data.recoveries) : null),
+    () => (data?.today ? todayInsight(data.today, data.recoveries) : null),
     [data],
   );
 

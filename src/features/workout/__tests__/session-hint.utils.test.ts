@@ -8,6 +8,7 @@ import { pickSessionHint, repsAfterApply } from "../utils/session-hint.utils";
 
 const NO_INSIGHT: ExerciseInsight = {
   increase: null,
+  increaseBasis: null,
   preview: null,
   deload: null,
 };

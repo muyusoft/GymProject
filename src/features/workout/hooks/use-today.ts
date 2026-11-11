@@ -40,11 +40,15 @@ export function useToday(): TodayState {
     if (!dayId) return;
     let sessionId = "";
     const isStarted = await run(async () => {
-      sessionId = await startSession({ dayId, now: new Date() });
+      sessionId = await startSession({
+        dayId,
+        now: new Date(),
+        trackRpe: settings.trackRpe,
+      });
     });
     if (isStarted)
       router.push({ pathname: "/session/[id]", params: { id: sessionId } });
-  }, [data, run]);
+  }, [data, run, settings.trackRpe]);
 
   return {
     status,

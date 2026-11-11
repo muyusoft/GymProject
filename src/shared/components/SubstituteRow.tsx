@@ -1,11 +1,11 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { getTextStyle, tokens } from "@/design/tokens";
-import { ExerciseInfoButton } from "@/shared/components";
+import { ExerciseInfoButton } from "./ExerciseInfoButton";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 import { IconRenderer } from "@/shared/icons/icon-renderer";
 import { getExerciseName } from "@/shared/utils/exercise-name.utils";
-import type { SubstituteCandidate } from "../types/workout.types";
+import type { SubstituteCandidate } from "@/shared/types/substitute.types";
 
 const ICON_SIZE = 20;
 

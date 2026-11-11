@@ -46,6 +46,12 @@ export interface GroupRecovery {
   lastWorkedAt: number | null;
   /** El ejercicio de la sesión que más pesa en la recuperación. */
   cause: RecoveryCause | null;
+  /** Horas que pide esa sesión (24, 48 o 72); null si no hay registro reciente. */
+  requiredHours: number | null;
+  /** Esa sesión tuvo una serie al límite (RPE 9 o más): por eso tarda más. */
+  isHard: boolean;
+  /** Cuándo estará listo (ms desde epoch); null si ya lo está. */
+  readyAt: number | null;
 }
 
 export interface SourceInfo {

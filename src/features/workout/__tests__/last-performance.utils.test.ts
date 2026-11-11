@@ -85,8 +85,20 @@ describe("withLastWeight", () => {
     });
   });
 
+  it("un sustituto que entró al plan sin peso toma el de su última sesión", () => {
+    const substitute = { ...TEMPLATE, targetWeight: null };
+    expect(
+      withLastWeight(substitute, { weight: 85, unit: "kg", reps: 9 })
+        .targetWeight,
+    ).toBe(85);
+  });
+
   it("no aplica a un ejercicio sin peso", () => {
-    const bodyweight = { ...TEMPLATE, targetWeight: null };
+    const bodyweight = {
+      ...TEMPLATE,
+      loadType: "bodyweight" as const,
+      targetWeight: null,
+    };
     expect(
       withLastWeight(bodyweight, { weight: 85, unit: "kg", reps: 9 }),
     ).toBe(bodyweight);

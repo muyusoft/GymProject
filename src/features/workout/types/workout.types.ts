@@ -1,9 +1,6 @@
-import type {
-  Equipment,
-  LoadType,
-  WeightUnit,
-} from "@/shared/types/training.types";
+import type { LoadType, WeightUnit } from "@/shared/types/training.types";
 import type { LastPerformance } from "@/shared/utils/last-performance.utils";
+import type { IncreaseBasis } from "@/shared/utils/progression.utils";
 import type { ValidSet } from "@/shared/utils/one-rep-max.utils";
 import type { RecordKind } from "@/shared/utils/records.utils";
 
@@ -43,6 +40,8 @@ export interface ExerciseTemplate {
 export interface ExerciseInsight {
   /** Peso que sugiere probar hoy (ya cumplió la regla de subir). */
   increase: number | null;
+  /** En qué se basó la sugerencia de subir; null si no hay. */
+  increaseBasis: IncreaseBasis | null;
   /** Peso que se sugerirá la próxima vez si hoy completa todo. */
   preview: number | null;
   /** Peso de una semana de descarga. */
@@ -59,19 +58,6 @@ export interface PlanSlot {
 
 export const SUBSTITUTE_SCOPES = ["today", "plan"] as const;
 export type SubstituteScope = (typeof SUBSTITUTE_SCOPES)[number];
-
-export const SUBSTITUTE_REASONS = ["pattern", "muscle"] as const;
-export type SubstituteReason = (typeof SUBSTITUTE_REASONS)[number];
-
-export interface SubstituteCandidate {
-  exerciseId: string;
-  nameEs: string;
-  nameEn: string;
-  equipment: Equipment;
-  /** null cuando solo aparece por búsqueda de nombre. */
-  reason: SubstituteReason | null;
-  hasHistory: boolean;
-}
 
 export interface SessionExercise {
   slot: PlanSlot;
@@ -114,6 +100,8 @@ export type HintKind = "increase" | "deload";
 
 export interface ProgressionHintData {
   kind: HintKind;
+  /** Solo en los avisos de subir: en qué se basó, para explicarlo en el mensaje. */
+  increaseBasis: IncreaseBasis | null;
   exerciseId: string;
   nameEs: string;
   nameEn: string;
@@ -144,6 +132,8 @@ export interface TodayView {
   totalSets: number;
   completedExercises: number;
   activeSessionId: string | null;
+  /** La sesión de hoy ya terminada, para poder reabrirla; null si no hay. */
+  finishedSessionId: string | null;
   isDoneToday: boolean;
   hints: ProgressionHintData[];
   /** Si lo de hoy es un día movido esta semana: de qué día de la semana viene. */

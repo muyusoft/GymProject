@@ -24,11 +24,13 @@ const INSERT_BATCH_SIZE = 50;
 interface StartSessionOptions {
   dayId: string;
   now: Date;
+  /** La pregunta de esfuerzo de Ajustes: con rango de reps decide cuántas sumar hoy. */
+  trackRpe: boolean;
 }
 
 async function buildSessionSets(
   sessionId: string,
-  { dayId, now }: StartSessionOptions,
+  { dayId, now, trackRpe }: StartSessionOptions,
 ) {
   const [details, increments] = await Promise.all([
     listDayExercises(dayId, toIsoDate(now)),
@@ -54,6 +56,7 @@ async function buildSessionSets(
       template,
       createId: generateId,
       latest: exerciseHistory[0],
+      trackRpe,
     });
   });
 }

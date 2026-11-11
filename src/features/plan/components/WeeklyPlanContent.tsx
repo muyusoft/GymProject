@@ -11,6 +11,7 @@ import { RestDayRow } from "./RestDayRow";
 import { WeekShiftNote } from "./WeekShiftNote";
 import { weekNote } from "../utils/week-note.utils";
 import { WeeklyPlanHeader } from "./WeeklyPlanHeader";
+import { RepRangeOffer } from "./RepRangeOffer";
 
 interface WeeklyPlanContentProps {
   plan: WeeklyPlan;
@@ -23,6 +24,7 @@ export function WeeklyPlanContent({ plan }: Readonly<WeeklyPlanContentProps>) {
   return (
     <ScrollView contentContainerStyle={styles.content}>
       <WeeklyPlanHeader plan={plan} />
+      <RepRangeOffer />
       <View style={styles.days}>
         {weekDates(plan.weekStart).map((date, weekday) => {
           const day = plan.days.find((candidate) => candidate.weekday === weekday);

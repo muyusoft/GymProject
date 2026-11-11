@@ -2,11 +2,13 @@ import { useCallback, useMemo } from "react";
 import { useFocusResource, type ResourceStatus } from "@/shared/hooks/use-focus-resource";
 import { useSettingsStore } from "@/shared/store";
 import type { WeightUnit } from "@/shared/types/training.types";
-import { suggestIncrease } from "@/shared/utils/progression.utils";
+import { increaseBasis, suggestIncrease, type IncreaseBasis } from "@/shared/utils/progression.utils";
 import { loadExerciseHistory, type ExerciseHistoryData } from "../services/exercise-history.service";
 import { historyStats, type HistoryStats } from "../utils/history-stats.utils";
 
 export interface IncreaseHint {
+  /** En qué se basó: la respuesta de la última sesión o dos sesiones completas. */
+  basis: IncreaseBasis;
   sets: number;
   reps: number;
   nextWeight: number;
@@ -39,7 +41,13 @@ export function useExerciseHistory(exerciseId: string): ExerciseHistoryState {
     });
     const unit = data.sessions[0]?.best.unit;
     if (nextWeight === null || !unit) return null;
-    return { sets: data.target.sets, reps: data.target.reps, nextWeight, unit };
+    return {
+      basis: increaseBasis(data.results, trackRpe),
+      sets: data.target.sets,
+      reps: data.target.reps,
+      nextWeight,
+      unit,
+    };
   }, [data, progressionSuggestions, trackRpe]);
 
   return { status, reload, data, stats, hint };

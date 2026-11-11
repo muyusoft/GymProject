@@ -1,12 +1,14 @@
 import { router } from "expo-router";
+import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { getTextStyle, tokens } from "@/design/tokens";
 import { AsyncStateView, BodyMap, ScreenHeader } from "@/shared/components";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 import { useRecovery } from "../hooks/use-recovery";
-import { recoveryPaint, stateColors } from "../utils/recovery-view.utils";
+import { recoveryPaint, stateColors, type RecoveryLine } from "../utils/recovery-view.utils";
 import { MapLegend } from "./MapLegend";
+import { RecoveryDetailSheet } from "./RecoveryDetailSheet";
 import { RecoveryInsight } from "./RecoveryInsight";
 import { RecoveryRow } from "./RecoveryRow";
 
@@ -15,6 +17,7 @@ export function RecoveryScreen() {
   const { c } = useOverloadTheme();
   const { status, reload, data, states, insight } = useRecovery();
   const colors = stateColors(c);
+  const [selectedLine, setSelectedLine] = useState<RecoveryLine | null>(null);
 
   const date = data
     ? new Intl.DateTimeFormat(i18n.language, { weekday: "long", day: "numeric", month: "short" }).format(data.now)
@@ -39,6 +42,8 @@ export function RecoveryScreen() {
             }
           />
           <Text style={[styles.title, { color: c.text }]}>{t("recovery.title")}</Text>
+          {/* Lo que decide el entreno de hoy va primero: si los músculos que tocan ya están listos. */}
+          {insight && <RecoveryInsight insight={insight} />}
           <MapLegend
             items={[
               { key: "worked", color: colors.worked, label: t("recovery.worked") },
@@ -48,11 +53,11 @@ export function RecoveryScreen() {
           />
           <BodyMap mode="recovery" groups={recoveryPaint(data.recoveries, c)} />
           <View style={[styles.card, { backgroundColor: c.surface }]}>
-            <RecoveryRow state="worked" items={states.worked} now={data.now} />
-            <RecoveryRow state="recovering" items={states.recovering} now={data.now} />
-            <RecoveryRow state="ready" items={states.ready} now={data.now} />
+            <RecoveryRow state="worked" items={states.worked} now={data.now} onSelectLine={setSelectedLine} />
+            <RecoveryRow state="recovering" items={states.recovering} now={data.now} onSelectLine={setSelectedLine} />
+            <RecoveryRow state="ready" items={states.ready} now={data.now} onSelectLine={setSelectedLine} />
           </View>
-          {insight && <RecoveryInsight insight={insight} />}
+          <RecoveryDetailSheet line={selectedLine} now={data.now} onClose={() => setSelectedLine(null)} />
         </ScrollView>
       )}
     </AsyncStateView>

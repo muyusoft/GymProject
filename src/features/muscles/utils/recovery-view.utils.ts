@@ -2,6 +2,7 @@ import type { SemanticColors } from "@/design/tokens";
 import type { MuscleGroup } from "@/shared/types/training.types";
 import type { GroupPaintMap } from "@/shared/utils/body-map.utils";
 import type { GroupRecovery, RecoveryCause, RecoveryState } from "../types/muscles.types";
+import { readyMoment } from "./ready-moment.utils";
 
 const PERCENT = 100;
 const MS_PER_DAY = 86_400_000;
@@ -30,27 +31,91 @@ export function groupByState(recoveries: readonly GroupRecovery[]): StateGroups 
   };
 }
 
-export interface PercentLine {
-  percent: number;
+/** Una línea de la lista: grupos trabajados el mismo día, con el mismo porcentaje, motivo y momento de estar listos. */
+export interface RecoveryLine {
+  /** Estable entre renders, para la lista y para abrir su detalle. */
+  key: string;
   groups: MuscleGroup[];
+  /** Fin de la sesión más reciente de la línea; null si no hay registro. */
+  workedAt: number | null;
+  /** Entero 0-100, solo si la línea lo muestra. */
+  percent: number | null;
+  /** 0 a 1 del grupo menos recuperado, para la barra. */
+  progress: number;
+  /** Horas que pide la sesión que limita; null sin registro. */
+  requiredHours: number | null;
+  /** Horas de una sesión al límite (por eso tarda más); null si no fue al límite. */
+  hardHours: number | null;
+  /** Cuándo estará listo el último grupo de la línea; null si ya lo está. */
+  readyAt: number | null;
+  /** Los ejercicios que dejaron así a estos grupos, sin repetir. */
+  causes: RecoveryCause[];
 }
 
-/** Agrupa los grupos con el mismo porcentaje ("Pecho, espalda alta y bíceps · 65%"), de menos a más recuperado. */
-export function groupByPercent(items: readonly GroupRecovery[]): PercentLine[] {
-  const lines = new Map<number, MuscleGroup[]>();
+interface LineOptions {
+  now: number;
+  /** "Recuperando" muestra el porcentaje; "Recién trabajado", no. */
+  withPercent: boolean;
+}
+
+function dayKey(timestamp: number | null, now: number): string {
+  if (timestamp === null) return "none";
+  const day = relativeDay(timestamp, now);
+  return day.kind === "daysAgo" ? String(day.days) : day.kind;
+}
+
+function readyKey(readyAt: number | null, now: number): string {
+  if (readyAt === null) return "none";
+  const moment = readyMoment(readyAt, now);
+  return `${moment.day}-${new Date(readyAt).getDay()}-${moment.band}`;
+}
+
+function maxOf(a: number | null, b: number | null): number | null {
+  if (a === null) return b;
+  if (b === null) return a;
+  return Math.max(a, b);
+}
+
+function addCause(causes: readonly RecoveryCause[], cause: RecoveryCause | null): RecoveryCause[] {
+  if (!cause || causes.some((item) => item.exerciseId === cause.exerciseId)) return [...causes];
+  return [...causes, cause];
+}
+
+function emptyLine(key: string, item: GroupRecovery, percent: number | null): RecoveryLine {
+  const hardHours = item.isHard ? item.requiredHours : null;
+  return { key, groups: [], workedAt: null, percent, progress: 1, requiredHours: null, hardHours, readyAt: null, causes: [] };
+}
+
+function addToLine(line: RecoveryLine, item: GroupRecovery): RecoveryLine {
+  return {
+    ...line,
+    groups: [...line.groups, item.group],
+    workedAt: maxOf(line.workedAt, item.lastWorkedAt),
+    progress: Math.min(line.progress, item.percent),
+    requiredHours: maxOf(line.requiredHours, item.requiredHours),
+    readyAt: maxOf(line.readyAt, item.readyAt),
+    causes: addCause(line.causes, item.cause),
+  };
+}
+
+/** Ordena primero lo menos recuperado y, a igual porcentaje, lo más reciente. */
+function byPercentThenRecent(a: RecoveryLine, b: RecoveryLine): number {
+  return (a.percent ?? 0) - (b.percent ?? 0) || (b.workedAt ?? 0) - (a.workedAt ?? 0);
+}
+
+/**
+ * Separa los grupos de un estado por día trabajado, porcentaje (si se muestra), motivo y momento de estar
+ * listos: así cada línea dice su propio "hoy" o "ayer" y su propio "listo el jue por la tarde".
+ */
+export function recoveryLines(items: readonly GroupRecovery[], { now, withPercent }: LineOptions): RecoveryLine[] {
+  const lines = new Map<string, RecoveryLine>();
   for (const item of items) {
-    const percent = Math.round(item.percent * PERCENT);
-    lines.set(percent, [...(lines.get(percent) ?? []), item.group]);
+    const percent = withPercent ? Math.round(item.percent * PERCENT) : null;
+    const hardHours = item.isHard ? item.requiredHours : null;
+    const key = [dayKey(item.lastWorkedAt, now), percent, hardHours, readyKey(item.readyAt, now)].join("|");
+    lines.set(key, addToLine(lines.get(key) ?? emptyLine(key, item, percent), item));
   }
-  return [...lines.entries()].sort((a, b) => a[0] - b[0]).map(([percent, groups]) => ({ percent, groups }));
-}
-
-/** Última vez que se trabajó el grupo con menos recuperación del estado, para el titular de cada fila. */
-export function latestWorkedAt(items: readonly GroupRecovery[]): number | null {
-  return items.reduce<number | null>(
-    (latest, item) => (item.lastWorkedAt === null ? latest : Math.max(latest ?? 0, item.lastWorkedAt)),
-    null,
-  );
+  return [...lines.values()].sort(byPercentThenRecent);
 }
 
 export type RelativeDay = { kind: "today" } | { kind: "yesterday" } | { kind: "daysAgo"; days: number };
@@ -71,9 +136,17 @@ export interface TodayInsight {
   causeAt: number | null;
 }
 
-/** Los grupos que toca hoy y aún no están al 100%; null si todo está listo (o no hay entreno). */
-export function todayInsight(todayGroups: readonly MuscleGroup[], recoveries: readonly GroupRecovery[]): TodayInsight | null {
-  const pending = recoveries.filter((item) => todayGroups.includes(item.group) && item.percent < 1);
+interface TodayPlan {
+  /** Grupos principales del día de hoy. */
+  groups: readonly MuscleGroup[];
+  /** El entreno de hoy ya se terminó: el aviso ya no sirve para decidir nada. */
+  isDone: boolean;
+}
+
+/** Los grupos que toca hoy y aún no están al 100%; null si todo está listo, no hay entreno o ya se hizo. */
+export function todayInsight(today: TodayPlan, recoveries: readonly GroupRecovery[]): TodayInsight | null {
+  if (today.isDone) return null;
+  const pending = recoveries.filter((item) => today.groups.includes(item.group) && item.percent < 1);
   const [limiting] = [...pending].sort((a, b) => a.percent - b.percent);
   if (!limiting) return null;
   return {

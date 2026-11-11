@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { PlanExerciseDetail } from "@/shared/db/queries/plan-exercise.queries";
-import { applySwaps, buildSwapSeed, planSubstituteSets, type Swap } from "../utils/swap.utils";
+import { buildSwapSeed } from "@/shared/utils/swap-seed.utils";
+import { applySwaps, planSubstituteSets, type Swap } from "../utils/swap.utils";
 
 const detail = (id: string, exerciseId: string): PlanExerciseDetail => ({
   planExercise: {

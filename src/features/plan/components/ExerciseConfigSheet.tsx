@@ -2,7 +2,7 @@ import { router } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { getTextStyle, tokens } from "@/design/tokens";
-import { AsyncStateView, Button, InlineError } from "@/shared/components";
+import { AsyncStateView, Button, ExerciseInfoButton, InlineError } from "@/shared/components";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
 import { IconRenderer } from "@/shared/icons/icon-renderer";
 import { getExerciseName } from "@/shared/utils/exercise-name.utils";
@@ -40,6 +40,10 @@ export function ExerciseConfigSheet({ planExerciseId }: Readonly<ExerciseConfigS
                   {getExerciseName(config.detail.exercise, i18n.language)}
                 </Text>
               </View>
+              <ExerciseInfoButton
+                exerciseId={config.detail.exercise.id}
+                name={getExerciseName(config.detail.exercise, i18n.language)}
+              />
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel={t("plan.config.close")}

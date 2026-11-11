@@ -24,6 +24,8 @@ export const SETTING_KEYS = {
   /** Ofrecer calentamiento antes de entrenar y estiramientos al terminar. */
   warmupEnabled: "warmupEnabled",
   stretchEnabled: "stretchEnabled",
+  /** Ejercicios del plan con reps fijas a los que se les dijo "Ahora no" al proponerles un rango. */
+  repRangeOfferDismissed: "repRangeOfferDismissed",
   /** Versión de la preparación para sincronizar (ids estables) ya aplicada a esta instalación. */
   syncPrep: "syncPrep",
   /** Versión de los ejercicios comunes ya aplicada a esta instalación (ver catalog-update). */

@@ -32,6 +32,14 @@
     "profile": "Perfil"
   },
   "today": {
+    "reopen": "Reabrir entreno",
+    "devReset": {
+      "button": "Reiniciar entreno de hoy (pruebas)",
+      "title": "¿Reiniciar el entreno de hoy?",
+      "message": "Se borran la sesión de hoy y todas sus series, también del historial. El plan no cambia.",
+      "keep": "Mantener",
+      "confirm": "Reiniciar"
+    },
     "startSession": "Iniciar sesión",
     "todayWorkout": "Entreno de hoy",
     "streakDays": "{{count}} días",
@@ -133,10 +141,29 @@
         "solid": "Me sobraron 1 o 2 repeticiones",
         "limit": "Llegué al límite"
       },
+      "info": {
+        "open": "Cómo sugerimos subir peso",
+        "title": "Cómo sugerimos subir peso",
+        "points": {
+          "range": "Con rango de reps (por ejemplo 8–12), primero subes repeticiones con el mismo peso. Tu respuesta decide cuántas: al límite repites, con 1 o 2 en reserva sumas 1 y con 3 o más sumas 2.",
+          "top": "Cuando todas las series llegan al tope del rango, te sugerimos subir peso y vuelves al mínimo. Si llegaste al límite, primero repites ese peso.",
+          "fixed": "Con reps fijas, te sugerimos subir cuando completas todas las series y te sobraron 3 o más repeticiones.",
+          "noAnswer": "Si no respondes, hacen falta 2 sesiones seguidas completas con el mismo peso."
+        },
+        "footer": "Tú decides: la sugerencia se acepta en la sesión y nunca cambia tu plan sola.",
+        "close": "Entendido"
+      },
       "outcome": {
-        "easy": "Si completaste todas las repeticiones, la próxima vez te sugeriremos subir peso.",
-        "solid": "Si completaste todas las repeticiones, la próxima vez te sugeriremos subir peso.",
-        "limit": "La próxima vez repite este peso antes de subir."
+        "range": {
+          "easy": "La próxima vez te pedimos 2 repeticiones más. Si ya llegaste al tope, te sugerimos subir peso.",
+          "solid": "La próxima vez te pedimos 1 repetición más. Si ya llegaste al tope, te sugerimos subir peso.",
+          "limit": "La próxima vez repite estas repeticiones con el mismo peso."
+        },
+        "fixed": {
+          "easy": "Si completaste todas las series, la próxima vez te sugerimos subir peso.",
+          "solid": "Vas bien con este peso. Te sugerimos subir cuando te sobren 3 o más.",
+          "limit": "La próxima vez repite este peso antes de subir."
+        }
       }
     },
     "previous": "Anterior",
@@ -182,6 +209,40 @@
     "yesterday": "ayer",
     "daysAgo_one": "hace {{count}} día",
     "daysAgo_other": "hace {{count}} días",
+    "line": {
+      "ready": "Listo {{when}}",
+      "hardReady": "Al límite: necesita {{hours}} h · listo {{when}}"
+    },
+    "when": {
+      "today": {
+        "night": "hoy de madrugada",
+        "morning": "hoy por la mañana",
+        "afternoon": "hoy por la tarde",
+        "evening": "hoy por la noche"
+      },
+      "tomorrow": {
+        "night": "mañana de madrugada",
+        "morning": "mañana por la mañana",
+        "afternoon": "mañana por la tarde",
+        "evening": "mañana por la noche"
+      },
+      "weekday": {
+        "night": "el {{weekday}} de madrugada",
+        "morning": "el {{weekday}} por la mañana",
+        "afternoon": "el {{weekday}} por la tarde",
+        "evening": "el {{weekday}} por la noche"
+      }
+    },
+    "detail": {
+      "open": "Ver detalle: {{groups}}",
+      "worked": "Trabajado: {{day}}",
+      "causes": "Con: {{exercises}}",
+      "needs": "Necesita {{hours}} h de descanso",
+      "hard": "Llegaste al límite en alguna serie: por eso son 24 h más.",
+      "progress": "Recuperado al {{percent}}%",
+      "rule": "48 h si fue músculo principal del ejercicio, 24 h si fue secundario y 24 h más si llegaste al límite.",
+      "close": "Entendido"
+    },
     "none": "Ninguno por ahora",
     "insight": {
       "withCause": "Hoy toca {{groups}}, que van al {{percent}}%: {{exercise}} del {{weekday}} también los trabajó.",
@@ -295,7 +356,7 @@
     "progression": {
       "suggestions": "Sugerencias de subir peso",
       "rpe": "Preguntar el esfuerzo en cada ejercicio",
-      "rpeHint": "Al terminar un ejercicio dices cuánto te costó; con eso la sugerencia de subir peso se adelanta o espera.",
+      "rpeHint": "Al terminar un ejercicio dices cuánto te costó; con eso decidimos cuántas repeticiones sumar y cuándo subir peso.",
       "deload": "Deload automático",
       "deloadHint": "Al estancarte 3 semanas"
     },
@@ -418,6 +479,13 @@
     "other": "Otro"
   },
   "plan": {
+    "repRangeOffer": {
+      "title": "Progresa también con repeticiones",
+      "body_one": "{{count}} ejercicio tiene reps fijas. Con un rango (por ejemplo 8–12) primero subes repeticiones y, al llegar al tope, subes peso y vuelves al mínimo.",
+      "body_other": "{{count}} ejercicios tienen reps fijas. Con un rango (por ejemplo 8–12) primero subes repeticiones y, al llegar al tope, subes peso y vuelves al mínimo.",
+      "apply": "Usar rangos",
+      "dismiss": "Ahora no"
+    },
     "defaultName": "Mi plan",
     "newDayName": "Día nuevo",
     "copyName": "{{name}} (copia)",
@@ -747,7 +815,11 @@
   },
   "hint": {
     "dismiss": "Descartar sugerencia",
-    "increase": "{{name}}: completaste {{sets}} × {{reps}} con {{current}}. Hoy prueba {{next}}.",
+    "increaseBy": {
+      "easy": "{{name}}: completaste {{sets}} × {{reps}} con {{current}} y te sobraron 3 o más repeticiones. Hoy prueba {{next}}.",
+      "solid": "{{name}}: llegaste al tope, {{sets}} × {{reps}} con {{current}}, y te sobraron 1 o 2 repeticiones. Hoy prueba {{next}}.",
+      "streak": "{{name}}: completaste {{sets}} × {{reps}} con {{current}} dos sesiones seguidas. Hoy prueba {{next}}."
+    },
     "preview": "Si hoy completas {{sets}} × {{reps}}, la próxima vez te sugerimos {{next}}.",
     "deload": "{{name}}: sin progreso en 3 semanas. Prueba una semana más ligera con {{next}}.",
     "acceptIncrease": "Subir a {{weight}}",
@@ -850,7 +922,11 @@
       "title": "Peso por sesión",
       "noTrend": "La tendencia aparece desde la {{count}}.ª sesión."
     },
-    "hint": "Dos sesiones seguidas con {{sets}} × {{reps}} completas. La próxima vez prueba {{next}}.",
+    "hintBy": {
+      "easy": "Completaste {{sets}} × {{reps}} y te sobraron 3 o más repeticiones. La próxima vez prueba {{next}}.",
+      "solid": "Llegaste al tope, {{sets}} × {{reps}}, y te sobraron 1 o 2 repeticiones. La próxima vez prueba {{next}}.",
+      "streak": "Dos sesiones seguidas con {{sets}} × {{reps}} completas. La próxima vez prueba {{next}}."
+    },
     "sessions": "Sesiones",
     "empty": "Aún no hay sesiones con peso registradas para este ejercicio.",
     "notFound": "No encontramos este ejercicio."
@@ -977,6 +1053,7 @@
     "emptySearch": "Ningún ejercicio coincide con tu búsqueda.",
     "onlyToday": "Usar solo hoy",
     "alsoPlan": "Cambiar también en el plan",
+    "applyToPlan": "Cambiar en el plan",
     "restore": "Volver al ejercicio del plan",
     "active": "Sustituto solo por hoy"
   },

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { ProgressionHint } from "@/shared/components";
 import { formatWeight } from "@/shared/utils/weight.utils";
 import type { SessionExercise } from "../types/workout.types";
+import { hintMessageKey } from "../utils/hints.utils";
 import {
   pickSessionHint,
   type SessionHintChoice,
@@ -30,7 +31,7 @@ export function SessionHint({ exercise, onApply }: Readonly<SessionHintProps>) {
   return (
     <ProgressionHint
       kind={choice.variant === "deload" ? "deload" : "increase"}
-      message={t(`hint.${choice.variant}`, {
+      message={t(hintMessageKey(choice.variant, exercise.insight.increaseBasis), {
         name: i18n.language === "es" ? exercise.nameEs : exercise.nameEn,
         sets: template.sets,
         reps: template.reps ?? 0,

@@ -10,7 +10,7 @@ import {
 } from "@/shared/utils/week.utils";
 import type { TodayExercise, TodayView } from "../types/workout.types";
 import { buildDoneExercises } from "../utils/done-exercises.utils";
-import { buildHints } from "../utils/hints.utils";
+import { buildHints, hintsForToday } from "../utils/hints.utils";
 import { buildInsight, type InsightSettings } from "../utils/insight.utils";
 import { buildMissedOffer } from "../utils/missed-day.utils";
 import { lastPerformance } from "@/shared/utils/last-performance.utils";
@@ -72,7 +72,7 @@ async function loadDayDetails(
 
 type SessionState = Pick<
   TodayView,
-  "activeSessionId" | "completedExercises" | "doneExercises"
+  "activeSessionId" | "finishedSessionId" | "completedExercises" | "doneExercises"
 >;
 
 /** La sesión de hoy, abierta o ya terminada: cuántos ejercicios se completaron y, si terminó, cuáles se hicieron. */
@@ -85,12 +85,14 @@ async function loadSessionState(
   if (!session)
     return {
       activeSessionId: null,
+      finishedSessionId: null,
       completedExercises: 0,
       doneExercises: null,
     };
   const isFinished = session.endedAt !== null;
   return {
     activeSessionId: isFinished ? null : session.id,
+    finishedSessionId: isFinished ? session.id : null,
     completedExercises: await countCompletedExercises(session.id),
     doneExercises: isFinished
       ? buildDoneExercises(planned, await listSessionLogs(session.id))
@@ -113,6 +115,7 @@ function emptyToday(
     totalSets: 0,
     completedExercises: 0,
     activeSessionId: null,
+    finishedSessionId: null,
     isDoneToday: false,
     hints: [],
   };
@@ -154,6 +157,7 @@ export async function loadToday({
   if (!day) return emptyToday(now, { hasPlan: true, weekStrip, missedDay });
 
   const { exercises, hints } = await loadDayDetails(day, now, settings);
+  const isDoneToday = completedDayIds.has(day.id);
   const sessionState = await loadSessionState(
     day.id,
     toIsoDate(now),
@@ -173,8 +177,8 @@ export async function loadToday({
       0,
     ),
     ...sessionState,
-    isDoneToday: completedDayIds.has(day.id),
-    hints,
+    isDoneToday,
+    hints: hintsForToday(hints, isDoneToday || sessionState.finishedSessionId !== null),
     movedFromWeekday:
       slot?.fromWeekday === todayWeekday ? null : (slot?.fromWeekday ?? null),
     // Con el entreno de hoy ya empezado, mover otro día a hoy ya no tiene sentido.

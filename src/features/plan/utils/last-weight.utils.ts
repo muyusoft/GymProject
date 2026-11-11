@@ -4,13 +4,13 @@ import { loadTypeUsesWeight } from "./exercise-config.utils";
 
 /**
  * El ejercicio del plan con el último peso que se levantó, en cualquier día: el peso del plan solo es el
- * punto de partida mientras no hay historial. Igual que hace Hoy al armar la sesión.
+ * punto de partida mientras no hay historial. Igual que hace Hoy al armar la sesión. Un peso vacío no significa
+ * "sin peso": un sustituto sin historial entra así al plan.
  */
 export function withLastWeightRow(
   row: PlanExerciseRow,
   last: LastPerformance | null,
 ): PlanExerciseRow {
-  if (!last || !loadTypeUsesWeight(row.loadType) || row.targetWeight === null)
-    return row;
+  if (!last || !loadTypeUsesWeight(row.loadType)) return row;
   return { ...row, targetWeight: last.weight, unit: last.unit };
 }

@@ -86,6 +86,21 @@ function collectImpacts(
   return impacts;
 }
 
+/** Un grupo sin sesiones recientes: listo y sin registro. */
+function untouchedGroup(group: MuscleGroup): GroupRecovery {
+  return {
+    group,
+    state: "ready",
+    percent: 1,
+    role: null,
+    lastWorkedAt: null,
+    cause: null,
+    requiredHours: null,
+    isHard: false,
+    readyAt: null,
+  };
+}
+
 function recoverGroup(
   group: MuscleGroup,
   impacts: ReadonlyMap<string, SessionImpact>,
@@ -108,15 +123,8 @@ function recoverGroup(
       max === null ? impact.endedAt : Math.max(max, impact.endedAt),
     null,
   );
-  if (!limiting)
-    return {
-      group,
-      state: "ready",
-      percent: 1,
-      role: null,
-      lastWorkedAt: null,
-      cause: null,
-    };
+  if (!limiting) return untouchedGroup(group);
+  const hours = requiredHours(limiting.impact);
   return {
     group,
     state: recoveryState(limiting.percent),
@@ -124,6 +132,10 @@ function recoverGroup(
     role: limiting.impact.role,
     lastWorkedAt: limiting.percent < 1 ? limiting.impact.endedAt : latest,
     cause: limiting.impact.cause,
+    requiredHours: hours,
+    isHard: limiting.impact.isHard,
+    readyAt:
+      limiting.percent < 1 ? limiting.impact.endedAt + hours * MS_PER_HOUR : null,
   };
 }
 

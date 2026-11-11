@@ -28,6 +28,10 @@ describe("withLastWeightRow", () => {
     expect(withLastWeightRow(ROW, null)).toBe(ROW);
   });
 
+  it("un sustituto que entró al plan sin peso muestra el de su última sesión", () => {
+    expect(withLastWeightRow({ ...ROW, targetWeight: null }, LAST)).toMatchObject({ targetWeight: 155, unit: "lb" });
+  });
+
   it("no aplica a ejercicios sin peso", () => {
     const plank = { ...ROW, loadType: "time" as const, targetWeight: null };
     expect(withLastWeightRow(plank, LAST)).toBe(plank);

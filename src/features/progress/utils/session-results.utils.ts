@@ -1,4 +1,5 @@
 import type { ProgressionTarget, SessionResult } from "@/shared/types/history.types";
+import { parseProgressionRule, repRangeMin } from "@/shared/utils/progression-rule.utils";
 import type { LoggedSetRow } from "../types/progress.types";
 
 /** Series completadas → una `SessionResult` por sesión; `rows` debe venir de la sesión más nueva a la más vieja. */
@@ -14,10 +15,13 @@ export function buildSessionResults(rows: readonly LoggedSetRow[]): SessionResul
 
 /** Lo que se esperaba hacer: el plan si el ejercicio está en él; si no, lo que se hizo la última vez. */
 export function deriveTarget(
-  planned: { sets: number; reps: number | null } | null,
+  planned: { sets: number; reps: number | null; progressionRule?: string | null } | null,
   latest: SessionResult | undefined,
 ): ProgressionTarget | null {
-  if (planned?.reps != null) return { sets: planned.sets, reps: planned.reps };
+  if (planned?.reps != null) {
+    const repsMin = repRangeMin(parseProgressionRule(planned.progressionRule ?? null), planned.reps);
+    return { sets: planned.sets, reps: planned.reps, hasRepRange: repsMin !== null };
+  }
   if (!latest) return null;
   const reps = latest.sets.flatMap((set) => (set.reps === null ? [] : [set.reps]));
   return reps.length > 0 ? { sets: latest.sets.length, reps: Math.min(...reps) } : null;

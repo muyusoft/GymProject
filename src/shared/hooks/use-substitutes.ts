@@ -2,15 +2,15 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { logger } from "@/config/logger";
 import type { ResourceStatus } from "@/shared/hooks/use-focus-resource";
 import type { Equipment } from "@/shared/types/training.types";
-import { loadSubstituteContext } from "../services/substitute.service";
-import type { SubstituteCandidate } from "../types/workout.types";
+import { loadSubstituteContext } from "@/shared/services/substitute-context.service";
+import type { SubstituteCandidate } from "@/shared/types/substitute.types";
 import {
   equipmentOptions,
   rankSubstitutes,
   searchSubstitutes,
   visibleSuggestions,
   type SubstituteContext,
-} from "../utils/substitutes.utils";
+} from "@/shared/utils/substitutes.utils";
 
 interface SubstitutesState {
   status: ResourceStatus;
@@ -24,7 +24,7 @@ interface SubstitutesState {
   setQuery: (query: string) => void;
 }
 
-/** Sustitutos del ejercicio del plan. `excludedIds` debe ser estable (los ejercicios del entreno de hoy). */
+/** Sustitutos del ejercicio del plan. `excludedIds` debe ser estable (los ejercicios de ese día). */
 export function useSubstitutes(originalExerciseId: string, excludedIds: readonly string[]): SubstitutesState {
   const [status, setStatus] = useState<ResourceStatus>("loading");
   const [context, setContext] = useState<SubstituteContext | null>(null);

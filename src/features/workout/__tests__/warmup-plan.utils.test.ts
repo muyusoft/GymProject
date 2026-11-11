@@ -30,7 +30,7 @@ function exercise({ id, weight, targetWeight = null, loadType = "total" }: Spec)
       isProgressionEnabled: true,
     },
     sets: [{ id: `${id}-1`, index: 0, weight, unit: "kg", reps: 10, seconds: null, loadType, completed: false, isPR: false, rpe: null }],
-    insight: { increase: null, preview: null, deload: null },
+    insight: { increase: null, increaseBasis: null, preview: null, deload: null },
     last: null,
   };
 }

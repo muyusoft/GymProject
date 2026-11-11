@@ -41,6 +41,8 @@ export interface AppSettings {
   warmupEnabled: boolean;
   /** Ofrecer estiramientos al terminar. */
   stretchEnabled: boolean;
+  /** Ids de ejercicios del plan a los que ya no se les propone pasar a rango de reps. */
+  repRangeOfferDismissed: readonly string[];
 }
 
 export type AppSettingKey = keyof AppSettings;
@@ -67,6 +69,10 @@ export function serializeSetting(value: string | boolean | number | readonly str
 function parseEquipment(raw: string | undefined): readonly GymEquipment[] {
   if (raw === undefined) return GYM_EQUIPMENT;
   return raw.split(LIST_SEPARATOR).filter((item): item is GymEquipment => isOneOf(GYM_EQUIPMENT, item));
+}
+
+function parseIdList(raw: string | undefined): readonly string[] {
+  return raw ? raw.split(LIST_SEPARATOR).filter((id) => id.length > 0) : [];
 }
 
 function parseMinutes(raw: string | undefined): SessionMinutes {
@@ -143,5 +149,6 @@ export function parseSettings(
     sessionMinutes: parseMinutes(raw.sessionMinutes),
     warmupEnabled: parseBoolean(raw.warmupEnabled, true),
     stretchEnabled: parseBoolean(raw.stretchEnabled, true),
+    repRangeOfferDismissed: parseIdList(raw.repRangeOfferDismissed),
   };
 }

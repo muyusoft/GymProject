@@ -12,6 +12,8 @@ interface InitialSetsOptions {
   createId: () => string;
   /** La última sesión terminada del ejercicio; con rango de reps decide con cuántas arranca hoy. */
   latest?: SessionResult | undefined;
+  /** La pregunta de esfuerzo de Ajustes: decide cuántas reps sumar dentro del rango. */
+  trackRpe?: boolean;
 }
 
 /**
@@ -24,9 +26,10 @@ export function buildInitialSets({
   template,
   createId,
   latest,
+  trackRpe = false,
 }: InitialSetsOptions): NewSetLog[] {
   const weight = template.targetWeight;
-  const reps = goalReps({ template, startWeight: weight, latest });
+  const reps = goalReps({ template, startWeight: weight, latest, trackRpe });
   return Array.from({ length: template.sets }, (_, setIndex) => ({
     id: createId(),
     sessionId,

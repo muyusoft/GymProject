@@ -276,7 +276,12 @@ describe("resultados por sesión para la regla de subir peso", () => {
 
   it("toma lo esperado del plan y, sin plan, de la última sesión (reps mínimas)", () => {
     const results = buildSessionResults(rows);
-    expect(deriveTarget({ sets: 4, reps: 12 }, results[0])).toEqual({ sets: 4, reps: 12 });
+    expect(deriveTarget({ sets: 4, reps: 12 }, results[0])).toEqual({ sets: 4, reps: 12, hasRepRange: false });
+    expect(deriveTarget({ sets: 4, reps: 12, progressionRule: '{"enabled":true,"sessions":2,"repsMin":8}' }, results[0])).toEqual({
+      sets: 4,
+      reps: 12,
+      hasRepRange: true,
+    });
     expect(deriveTarget(null, results[0])).toEqual({ sets: 2, reps: 12 });
     expect(deriveTarget({ sets: 3, reps: null }, results[1])).toEqual({ sets: 1, reps: 10 });
     expect(deriveTarget(null, undefined)).toBeNull();

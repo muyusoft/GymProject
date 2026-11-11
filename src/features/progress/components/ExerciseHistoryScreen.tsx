@@ -69,7 +69,7 @@ export function ExerciseHistoryScreen({ exerciseId }: Readonly<ExerciseHistorySc
               {hint && (
                 <ProgressionHint
                   kind="increase"
-                  message={t("history.hint", {
+                  message={t(`history.hintBy.${hint.basis}`, {
                     sets: hint.sets,
                     reps: hint.reps,
                     next: formatWeight({ value: hint.nextWeight, unit: hint.unit, locale }),

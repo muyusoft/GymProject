@@ -1,29 +1,28 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { getTextStyle, tokens } from "@/design/tokens";
-import { AsyncStateView, Button, Chip, InlineError } from "@/shared/components";
 import { useOverloadTheme } from "@/shared/hooks/use-overload-theme";
+import { useSubstitutes } from "@/shared/hooks/use-substitutes";
+import type { SubstituteSubject } from "@/shared/types/substitute.types";
 import { getExerciseName } from "@/shared/utils/exercise-name.utils";
-import { useSubstitutes } from "../hooks/use-substitutes";
-import type { SubstituteTarget } from "../hooks/use-substitution";
-import type { SubstituteScope } from "../types/workout.types";
+import { AsyncStateView } from "./AsyncStateView";
+import { Chip } from "./Chip";
 import { SubstituteRow } from "./SubstituteRow";
 
-interface SubstituteContentProps {
-  target: SubstituteTarget;
+interface SubstitutePickerProps {
+  subject: SubstituteSubject;
   excludedIds: readonly string[];
-  isApplying: boolean;
-  hasError: boolean;
-  onApply: (substituteId: string, scope: SubstituteScope) => void;
   onOpenInfo: () => void;
+  /** Los botones para aplicar; reciben la alternativa elegida, o null si no hay una visible. */
+  renderActions: (selectedId: string | null) => ReactNode;
 }
 
-/** Sugerencias con filtro por equipo, búsqueda libre y las dos formas de aplicar: solo hoy o también en el plan. */
-export function SubstituteContent({ target, excludedIds, isApplying, hasError, onApply, onOpenInfo }: Readonly<SubstituteContentProps>) {
+/** Sugerencias con filtro por equipo y búsqueda libre; cada pantalla decide cómo se aplica el cambio. */
+export function SubstitutePicker({ subject, excludedIds, onOpenInfo, renderActions }: Readonly<SubstitutePickerProps>) {
   const { t, i18n } = useTranslation();
   const { c } = useOverloadTheme();
-  const substitutes = useSubstitutes(target.slot.originalExerciseId, excludedIds);
+  const substitutes = useSubstitutes(subject.originalExerciseId, excludedIds);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const isSearching = substitutes.query.trim() !== "";
   const hasSelection = selectedId !== null && substitutes.candidates.some((item) => item.exerciseId === selectedId);
@@ -31,7 +30,7 @@ export function SubstituteContent({ target, excludedIds, isApplying, hasError, o
   return (
     <>
       <Text style={[styles.title, { color: c.text }]}>
-        {t("substitute.title", { name: getExerciseName(target, i18n.language) })}
+        {t("substitute.title", { name: getExerciseName(subject, i18n.language) })}
       </Text>
       <TextInput
         accessibilityLabel={t("substitute.search")}
@@ -77,30 +76,7 @@ export function SubstituteContent({ target, excludedIds, isApplying, hasError, o
           </ScrollView>
         </AsyncStateView>
       </View>
-      {hasError && <InlineError message={t("common.saveError")} />}
-      <Button
-        label={t("substitute.onlyToday")}
-        block
-        loading={isApplying}
-        disabled={!hasSelection}
-        onPress={() => selectedId && onApply(selectedId, "today")}
-      />
-      <Button
-        variant="secondary"
-        label={t("substitute.alsoPlan")}
-        block
-        disabled={!hasSelection || isApplying}
-        onPress={() => selectedId && onApply(selectedId, "plan")}
-      />
-      {target.slot.isSubstituted && (
-        <Button
-          variant="ghost"
-          label={t("substitute.restore")}
-          block
-          disabled={isApplying}
-          onPress={() => onApply(target.slot.originalExerciseId, "today")}
-        />
-      )}
+      {renderActions(hasSelection ? selectedId : null)}
     </>
   );
 }

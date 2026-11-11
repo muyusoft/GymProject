@@ -37,6 +37,7 @@ App de gimnasio personal de Muyusoft, construida sobre muyusoft-template. Reempl
 - `docs/overload/domain-rules.md` — antes de tocar unidades, progresión, recuperación, series o el parser.
 - `docs/overload/muscle-map.md` — antes de tocar músculos, la figura o el catálogo.
 - `docs/overload/phases.md` — el plan por fases y sus criterios de aceptación.
+- `docs/overload/pending-before-production.md` — lo temporal o solo de desarrollo que hay que decidir antes de publicar; agrega ahí todo lo que se haga solo para pruebas.
 
 ## Reglas propias de Overload
 

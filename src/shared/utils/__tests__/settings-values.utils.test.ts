@@ -26,7 +26,18 @@ describe("parseSettings", () => {
       sessionMinutes: 45,
       warmupEnabled: true,
       stretchEnabled: true,
+      repRangeOfferDismissed: [],
     });
+  });
+
+  it("lee los ejercicios a los que ya no se les propone un rango", () => {
+    expect(
+      parseSettings({ repRangeOfferDismissed: "pe-1,pe-2" }, "es")
+        .repRangeOfferDismissed,
+    ).toEqual(["pe-1", "pe-2"]);
+    expect(
+      parseSettings({ repRangeOfferDismissed: "" }, "es").repRangeOfferDismissed,
+    ).toEqual([]);
   });
 
   it("lee la estatura y la frecuencia de pesaje, e ignora las que no sirven", () => {

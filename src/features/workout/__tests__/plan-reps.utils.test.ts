@@ -41,7 +41,7 @@ function exercise(
       isProgressionEnabled: true,
     },
     sets,
-    insight: { increase: null, preview: null, deload: null },
+    insight: { increase: null, increaseBasis: null, preview: null, deload: null },
     last: null,
   };
 }

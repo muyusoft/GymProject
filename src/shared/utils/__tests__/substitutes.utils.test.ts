@@ -7,7 +7,7 @@ import {
   visibleSuggestions,
   type CatalogExercise,
   type SubstituteContext,
-} from "../utils/substitutes.utils";
+} from "../substitutes.utils";
 
 interface ExerciseOptions {
   pattern?: string | null;

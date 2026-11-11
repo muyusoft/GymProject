@@ -5,9 +5,13 @@ import type {
 } from "@/shared/types/history.types";
 import { rpeToEffort, type EffortLevel } from "./effort.utils";
 
-/** Sin respuesta de esfuerzo hacen falta dos sesiones completas; con ella basta la última. */
+/** Sin respuesta de esfuerzo hacen falta dos sesiones completas; con una respuesta que permite subir basta la última. */
 export const REQUIRED_SESSIONS = 2;
 export const REQUIRED_SESSIONS_WITH_EFFORT = 1;
+
+/** En qué se basó una sugerencia de subir: la respuesta de la última sesión o, sin ella, dos sesiones completas. */
+export const INCREASE_BASES = ["easy", "solid", "streak"] as const;
+export type IncreaseBasis = (typeof INCREASE_BASES)[number];
 
 interface IncreaseOptions {
   /** Sesiones terminadas del ejercicio, de la más nueva a la más vieja. */
@@ -69,6 +73,15 @@ function latestEffort(
   return rpeToEffort(averageRpe(latest));
 }
 
+/**
+ * Si la respuesta de la última sesión deja subir peso. Al límite nunca; con 1 o 2 en reserva solo en el tope de
+ * un rango (doble progresión), porque con reps fijas todavía cabe una repetición más.
+ */
+function allowsIncrease(effort: EffortLevel, hasRepRange: boolean): boolean {
+  if (effort === "limit") return false;
+  return effort === "easy" || hasRepRange;
+}
+
 function isTooHard(
   latest: SessionResult | undefined,
   trackRpe: boolean,
@@ -78,8 +91,8 @@ function isTooHard(
 
 /**
  * Regla de producto: sugerir peso + salto del equipo cuando las últimas sesiones se completaron al mismo peso.
- * Si la última tiene respuesta de esfuerzo, decide ella: al límite no se sugiere; con repeticiones en reserva
- * basta esa sesión. Sin respuesta hacen falta las 2 últimas.
+ * Si la última tiene respuesta de esfuerzo, decide ella y basta esa sesión: al límite no se sugiere; con 3 o más en
+ * reserva sí; con 1 o 2, solo si el ejercicio tiene rango. Sin respuesta hacen falta las 2 últimas.
  */
 export function suggestIncrease({
   history,
@@ -88,7 +101,8 @@ export function suggestIncrease({
   trackRpe,
 }: IncreaseOptions): number | null {
   const effort = latestEffort(history[0], trackRpe);
-  if (effort === "limit") return null;
+  if (effort !== null && !allowsIncrease(effort, target.hasRepRange ?? false))
+    return null;
   const required =
     effort === null ? REQUIRED_SESSIONS : REQUIRED_SESSIONS_WITH_EFFORT;
   const recent = history.slice(0, required);
@@ -108,4 +122,13 @@ export function previewIncrease(options: IncreaseOptions): number | null {
     return null;
   const weight = sharedWeight([latest]);
   return weight === null ? null : weight + step;
+}
+
+/** Por qué toca subir, para explicarlo en el aviso. Solo tiene sentido cuando `suggestIncrease` sugirió algo. */
+export function increaseBasis(
+  history: readonly SessionResult[],
+  trackRpe: boolean,
+): IncreaseBasis {
+  const effort = latestEffort(history[0], trackRpe);
+  return effort === "easy" || effort === "solid" ? effort : "streak";
 }

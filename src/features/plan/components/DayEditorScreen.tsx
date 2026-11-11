@@ -6,8 +6,12 @@ import { tokens } from "@/design/tokens";
 import { AsyncStateView, Button, EmptyState, InlineError } from "@/shared/components";
 import type { PlanExerciseDetail } from "@/shared/db/queries/plan-exercise.queries";
 import { useDayEditor } from "../hooks/use-day-editor";
+import { usePlanSubstitution } from "../hooks/use-plan-substitution";
 import { DayEditorHeader } from "./DayEditorHeader";
 import { DayExerciseRow } from "./DayExerciseRow";
+import { PlanSwapSheet } from "./PlanSwapSheet";
+
+const NO_EXERCISES: readonly PlanExerciseDetail[] = [];
 
 interface DayEditorScreenProps {
   dayId: string;
@@ -20,6 +24,8 @@ export function DayEditorScreen({ dayId }: Readonly<DayEditorScreenProps>) {
   const editor = useDayEditor(dayId);
   const { detail, move } = editor;
   const count = detail?.exercises.length ?? 0;
+  const swap = usePlanSubstitution({ exercises: detail?.exercises ?? NO_EXERCISES, onChanged: editor.reload });
+  const { open: openSwap } = swap;
 
   const handleOpen = useCallback((planExerciseId: string) => {
     router.push({ pathname: "/exercise/configure", params: { planExerciseId } });
@@ -27,9 +33,9 @@ export function DayEditorScreen({ dayId }: Readonly<DayEditorScreenProps>) {
 
   const renderItem = useCallback(
     ({ item, index }: { item: PlanExerciseDetail; index: number }) => (
-      <DayExerciseRow entry={item} index={index} count={count} onPress={handleOpen} onMove={move} />
+      <DayExerciseRow entry={item} index={index} count={count} onPress={handleOpen} onMove={move} onSwap={openSwap} />
     ),
-    [count, handleOpen, move],
+    [count, handleOpen, move, openSwap],
   );
 
   return (
@@ -60,6 +66,14 @@ export function DayEditorScreen({ dayId }: Readonly<DayEditorScreenProps>) {
               />
             </View>
           </View>
+          <PlanSwapSheet
+            subject={swap.subject}
+            excludedIds={swap.excludedIds}
+            isApplying={swap.isApplying}
+            hasError={swap.hasError}
+            onApply={(substituteId) => void swap.apply(substituteId)}
+            onClose={swap.close}
+          />
         </View>
       )}
     </AsyncStateView>

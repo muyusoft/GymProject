@@ -1,6 +1,6 @@
 import type { Equipment, LoadType, MuscleGroup } from "@/shared/types/training.types";
 import { normalizeText } from "@/shared/utils/search.utils";
-import type { SubstituteCandidate, SubstituteReason } from "../types/workout.types";
+import type { SubstituteCandidate, SubstituteReason } from "@/shared/types/substitute.types";
 
 export const SUGGESTION_LIMIT = 8;
 export const SEARCH_LIMIT = 20;

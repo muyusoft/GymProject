@@ -3,20 +3,24 @@ import { db } from "@/shared/db/client";
 import { listAllExerciseMuscles } from "@/shared/db/queries/exercise.queries";
 import { findActivePlan, listPlanDays } from "@/shared/db/queries/plan.queries";
 import { listPlanExercisesByDay } from "@/shared/db/queries/plan-exercise.queries";
-import { exercises, sessions, setLogs } from "@/shared/db/schema";
+import { listWeekShifts } from "@/shared/db/queries/schedule-shift.queries";
+import { exerciseSwaps, exercises, sessions, setLogs } from "@/shared/db/schema";
+import type { PlanDayRow } from "@/shared/db/types";
 import type { MuscleGroup } from "@/shared/types/training.types";
-import { weekdayIndex } from "@/shared/utils/week.utils";
+import { buildWeekSchedule } from "@/shared/utils/week-schedule.utils";
+import { startOfWeekMonday, toIsoDate, weekdayIndex } from "@/shared/utils/week.utils";
 import type { GroupRecovery, MuscleLink, RecoverySet } from "../types/muscles.types";
 import { toMuscleLink } from "../utils/exercise-muscles.utils";
 import { computeRecovery, RECOVERY_HORIZON_HOURS } from "../utils/recovery.utils";
+import { todayExerciseIds } from "../utils/today-exercises.utils";
 
 const MS_PER_HOUR = 3_600_000;
 
 export interface RecoveryData {
   recoveries: GroupRecovery[];
   now: number;
-  /** El día del plan de hoy y sus grupos principales; null si hoy es descanso o no hay plan. */
-  today: { name: string; groups: MuscleGroup[] } | null;
+  /** El día del plan de hoy, sus grupos principales y si ya se entrenó; null si hoy es descanso o no hay plan. */
+  today: { name: string; groups: MuscleGroup[]; isDone: boolean } | null;
 }
 
 async function loadRecentSets(now: number): Promise<RecoverySet[]> {
@@ -42,14 +46,42 @@ async function loadRecentSets(now: number): Promise<RecoverySet[]> {
   return rows.flatMap((row) => (row.endedAt === null ? [] : [{ ...row, endedAt: row.endedAt }]));
 }
 
-async function loadTodayPlan(now: number, links: readonly MuscleLink[]): Promise<RecoveryData["today"]> {
+/** Si hoy ya se terminó un entreno, sea del día que sea del plan. */
+async function hasFinishedToday(now: number): Promise<boolean> {
+  const rows = await db
+    .select({ id: sessions.id })
+    .from(sessions)
+    .where(and(eq(sessions.date, toIsoDate(new Date(now))), isNotNull(sessions.endedAt)))
+    .limit(1);
+  return rows.length > 0;
+}
+
+/** El día del plan que toca hoy, con los días movidos de esta semana aplicados: el mismo que muestra Hoy. */
+async function findTodayDay(today: Date): Promise<PlanDayRow | null> {
   const plan = await findActivePlan();
-  const days = plan ? await listPlanDays(plan.id) : [];
-  const day = days.find((candidate) => candidate.weekday === weekdayIndex(new Date(now)));
+  if (!plan) return null;
+  const [days, shifts] = await Promise.all([listPlanDays(plan.id), listWeekShifts(startOfWeekMonday(today))]);
+  const slot = buildWeekSchedule(days, shifts).slots[weekdayIndex(today)];
+  return days.find((candidate) => candidate.id === slot?.dayId) ?? null;
+}
+
+/** Los ejercicios de ese día tal como se entrenan hoy, con los cambios de "solo hoy". */
+async function loadTodayExerciseIds(dayId: string, today: Date): Promise<Set<string>> {
+  const [details, swaps] = await Promise.all([
+    listPlanExercisesByDay(dayId),
+    db.select().from(exerciseSwaps).where(eq(exerciseSwaps.date, toIsoDate(today))),
+  ]);
+  const planned = details.map((entry) => ({ planExerciseId: entry.planExercise.id, exerciseId: entry.exercise.id }));
+  return todayExerciseIds(planned, swaps);
+}
+
+async function loadTodayPlan(now: number, links: readonly MuscleLink[]): Promise<RecoveryData["today"]> {
+  const today = new Date(now);
+  const day = await findTodayDay(today);
   if (!day) return null;
-  const planned = new Set((await listPlanExercisesByDay(day.id)).map((entry) => entry.exercise.id));
+  const planned = await loadTodayExerciseIds(day.id, today);
   const groups = links.filter((link) => planned.has(link.exerciseId) && link.role === "primary").map((link) => link.group);
-  return { name: day.name, groups: [...new Set(groups)] };
+  return { name: day.name, groups: [...new Set(groups)], isDone: await hasFinishedToday(now) };
 }
 
 /** Recuperación de cada grupo muscular a partir de las sesiones de las últimas 72 h. */

@@ -32,6 +32,14 @@
     "profile": "Profile"
   },
   "today": {
+    "reopen": "Reopen workout",
+    "devReset": {
+      "button": "Reset today's workout (testing)",
+      "title": "Reset today's workout?",
+      "message": "Today's session and all its sets are deleted, including from history. Your plan doesn't change.",
+      "keep": "Keep",
+      "confirm": "Reset"
+    },
     "startSession": "Start workout",
     "todayWorkout": "Today's workout",
     "streakDays": "{{count}} days",
@@ -133,10 +141,29 @@
         "solid": "I had 1 or 2 reps left",
         "limit": "I hit my limit"
       },
+      "info": {
+        "open": "How we suggest adding weight",
+        "title": "How we suggest adding weight",
+        "points": {
+          "range": "With a rep range (for example 8–12), you add reps with the same weight first. Your answer decides how many: at your limit you repeat, with 1 or 2 left you add 1, and with 3 or more you add 2.",
+          "top": "When every set reaches the top of the range, we suggest adding weight and you go back to the minimum. If you hit your limit, you repeat that weight first.",
+          "fixed": "With fixed reps, we suggest adding weight when you complete every set with 3 or more reps left.",
+          "noAnswer": "If you don't answer, you need 2 sessions in a row completed with the same weight."
+        },
+        "footer": "You decide: you accept the suggestion during the session, and it never changes your plan on its own.",
+        "close": "Got it"
+      },
       "outcome": {
-        "easy": "If you completed every rep, we'll suggest adding weight next time.",
-        "solid": "If you completed every rep, we'll suggest adding weight next time.",
-        "limit": "Next time, repeat this weight before going up."
+        "range": {
+          "easy": "Next time we'll ask for 2 more reps. If you already hit the top, we'll suggest adding weight.",
+          "solid": "Next time we'll ask for 1 more rep. If you already hit the top, we'll suggest adding weight.",
+          "limit": "Next time, repeat these reps with the same weight."
+        },
+        "fixed": {
+          "easy": "If you completed every set, we'll suggest adding weight next time.",
+          "solid": "This weight is working. We'll suggest going up when you have 3 or more left.",
+          "limit": "Next time, repeat this weight before going up."
+        }
       }
     },
     "previous": "Previous",
@@ -182,6 +209,40 @@
     "yesterday": "yesterday",
     "daysAgo_one": "{{count}} day ago",
     "daysAgo_other": "{{count}} days ago",
+    "line": {
+      "ready": "Ready {{when}}",
+      "hardReady": "At your limit: needs {{hours}} h · ready {{when}}"
+    },
+    "when": {
+      "today": {
+        "night": "early today",
+        "morning": "this morning",
+        "afternoon": "this afternoon",
+        "evening": "this evening"
+      },
+      "tomorrow": {
+        "night": "early tomorrow",
+        "morning": "tomorrow morning",
+        "afternoon": "tomorrow afternoon",
+        "evening": "tomorrow evening"
+      },
+      "weekday": {
+        "night": "early {{weekday}}",
+        "morning": "{{weekday}} morning",
+        "afternoon": "{{weekday}} afternoon",
+        "evening": "{{weekday}} evening"
+      }
+    },
+    "detail": {
+      "open": "See details: {{groups}}",
+      "worked": "Trained: {{day}}",
+      "causes": "With: {{exercises}}",
+      "needs": "Needs {{hours}} h of rest",
+      "hard": "You hit your limit on a set: that adds 24 h.",
+      "progress": "{{percent}}% recovered",
+      "rule": "48 h if it was a main muscle of the exercise, 24 h if secondary, and 24 h more if you hit your limit.",
+      "close": "Got it"
+    },
     "none": "None right now",
     "insight": {
       "withCause": "Today you train {{groups}}, which are at {{percent}}%: {{exercise}} on {{weekday}} worked them too.",
@@ -295,7 +356,7 @@
     "progression": {
       "suggestions": "Suggest adding weight",
       "rpe": "Ask about effort after each exercise",
-      "rpeHint": "When you finish an exercise you say how hard it was; the suggestion to add weight comes sooner or waits.",
+      "rpeHint": "When you finish an exercise you say how hard it was; we use it to decide how many reps to add and when to add weight.",
       "deload": "Automatic deload",
       "deloadHint": "When you stall for 3 weeks"
     },
@@ -418,6 +479,13 @@
     "other": "Other"
   },
   "plan": {
+    "repRangeOffer": {
+      "title": "Progress with reps too",
+      "body_one": "{{count}} exercise has fixed reps. With a range (for example 8–12) you add reps first and, once you hit the top, you add weight and go back to the minimum.",
+      "body_other": "{{count}} exercises have fixed reps. With a range (for example 8–12) you add reps first and, once you hit the top, you add weight and go back to the minimum.",
+      "apply": "Use ranges",
+      "dismiss": "Not now"
+    },
     "defaultName": "My plan",
     "newDayName": "New day",
     "copyName": "{{name}} (copy)",
@@ -747,7 +815,11 @@
   },
   "hint": {
     "dismiss": "Dismiss tip",
-    "increase": "{{name}}: you completed {{sets}} × {{reps}} with {{current}}. Today try {{next}}.",
+    "increaseBy": {
+      "easy": "{{name}}: you completed {{sets}} × {{reps}} with {{current}} and had 3 or more reps left. Today try {{next}}.",
+      "solid": "{{name}}: you hit the top, {{sets}} × {{reps}} with {{current}}, with 1 or 2 reps left. Today try {{next}}.",
+      "streak": "{{name}}: you completed {{sets}} × {{reps}} with {{current}} two sessions in a row. Today try {{next}}."
+    },
     "preview": "If you complete {{sets}} × {{reps}} today, next time we'll suggest {{next}}.",
     "deload": "{{name}}: no progress in 3 weeks. Try a lighter week at {{next}}.",
     "acceptIncrease": "Go up to {{weight}}",
@@ -850,7 +922,11 @@
       "title": "Weight per session",
       "noTrend": "The trend shows up from session {{count}}."
     },
-    "hint": "Two sessions in a row with {{sets}} × {{reps}} completed. Next time try {{next}}.",
+    "hintBy": {
+      "easy": "You completed {{sets}} × {{reps}} and had 3 or more reps left. Next time try {{next}}.",
+      "solid": "You hit the top, {{sets}} × {{reps}}, with 1 or 2 reps left. Next time try {{next}}.",
+      "streak": "Two sessions in a row with {{sets}} × {{reps}} completed. Next time try {{next}}."
+    },
     "sessions": "Sessions",
     "empty": "No weighted sessions recorded for this exercise yet.",
     "notFound": "We couldn't find this exercise."
@@ -977,6 +1053,7 @@
     "emptySearch": "No exercise matches your search.",
     "onlyToday": "Use today only",
     "alsoPlan": "Also change it in the plan",
+    "applyToPlan": "Change it in the plan",
     "restore": "Back to the plan's exercise",
     "active": "Substitute for today only"
   },

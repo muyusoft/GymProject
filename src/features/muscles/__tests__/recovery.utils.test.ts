@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import type { MuscleLink, RecoverySet } from "../types/muscles.types";
 import { computeRecovery, recoveryState } from "../utils/recovery.utils";
+import { lineDetail, lineTitle, type RecoveryTranslate } from "../utils/recovery-line.utils";
 import {
-  groupByPercent,
   groupByState,
-  latestWorkedAt,
+  recoveryLines,
   recoveryPaint,
   relativeDay,
   todayInsight,
@@ -141,6 +141,9 @@ describe("computeRecovery", () => {
       role: null,
       lastWorkedAt: null,
       cause: null,
+      requiredHours: null,
+      isHard: false,
+      readyAt: null,
     });
   });
 
@@ -181,11 +184,12 @@ describe("vistas de la recuperación", () => {
     expect(states.ready).toHaveLength(11);
   });
 
-  it("agrupa por porcentaje de menos a más recuperado", () => {
-    const lines = groupByPercent(
+  it("con porcentaje, agrupa de menos a más recuperado", () => {
+    const lines = recoveryLines(
       groupByState(recoveries).recovering.concat(
         groupByState(recoveries).worked,
       ),
+      { now: NOW, withPercent: true },
     );
     expect(lines.map((line) => [line.percent, line.groups.length])).toEqual([
       [21, 1],
@@ -202,11 +206,55 @@ describe("vistas de la recuperación", () => {
     expect(paint.calves?.color).toBe(colors.recoveryReady);
   });
 
-  it("da la última vez trabajada de un conjunto de grupos", () => {
-    expect(latestWorkedAt(groupByState(recoveries).worked)).toBe(
-      NOW - 10 * HOUR,
-    );
-    expect(latestWorkedAt([])).toBeNull();
+});
+
+describe("líneas por día", () => {
+  // Hoy pecho; ayer femoral al límite (72 h) y glúteos sin llegar al límite (48 h).
+  const recoveries = computeRecovery({
+    sets: [
+      set(2),
+      set(26, { sessionId: "ayer", exerciseId: "curl", rpe: 10 }),
+      set(26, { sessionId: "ayer", exerciseId: "thrust" }),
+    ],
+    links: [
+      link({}),
+      link({ exerciseId: "curl", group: "hamstring" }),
+      link({ exerciseId: "thrust", group: "gluteal" }),
+    ],
+    now: NOW,
+  });
+  const worked = groupByState(recoveries).worked;
+
+  it("un grupo de ayer no queda marcado como de hoy por estar junto a uno de hoy", () => {
+    const lines = recoveryLines(worked, { now: NOW, withPercent: false });
+    expect(
+      lines.map((line) => [line.groups, relativeDay(line.workedAt ?? 0, NOW).kind]),
+    ).toEqual([
+      [["chest"], "today"],
+      [["hamstring"], "yesterday"],
+    ]);
+  });
+
+  it("dice cuando tarda más por una serie al límite", () => {
+    const lines = recoveryLines(worked, { now: NOW, withPercent: false });
+    expect(lines.map((line) => line.hardHours)).toEqual([null, 72]);
+    expect(groupByState(recoveries).recovering.map((item) => item.group)).toEqual(["gluteal"]);
+  });
+
+  it("dice cuándo estará listo y, si fue al límite, cuántas horas necesita", () => {
+    const [, hamstrings] = recoveryLines(worked, { now: NOW, withPercent: false });
+    // 26 h atrás + 72 h = 46 h desde ahora (viernes 2 a las 12:00 → domingo 4 a las 10:00).
+    expect(hamstrings?.readyAt).toBe(NOW + 46 * HOUR);
+    expect(hamstrings?.requiredHours).toBe(72);
+    const t: RecoveryTranslate = (key, options) => [key, options?.hours, options?.when].filter(Boolean).join(":");
+    const detail = hamstrings ? lineDetail(hamstrings, { t, locale: "es", now: NOW }) : null;
+    expect(detail).toBe("recovery.line.hardReady:72:recovery.when.weekday.morning");
+    expect(hamstrings ? lineTitle(hamstrings, t) : "").toBe("Muscles.group.hamstring");
+  });
+
+  it("guarda los ejercicios que causaron la línea, sin repetir", () => {
+    const [chest] = recoveryLines(worked, { now: NOW, withPercent: false });
+    expect(chest?.causes.map((cause) => cause.exerciseId)).toEqual(["bench"]);
   });
 });
 
@@ -233,14 +281,18 @@ describe("todayInsight", () => {
   });
 
   it("avisa de los grupos de hoy que aún no están al 100% con el ejercicio que los cargó", () => {
-    const insight = todayInsight(["chest", "triceps"], recoveries);
+    const insight = todayInsight({ groups: ["chest", "triceps"], isDone: false }, recoveries);
     expect(insight?.groups).toEqual(["chest"]);
     expect(insight?.percent).toBe(50);
     expect(insight?.cause?.nameEs).toBe("Press de banca");
   });
 
   it("no avisa si los grupos de hoy ya están listos o si no hay entreno", () => {
-    expect(todayInsight(["calves"], recoveries)).toBeNull();
-    expect(todayInsight([], recoveries)).toBeNull();
+    expect(todayInsight({ groups: ["calves"], isDone: false }, recoveries)).toBeNull();
+    expect(todayInsight({ groups: [], isDone: false }, recoveries)).toBeNull();
+  });
+
+  it("no avisa si el entreno de hoy ya se terminó", () => {
+    expect(todayInsight({ groups: ["chest"], isDone: true }, recoveries)).toBeNull();
   });
 });

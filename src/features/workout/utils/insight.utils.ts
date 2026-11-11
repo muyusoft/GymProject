@@ -1,5 +1,6 @@
 import type { SessionResult } from "@/shared/types/history.types";
 import {
+  increaseBasis,
   previewIncrease,
   suggestIncrease,
 } from "@/shared/utils/progression.utils";
@@ -8,6 +9,7 @@ import { suggestDeload } from "./deload.utils";
 
 export const NO_INSIGHT: ExerciseInsight = {
   increase: null,
+  increaseBasis: null,
   preview: null,
   deload: null,
 };
@@ -25,6 +27,26 @@ interface InsightOptions {
   today: Date;
 }
 
+type IncreaseOptions = Parameters<typeof suggestIncrease>[0];
+type IncreaseInsight = Pick<
+  ExerciseInsight,
+  "increase" | "increaseBasis" | "preview"
+>;
+
+function increaseInsight(
+  options: IncreaseOptions,
+  canSuggest: boolean,
+): IncreaseInsight {
+  if (!canSuggest) return { increase: null, increaseBasis: null, preview: null };
+  const increase = suggestIncrease(options);
+  return {
+    increase,
+    increaseBasis:
+      increase === null ? null : increaseBasis(options.history, options.trackRpe),
+    preview: previewIncrease(options),
+  };
+}
+
 /** Solo los ejercicios con peso y reps tienen sugerencias; por tiempo o peso corporal no. */
 export function buildInsight({
   history,
@@ -36,7 +58,7 @@ export function buildInsight({
   if (reps === null || template.targetWeight === null) return NO_INSIGHT;
   const options = {
     history,
-    target: { sets, reps },
+    target: { sets, reps, hasRepRange: template.repsMin !== null },
     step: weightStep,
     trackRpe: settings.trackRpe,
   };
@@ -44,8 +66,7 @@ export function buildInsight({
   const canSuggest =
     settings.progressionSuggestions && template.isProgressionEnabled;
   return {
-    increase: canSuggest ? suggestIncrease(options) : null,
-    preview: canSuggest ? previewIncrease(options) : null,
+    ...increaseInsight(options, canSuggest),
     deload: settings.autoDeload
       ? suggestDeload({ history, today, step: weightStep })
       : null,

@@ -17,14 +17,18 @@ const TEMPLATE: ExerciseTemplate = {
   isProgressionEnabled: true,
 };
 
-function session(weight: number, reps: number[]): SessionResult {
+function session(
+  weight: number,
+  reps: number[],
+  rpe: number | null = null,
+): SessionResult {
   return {
     date: "2026-10-01",
     sets: reps.map((value) => ({
       weight,
       unit: "kg" as const,
       reps: value,
-      rpe: null,
+      rpe,
       completed: true,
     })),
   };
@@ -54,6 +58,41 @@ describe("goalReps", () => {
         latest: session(80, [10, 9, 9]),
       }),
     ).toBe(10);
+  });
+
+  it("al mismo peso suma según el esfuerzo: al límite 0, con 1 o 2 en reserva 1, con 3 o más 2", () => {
+    const goal = (rpe: number) =>
+      goalReps({
+        template: TEMPLATE,
+        startWeight: 80,
+        latest: session(80, [9, 9, 9], rpe),
+        trackRpe: true,
+      });
+    expect(goal(10)).toBe(9);
+    expect(goal(8.5)).toBe(10);
+    expect(goal(7)).toBe(11);
+  });
+
+  it("con la pregunta de esfuerzo apagada suma una aunque haya respuesta guardada", () => {
+    expect(
+      goalReps({
+        template: TEMPLATE,
+        startWeight: 80,
+        latest: session(80, [9, 9, 9], 7),
+        trackRpe: false,
+      }),
+    ).toBe(10);
+  });
+
+  it("con 3 o más en reserva no pasa del tope", () => {
+    expect(
+      goalReps({
+        template: TEMPLATE,
+        startWeight: 80,
+        latest: session(80, [11, 11, 11], 7),
+        trackRpe: true,
+      }),
+    ).toBe(12);
   });
 
   it("no pasa del objetivo ni baja del mínimo", () => {

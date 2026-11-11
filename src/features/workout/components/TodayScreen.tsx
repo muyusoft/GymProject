@@ -12,6 +12,8 @@ import { useToday } from "../hooks/use-today";
 import type { TodayExercise } from "../types/workout.types";
 import { EmptyToday } from "./EmptyToday";
 import { MissedDayPrompt } from "./MissedDayPrompt";
+import { ReopenSessionButton } from "./ReopenSessionButton";
+import { ResetTodayButton } from "./ResetTodayButton";
 import { SubstituteSheet } from "./SubstituteSheet";
 import { TodayCard } from "./TodayCard";
 import { TodayExerciseList } from "./TodayExerciseList";
@@ -102,6 +104,10 @@ export function TodayScreen() {
                 exercises={doneExercises ?? today.exercises}
                 onSubstitute={today.isDoneToday ? undefined : substitution.open}
               />
+              {today.finishedSessionId && <ReopenSessionButton sessionId={today.finishedSessionId} />}
+              {(today.activeSessionId !== null || today.doneExercises !== null) && (
+                <ResetTodayButton dayId={today.day.id} date={toIsoDate(today.today)} onReset={reload} />
+              )}
             </>
           ) : (
             <EmptyToday reason={today.hasPlan ? "rest" : "noPlan"} />

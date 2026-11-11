@@ -12,22 +12,24 @@ Funciones puras, sin React ni base de datos, en la carpeta `utils/` del feature 
 
 - Una sesión está completa si se hicieron todas las series planeadas con las reps objetivo. La sugerencia es siempre: peso actual + salto mínimo del equipo, en la misma unidad.
 - **Pregunta de esfuerzo** (`src/shared/utils/effort.utils.ts`, ajuste `trackRpe`, activado por defecto): al terminar todas las series de un ejercicio con repeticiones, la sesión pregunta cuántas quedaban en reserva. Es opcional, de un toque y se guarda como RPE en las series del ejercicio: "me sobraron 3 o más" = 7, "me sobraron 1 o 2" = 8.5, "llegué al límite" = 10.
-- Con respuesta en la última sesión: al límite (RPE medio 9 o más) no se sugiere subir; con repeticiones en reserva basta esa sola sesión completa.
+- Con respuesta en la última sesión basta esa sola sesión completa, y decide ella: "llegué al límite" nunca sugiere subir; "me sobraron 3 o más" sí; "me sobraron 1 o 2" solo si el ejercicio tiene rango de reps (llegó al tope con margen, como en ACSM 2009 y la regla 2 por 2 de la NSCA). Con reps fijas, "1 o 2" repite el peso.
 - Sin respuesta, o con la pregunta apagada: hacen falta las 2 últimas sesiones completas al mismo peso.
+- El aviso dice en qué se basó (`increaseBasis`): "te sobraron 3 o más", "llegaste al tope y te sobraron 1 o 2" o "dos sesiones seguidas" (sin respuesta). Lo mismo en Hoy, en la sesión y en el historial del ejercicio.
 - El interruptor "Sugerirme subir peso" de cada ejercicio (en `progressionRule`) apaga la sugerencia solo para ese ejercicio; el de Ajustes la apaga para todos.
 
 ## Rango de repeticiones (`features/workout/utils/rep-goal.utils.ts`) — regla de producto
 
 - Cada ejercicio con repeticiones puede tener un rango (por ejemplo 8–12): `reps` es el tope y `progressionRule.repsMin` el mínimo. Sin `repsMin`, o si no queda por debajo de `reps`, el objetivo es fijo.
 - Una sesión solo cuenta como completa para subir peso si todas las series llegan al tope.
-- Con rango, las series de una sesión nueva arrancan con la meta de hoy: al subir de peso, el mínimo; al mismo peso que la última vez, una repetición más que su peor serie (entre el mínimo y el tope). Sin historial o con menos peso, el tope.
+- **Propuesta de rango** (`features/plan/utils/rep-range-offer.utils.ts`): el plan semanal muestra una tarjeta cuando hay ejercicios con peso y reps fijas (no por tiempo ni con peso corporal). "Usar rangos" deja el tope en las reps actuales y pone el mínimo en ⅔ del tope, redondeado (12 → 8–12, 15 → 10–15, 6 → 4–6): los mismos rangos del asistente, sin necesitar el objetivo ni el tipo de ejercicio. "Ahora no" guarda esos ejercicios en el ajuste `repRangeOfferDismissed` y no se vuelven a proponer; los ejercicios nuevos o importados con reps fijas sí aparecen.
+- Con rango, las series de una sesión nueva arrancan con la meta de hoy: al subir de peso, el mínimo; al mismo peso que la última vez, su peor serie más lo que diga la respuesta de esfuerzo (al límite +0, "1 o 2" +1, "3 o más" +2; sin respuesta o con la pregunta apagada, +1), siempre entre el mínimo y el tope. Sin historial o con menos peso, el tope.
 - El rango se muestra como `4 × 8–12` en el plan, en Hoy y en la sesión.
 - La sugerencia es descartable y nunca cambia el plan sin confirmación.
 
 ## Peso con el que arranca una sesión (`features/workout/utils/last-performance.utils.ts`) — regla de producto
 
 - Con historial del ejercicio, la sesión arranca con el peso más alto de la última sesión terminada, no con el del plan. El peso del plan solo es el punto de partida la primera vez.
-- Una sugerencia de subir peso o de descarga no se aplica sola: el aviso del ejercicio en la sesión ofrece aceptarla ("Subir a 82.5 kg") o dejarla ("Ahora no"). Al aceptar cambia el peso de las series pendientes de ese ejercicio (con rango de reps, también las baja al mínimo); las ya hechas no se tocan. Si no se acepta, vuelve a ofrecerse la próxima sesión mientras se cumpla la regla. En Hoy el aviso solo informa.
+- Una sugerencia de subir peso o de descarga no se aplica sola: el aviso del ejercicio en la sesión ofrece aceptarla ("Subir a 82.5 kg") o dejarla ("Ahora no"). Al aceptar cambia el peso de las series pendientes de ese ejercicio (con rango de reps, también las baja al mínimo); las ya hechas no se tocan. Si no se acepta, vuelve a ofrecerse la próxima sesión mientras se cumpla la regla. En Hoy el aviso solo informa, y no aparece con el entreno de hoy ya terminado (se calcularía con esa misma sesión y hablaría de la próxima vez).
 - La sesión retoma también la unidad de la última vez (lb o kg), aunque el plan diga otra. No aplica a ejercicios sin peso.
 - **Cambiar de unidad en la sesión:** el editor de una serie tiene un selector lb / kg que convierte todas las series pendientes del ejercicio y acerca el peso al salto del equipo en la nueva unidad. Las series ya hechas no cambian. Una sesión con series en las dos unidades no cuenta para sugerir subir peso.
 - Hoy, la sesión y los avisos muestran ese mismo peso. La tarjeta del ejercicio en la sesión muestra "Último: peso × reps" (reps de la peor serie con ese peso).
@@ -64,6 +66,8 @@ Por semana, cada serie completada suma 1 a cada grupo principal del ejercicio y 
 - Porcentaje = horas transcurridas / horas requeridas, tope 100%. Si el grupo se trabajó en varias sesiones, cuenta la más exigente pendiente.
 - Estado: menos de 50% = recién trabajado; 50 a 99% = recuperando; 100% = listo.
 - Siempre mostrar el estado en texto junto al color.
+- La lista separa cada estado por día trabajado (y "Recuperando" también por porcentaje): cada línea dice su propio "hoy", "ayer" o "hace N días", con una barra de cuánto lleva y cuándo estará listo por franja del día ("listo el jue por la tarde"; madrugada hasta las 6, mañana hasta las 12, tarde hasta las 19, noche hasta las 24). Si la sesión que limita tuvo una serie al límite, lo dice ("Al límite: necesita 72 h"). Tocar una línea abre su detalle: ejercicios que la causaron, horas necesarias, porcentaje y la regla.
+- El aviso "Hoy toca…" va arriba, antes de la figura, y no aparece si hoy ya se terminó un entreno. Usa el mismo día que Hoy (con los días movidos de la semana) y sus ejercicios con los cambios de "solo hoy".
 
 ## Peso corporal e IMC (`features/body/utils/`) — regla de producto
 
@@ -75,15 +79,22 @@ Por semana, cada serie completada suma 1 a cada grupo principal del ejercicio y 
 - Recordatorio de pesaje (opcional, apagado por defecto, 7:00): a diario avisa todos los días; cada semana, solo el día elegido. Se programa junto con los avisos de entreno en `shared/services/reminders.service.ts`.
 - Registrar no requiere teclado: un paso de 1 y un paso fino de 0.1 kg o 0.2 lb, partiendo del último peso.
 
-## Sustituir un ejercicio (`features/workout/utils/substitutes.utils.ts`, `swap.utils.ts`) — regla de producto
+## Sustituir un ejercicio (`shared/utils/substitutes.utils.ts`, `features/workout/utils/swap.utils.ts`) — regla de producto
 
 - Sugerencias: primero los ejercicios con el mismo patrón de movimiento (`pattern`), luego los que comparten algún músculo principal de `exercise_muscles` (más compartidos, antes). Dentro de cada grupo, antes los que ya se registraron alguna vez. Máximo 8, con filtro por equipo.
 - Un ejercicio sin patrón ni músculos con fuente no se sugiere; se puede elegir igual buscándolo por nombre.
 - Nunca se ofrece el original, un ejercicio que ya está en el entreno de hoy, ni uno por tiempo a cambio de uno de repeticiones (o al revés).
 - "Solo hoy" guarda la sustitución en `exercise_swaps` para esa fecha y no toca el plan. "También en el plan" cambia `plan_exercises` para las siguientes semanas.
-- El sustituto conserva series, reps y descanso del plan. Su peso inicial es el de su último registro; sin historial queda vacío (no se convierte el peso del ejercicio original).
+- Desde el editor del día de la rutina (icono de cambiar en cada fila) el cambio siempre va al plan (`features/plan/services/plan-substitute.service.ts`): mismas sugerencias y misma hoja (`SubstitutePickerSheet` en `shared/components`), sin "Solo hoy". Las sustituciones de "solo hoy" ya guardadas no se tocan.
+- El sustituto conserva series, reps y descanso del plan. Su peso inicial es el de su último registro; sin historial queda vacío (no se convierte el peso del ejercicio original) y, desde su primera sesión, Hoy, la sesión y el plan usan su último peso real. Si un ejercicio usa peso se decide por su tipo de carga, nunca por un peso vacío.
 - Con la sesión abierta: las series ya hechas del ejercicio anterior se quedan en su historial y las pendientes se reemplazan por series del sustituto (las que faltan del plan, al menos una).
 - El historial, los récords y los músculos trabajados van al ejercicio que realmente se hizo.
+
+## Reabrir el entreno de hoy (`features/workout/services/session-reopen.service.ts`, `utils/reopen.utils.ts`) — regla de producto
+
+- Con el entreno de hoy terminado, Hoy ofrece "Reabrir entreno": la sesión vuelve a estar abierta y se entra a ella para corregir una serie o seguir. Las series hechas, los récords y el historial se conservan.
+- El inicio se corre hacia adelante lo que estuvo cerrada, así ese rato no cuenta en el reloj ni en la duración. Mientras está abierta no cuenta como terminada (historial, recuperación, día hecho) hasta volver a terminarla.
+- Solo la sesión de hoy; los días pasados no se reabren.
 
 ## Día perdido (`shared/utils/week-schedule.utils.ts`, `features/workout/utils/missed-day.utils.ts`) — regla de producto
 

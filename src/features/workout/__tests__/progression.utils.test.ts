@@ -1,12 +1,17 @@
 import { describe, expect, it } from "vitest";
 import type { SessionResult } from "@/shared/types/history.types";
 import {
+  increaseBasis,
   previewIncrease,
   suggestIncrease,
 } from "@/shared/utils/progression.utils";
 import type { ExerciseTemplate } from "../types/workout.types";
 import { isStagnated, suggestDeload } from "../utils/deload.utils";
-import { buildHints } from "../utils/hints.utils";
+import {
+  buildHints,
+  hintMessageKey,
+  hintsForToday,
+} from "../utils/hints.utils";
 import { buildInsight } from "../utils/insight.utils";
 
 interface SessionOptions {
@@ -93,16 +98,9 @@ describe("suggestIncrease", () => {
     expect(suggestIncrease({ ...BASE, trackRpe: false, history: hard })).toBe(
       17.5,
     );
-    expect(
-      suggestIncrease({
-        ...BASE,
-        trackRpe: true,
-        history: [session({ rpe: 8 }), session()],
-      }),
-    ).toBe(17.5);
   });
 
-  it("con la pregunta de esfuerzo respondida basta la última sesión", () => {
+  it("con 3 o más repeticiones en reserva basta la última sesión", () => {
     expect(
       suggestIncrease({
         ...BASE,
@@ -114,9 +112,38 @@ describe("suggestIncrease", () => {
       suggestIncrease({
         ...BASE,
         trackRpe: true,
-        history: [session({ rpe: 8.5 }), session({ doneSets: 2 })],
+        history: [session({ rpe: 7 }), session({ doneSets: 2 })],
       }),
     ).toBe(17.5);
+  });
+
+  it("con 1 o 2 repeticiones en reserva no sugiere aunque haya dos sesiones completas", () => {
+    expect(
+      suggestIncrease({
+        ...BASE,
+        trackRpe: true,
+        history: [session({ rpe: 8.5 }), session()],
+      }),
+    ).toBeNull();
+  });
+
+  it("con rango, llegar al tope con 1 o 2 en reserva basta para subir", () => {
+    expect(
+      suggestIncrease({
+        ...BASE,
+        target: { ...TARGET, hasRepRange: true },
+        trackRpe: true,
+        history: [session({ rpe: 8.5 })],
+      }),
+    ).toBe(17.5);
+    expect(
+      suggestIncrease({
+        ...BASE,
+        target: { ...TARGET, hasRepRange: true },
+        trackRpe: true,
+        history: [session({ rpe: 10 }), session()],
+      }),
+    ).toBeNull();
   });
 
   it("al límite no sugiere aunque haya dos sesiones completas", () => {
@@ -268,9 +295,43 @@ describe("buildInsight", () => {
       buildInsight({ history, template: timed, settings: SETTINGS, today }),
     ).toEqual({
       increase: null,
+      increaseBasis: null,
       preview: null,
       deload: null,
     });
+  });
+
+  it("dice en qué se basó la sugerencia", () => {
+    expect(
+      buildInsight({ history, template: TEMPLATE, settings: SETTINGS, today })
+        .increaseBasis,
+    ).toBe("streak");
+    expect(
+      buildInsight({
+        history: [session({ rpe: 7 })],
+        template: TEMPLATE,
+        settings: { ...SETTINGS, trackRpe: true },
+        today,
+      }),
+    ).toMatchObject({ increase: 17.5, increaseBasis: "easy" });
+  });
+});
+
+describe("increaseBasis", () => {
+  it("con respuesta usa la de la última sesión; sin ella, dos sesiones", () => {
+    expect(increaseBasis([session({ rpe: 7 })], true)).toBe("easy");
+    expect(increaseBasis([session({ rpe: 8.5 })], true)).toBe("solid");
+    expect(increaseBasis([session(), session()], true)).toBe("streak");
+    expect(increaseBasis([session({ rpe: 7 })], false)).toBe("streak");
+  });
+});
+
+describe("hintMessageKey", () => {
+  it("el aviso de subir explica en qué se basó; los demás no cambian", () => {
+    expect(hintMessageKey("increase", "easy")).toBe("hint.increaseBy.easy");
+    expect(hintMessageKey("increase", null)).toBe("hint.increaseBy.streak");
+    expect(hintMessageKey("deload", null)).toBe("hint.deload");
+    expect(hintMessageKey("preview", null)).toBe("hint.preview");
   });
 });
 
@@ -291,22 +352,27 @@ describe("buildHints", () => {
     const hints = buildHints([
       {
         exercise: exercise("a"),
-        insight: { increase: 17.5, preview: null, deload: null },
+        insight: { increase: 17.5, increaseBasis: "solid", preview: null, deload: null },
       },
       {
         exercise: exercise("b"),
-        insight: { increase: 20, preview: null, deload: null },
+        insight: { increase: 20, increaseBasis: null, preview: null, deload: null },
       },
       {
         exercise: exercise("c"),
-        insight: { increase: null, preview: null, deload: 9 },
+        insight: { increase: null, increaseBasis: null, preview: null, deload: 9 },
       },
     ]);
     expect(
-      hints.map((hint) => [hint.kind, hint.exerciseId, hint.nextWeight]),
+      hints.map((hint) => [
+        hint.kind,
+        hint.exerciseId,
+        hint.nextWeight,
+        hint.increaseBasis,
+      ]),
     ).toEqual([
-      ["increase", "a", 17.5],
-      ["deload", "c", 9],
+      ["increase", "a", 17.5, "solid"],
+      ["deload", "c", 9, null],
     ]);
   });
 
@@ -315,9 +381,32 @@ describe("buildHints", () => {
       buildHints([
         {
           exercise: exercise("a"),
-          insight: { increase: null, preview: null, deload: null },
+          insight: { increase: null, increaseBasis: null, preview: null, deload: null },
         },
       ]),
     ).toEqual([]);
+  });
+});
+
+describe("hintsForToday", () => {
+  const hint = {
+    kind: "increase" as const,
+    increaseBasis: "solid" as const,
+    exerciseId: "a",
+    nameEs: "a",
+    nameEn: "a",
+    sets: 4,
+    reps: 12,
+    currentWeight: 15,
+    nextWeight: 17.5,
+    unit: "lb" as const,
+  };
+
+  it("con el entreno de hoy hecho no muestra avisos de \"hoy prueba\"", () => {
+    expect(hintsForToday([hint], true)).toEqual([]);
+  });
+
+  it("antes de terminar los muestra", () => {
+    expect(hintsForToday([hint], false)).toEqual([hint]);
   });
 });
